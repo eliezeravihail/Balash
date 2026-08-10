@@ -1,6 +1,6 @@
 ---
 name: balash-guide
-description: Guide software development by grounding product behavior before implementation, asking focused product questions instead of guessing, choosing one narrow engineering objective at a time, preserving unresolved goals in TODO/state, delegating implementation to a worker subagent, and verifying evidence before moving on. Use for building or materially evolving a software product when architecture, maintainability, or long-term direction matters.
+description: Use whenever building a new software product or materially evolving an existing one — any coding task where architecture, encapsulation, maintainability, or long-term design quality matters (a new feature, a new module or subsystem, a refactor, a second implementation of an existing capability). Makes design the goal rather than a review applied after the fact: grounds product behavior with focused questions instead of guessing, chooses one design/quality objective at a time, delegates implementation to a capable worker subagent framed around the design outcome, verifies evidence before moving on, and keeps the goal in .balash/state.md so it survives side-conversations and context compaction.
 ---
 
 # Balash Guide
@@ -168,6 +168,14 @@ advancement happens when a Worker returns or when the human resumes.** The Loop 
 `.balash/state.md` records exactly where the loop is parked (awaiting-worker, awaiting-human on a
 named decision, or ready-to-choose-next) so that either trigger can pick up precisely where you left
 off.
+
+When Balash runs as its installed plugin, a `UserPromptSubmit` hook reads `.balash/state.md` on
+every turn and re-injects the Current objective and Loop cursor into context — so even on a turn
+where this skill body is not loaded, the goal is still put in front of you. That mechanism is only
+as good as the file: **update `.balash/state.md` the moment the loop's position changes** (objective
+chosen, Worker dispatched, evidence evaluated, decision resolved). Stale state means the hook
+faithfully re-injects the wrong objective. Keeping it current is not bookkeeping — it is what makes
+your own continuity work.
 
 ## Working memory and durable memory
 

@@ -1,0 +1,8 @@
+{
+  "name": "balash",
+  "description": "Makes design the goal of coding-agent work. Bundles the balash-guide skill (auto-invoked when building or evolving software) and a UserPromptSubmit hook that keeps the current design objective present every turn, so the goal survives side-conversations and context compaction.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Balash"
+  }
+}
