@@ -167,7 +167,8 @@ that's not a necessary leak, it's a missing abstraction.
 special case of "which details leak" is the *vocabulary a public seam is allowed to speak*. The
 permitted set is exactly two things: (1) generic interface types and your own domain types, and (2) a
 small, **closed set of foundational, cross-infrastructure dependencies agreed in advance** (e.g.
-`numpy`, `cv2`). Nothing else — in particular, never a concrete type from a dependency you chose as an
+`numpy`, `cv2` — illustrative examples, chosen per product; never treat any particular pair as a
+canonical list). Nothing else — in particular, never a concrete type from a dependency you chose as an
 *implementation detail* (`keras.Model`, `tf.data.Dataset`, a vendor's result object), neither accepted
 as a parameter (that forces the caller to know it) nor returned as output (that forces the consumer to
 know it).
@@ -188,6 +189,18 @@ Balance this against primitive obsession (§4): the answer to "don't leak your i
 domain type*, not a retreat to bare strings, tuples, and dicts. `list[DetectedObject]` beats both the
 vendor's `Results` (leaks the implementation) and `list[tuple[float, ...]]` (primitive obsession).
 "Minimal dependency" means *a small agreed foundation*, not "only primitives."
+
+**The boundary's vocabulary includes its error types.** An implementation can leak through the
+exception channel exactly as through a parameter or return value: a public method that lets a
+`torch.cuda.OutOfMemoryError` or a vendor exception escape has coupled its consumer to the chosen
+implementation just as surely as if it had returned the type. So at a public seam, implementation
+exceptions are caught and re-raised as the framework's own error types, phrased in the consumer's
+concepts (§11). One deliberate carve-out: failures there is **no utility in catching** — process-fatal
+collapses no consumer could act on through the interface (a memory error that takes the process down
+anyway). Translating those is decorative machinery; do not force a wrapper on an error nobody can
+handle. The test is **actionability**: if a reasonable consumer could respond in the concept's terms
+(retry, alternate path, report and continue), translate; if nothing can be done and the process is
+lost regardless, let it fall.
 
 ## 8. Single Responsibility, and the God Object smell
 
@@ -222,7 +235,9 @@ two blocks of code resemble each other.
 **The question:** Does a name accurately describe what the thing does (including any side effect a
 reader would care about), and does an error message tell a reasonable reader what happened and
 what to do about it, in terms of the concept they're using — not an internal variable name or a
-raw exception they were never meant to see?
+raw exception they were never meant to see? At a public seam this extends to the exception's *type*,
+not only its message — see the boundary-vocabulary rule in §7, including its carve-out for
+unactionable, process-fatal failures.
 
 ## 12. Size as a forcing question, not a verdict
 
