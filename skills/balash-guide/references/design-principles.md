@@ -76,7 +76,16 @@ So the right generality is the **common vocabulary of the implementations you in
 rich enough for the consumer** — set by both ends at once, not by either alone. When the two bounds
 cannot both be met (the consumer needs orientation but one producer cannot supply it), that is a real
 design signal — that producer genuinely cannot serve that need behind a single type — not something to
-paper over with a fabricated field.
+paper over by cramming the weaker producer into the richer type.
+
+Beware the tempting version of that cram: the fabrication can be *value-correct* and still
+design-wrong. An axis-aligned rectangle genuinely *is* an `OrientedBox` with `angle = 0`, so the trick
+looks free — but encoding it that way (a) forces the orientation concept onto a producer and consumers
+that have no notion of it (Interface Segregation, §3), and (b) inverts the specialization: it makes the
+*simpler* case a degenerate instance of the *richer* type. The honest direction is the opposite —
+abstract **up** to the shared concept (`Box` as the supertype) and let the richer concept live in a
+specialization (`OrientedBox` as a subtype), so only the parties that actually need orientation depend
+on it.
 
 ## 3. Interface Segregation
 
