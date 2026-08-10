@@ -80,6 +80,17 @@ judge cannot make on its own.
 
 Both arms produce a final codebase after stage 4. Those two codebases are the objects of judgment.
 
+**Methodological choice — product information is held constant across the arms.** The Direct arm is
+given each stage's requirement *with the same granular product facts the Balash Guide obtained by
+asking the oracle* (e.g. "an agent is a separate persisted entity", "executions append to history").
+This deliberately removes discovery as a confound. Balash plausibly has a second, separate benefit —
+its structured discovery surfaces hidden product decisions a plain session would silently guess (the
+earlier `guide-vs-direct` pilots found exactly that). By handing both arms equal product knowledge we
+are *not* testing that; we are testing the narrower, more conservative claim: **given the same product
+facts, does the design-first process alone yield better design?** If Balash wins even with its
+discovery advantage neutralized, that is a stronger result; if it does not, holding information
+constant keeps us honest about why.
+
 ### The judge — and why we do not trust it blindly
 
 Design quality is scored by a **blind reviewer** (`judge/design-quality-brief.md`) that sees both
