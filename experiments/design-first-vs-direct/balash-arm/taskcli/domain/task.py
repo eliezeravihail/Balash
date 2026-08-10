@@ -16,11 +16,13 @@ Keeping that boundary is what lets the task stay a small, self-contained concept
 
 from __future__ import annotations
 
-from typing import Optional
+from typing import AbstractSet, Optional
 
 from .assignee import AssigneeRef
 from .errors import InvalidStatusError, InvalidTitleError
 from .ids import TaskId
+from .prerequisites import Prerequisites
+from .readiness import Readiness
 from .status import Status
 
 
@@ -32,10 +34,12 @@ class Task:
         description: str,
         status: Status,
         assignee: Optional[AssigneeRef],
+        prerequisites: Optional[Prerequisites] = None,
     ) -> None:
         # Every way a task comes into being -- freshly created or rebuilt from
         # storage -- passes through here, so the title invariant holds for all of
-        # them, not just the create() path.
+        # them, not just the create() path. Prerequisites default to none, so a task
+        # made without them (and any store predating them) is simply unqualified.
         title = title.strip()
         if not title:
             raise InvalidTitleError("a task needs a title")
@@ -46,17 +50,28 @@ class Task:
         self._description = description
         self._status = status
         self._assignee = assignee
+        self._prerequisites = (
+            prerequisites if prerequisites is not None else Prerequisites.none()
+        )
 
     @classmethod
-    def create(cls, title: str, description: str) -> "Task":
+    def create(
+        cls,
+        title: str,
+        description: str,
+        prerequisites: Optional[Prerequisites] = None,
+    ) -> "Task":
         """Bring a brand-new task into existence: fresh id, starts in todo,
-        unassigned. The only entry point callers use to make a new task."""
+        unassigned, waiting on the given prerequisites (none by default). The only
+        entry point callers use to make a new task. Prerequisites are fixed here, at
+        creation -- there is deliberately no way to add or remove one later."""
         return cls(
             task_id=TaskId.new(),
             title=title,
             description=description,
             status=Status.TODO,
             assignee=None,
+            prerequisites=prerequisites,
         )
 
     # --- behaviour: callers tell the task what to do ---
@@ -78,6 +93,14 @@ class Task:
         if not isinstance(status, Status):
             raise InvalidStatusError("a task status must be a Status")
         self._status = status
+
+    def readiness(self, completed: AbstractSet[TaskId]) -> Readiness:
+        """Whether this task can be worked yet -- READY iff every task it depends on is
+        done. The caller supplies which task ids are done, because a task never knows
+        the wider world itself; the blocked/ready rule stays owned by Prerequisites, to
+        which this simply delegates. Tell the task, don't reach into its prerequisites
+        and decide outside it."""
+        return self._prerequisites.readiness(completed)
 
     # --- read-only views of state (for display and persistence mapping) ---
 
@@ -104,3 +127,8 @@ class Task:
     @property
     def is_assigned(self) -> bool:
         return self._assignee is not None
+
+    @property
+    def prerequisites(self) -> Prerequisites:
+        """The tasks this task waits on -- read-only; they are fixed at creation."""
+        return self._prerequisites

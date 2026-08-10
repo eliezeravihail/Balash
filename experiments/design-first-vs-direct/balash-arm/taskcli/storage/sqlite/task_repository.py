@@ -20,6 +20,7 @@ from typing import List, Optional
 from ...domain import (
     AssigneeKind,
     AssigneeRef,
+    Prerequisites,
     Status,
     Task,
     TaskId,
@@ -38,10 +39,15 @@ class SqliteTaskRepository:
             "assignee_id) VALUES (?, ?, ?, ?, ?, ?)",
             (task.id.value, task.title, task.description, task.status.value, kind, ident),
         )
+        self._write_prerequisites(task)
         self._conn.commit()
 
     def save(self, task: Task) -> None:
-        """Persist changes to a task that already exists."""
+        """Persist changes to a task that already exists.
+
+        Prerequisites are fixed at creation, so a save never rewrites them -- only the
+        mutable columns (title/description/status/assignee) are updated here.
+        """
         kind, ident = _assignee_columns(task.assignee)
         cursor = self._conn.execute(
             "UPDATE tasks SET title = ?, description = ?, status = ?, "
@@ -60,7 +66,7 @@ class SqliteTaskRepository:
         ).fetchone()
         if row is None:
             raise TaskNotFoundError(f"no task with id {task_id.value!r}")
-        return _from_row(row)
+        return _from_row(row, self._prerequisites_of(task_id))
 
     def all(self) -> List[Task]:
         # ORDER BY the implicit rowid preserves insertion order -- the same order the
@@ -69,7 +75,24 @@ class SqliteTaskRepository:
             "SELECT id, title, description, status, assignee_kind, assignee_id "
             "FROM tasks ORDER BY rowid"
         ).fetchall()
-        return [_from_row(row) for row in rows]
+        return [
+            _from_row(row, self._prerequisites_of(TaskId(row["id"]))) for row in rows
+        ]
+
+    # --- the prerequisite join table; one edge per row ---
+
+    def _write_prerequisites(self, task: Task) -> None:
+        self._conn.executemany(
+            "INSERT INTO task_prerequisites (task_id, prereq_id) VALUES (?, ?)",
+            [(task.id.value, prereq.value) for prereq in task.prerequisites],
+        )
+
+    def _prerequisites_of(self, task_id: TaskId) -> Prerequisites:
+        rows = self._conn.execute(
+            "SELECT prereq_id FROM task_prerequisites WHERE task_id = ? ORDER BY rowid",
+            (task_id.value,),
+        ).fetchall()
+        return Prerequisites.of(TaskId(row["prereq_id"]) for row in rows)
 
 
 # --- the task <-> row mapping; the only code that knows the column shape ---
@@ -83,13 +106,14 @@ def _assignee_columns(
     return assignee.kind.value, assignee.id_value
 
 
-def _from_row(row: sqlite3.Row) -> Task:
+def _from_row(row: sqlite3.Row, prerequisites: Prerequisites) -> Task:
     return Task(
         task_id=TaskId(row["id"]),
         title=row["title"],
         description=row["description"],
         status=Status(row["status"]),
         assignee=_assignee_from_row(row["assignee_kind"], row["assignee_id"]),
+        prerequisites=prerequisites,
     )
 
 

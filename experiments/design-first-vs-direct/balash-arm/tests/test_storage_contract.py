@@ -22,6 +22,7 @@ from taskcli.domain import (
     ExecutionResult,
     Member,
     MemberId,
+    Prerequisites,
     Status,
     Task,
     TaskId,
@@ -99,6 +100,26 @@ class StorageContractTests:
         tasks.add(self._a_task(task_id="b", title="b"))
         got = {t.id.value for t in tasks.all()}
         self.assertEqual(got, {"a", "b"})
+
+    def test_prerequisites_roundtrip_and_default_to_none(self):
+        # Prerequisites persist and restore on either backend: a task with several comes
+        # back with them in order; a task added without any comes back with none.
+        tasks = self.backend.tasks()
+        tasks.add(self._a_task(task_id="a", title="a"))
+        tasks.add(self._a_task(task_id="b", title="b"))
+        with_prereqs = Task(
+            task_id=TaskId("main"),
+            title="main",
+            description="",
+            status=Status.TODO,
+            assignee=None,
+            prerequisites=Prerequisites.of([TaskId("a"), TaskId("b")]),
+        )
+        tasks.add(with_prereqs)
+
+        reloaded = tasks.get(TaskId("main"))
+        self.assertEqual([t.value for t in reloaded.prerequisites], ["a", "b"])
+        self.assertTrue(tasks.get(TaskId("a")).prerequisites.is_empty)
 
     def test_assignee_roundtrips_for_all_three_forms(self):
         tasks = self.backend.tasks()

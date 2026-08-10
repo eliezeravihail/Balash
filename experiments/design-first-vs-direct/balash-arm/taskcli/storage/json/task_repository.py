@@ -22,6 +22,7 @@ from ...domain import (
     AssigneeKind,
     AssigneeRef,
     MemberId,
+    Prerequisites,
     Status,
     Task,
     TaskId,
@@ -69,6 +70,7 @@ def _to_row(task: Task) -> Dict[str, Any]:
         "description": task.description,
         "status": task.status.value,
         "assignee": _assignee_to_row(task.assignee),
+        "prerequisites": [prereq.value for prereq in task.prerequisites],
     }
 
 
@@ -79,7 +81,16 @@ def _from_row(row: Dict[str, Any]) -> Task:
         description=row["description"],
         status=Status(row["status"]),
         assignee=_assignee_from_row(row["assignee"]),
+        prerequisites=_prerequisites_from_row(row.get("prerequisites")),
     )
+
+
+def _prerequisites_from_row(raw: Any) -> Prerequisites:
+    # A row predating prerequisites (or any stage-1 row) simply has none -- read it as an
+    # unqualified task rather than requiring a migration.
+    if not raw:
+        return Prerequisites.none()
+    return Prerequisites.of(TaskId(value) for value in raw)
 
 
 def _assignee_to_row(assignee: Optional[AssigneeRef]) -> Optional[Dict[str, str]]:

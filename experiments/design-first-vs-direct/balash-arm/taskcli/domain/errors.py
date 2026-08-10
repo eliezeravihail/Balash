@@ -33,3 +33,9 @@ class TaskNotExecutableError(DomainError):
 
 class TaskNotFoundError(DomainError):
     """A task id that no task answers to was used."""
+
+
+class UnknownPrerequisiteError(DomainError):
+    """A task was asked to depend on a prerequisite that is not an existing task.
+    Because prerequisites may only reference tasks that already exist, this refusal is
+    also what keeps the prerequisite graph acyclic."""

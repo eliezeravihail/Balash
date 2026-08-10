@@ -108,6 +108,17 @@ def _build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("create", help="create a task")
     p.add_argument("--title", required=True)
     p.add_argument("--description", default="")
+    p.add_argument(
+        "--needs",
+        action="append",
+        default=None,
+        dest="needs",
+        metavar="TASK_ID",
+        help=(
+            "id of a task this one depends on; repeat for several. The task is blocked "
+            "until every one of them is done. Each must already exist."
+        ),
+    )
 
     p = sub.add_parser("assign", help="assign a task to a member")
     p.add_argument("task_id")
@@ -139,17 +150,23 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def _format_task_line(view: TaskView) -> str:
-    return f"{view.id}  [{view.status}]  {view.title}  -- {view.assignee}"
+    return (
+        f"{view.id}  [{view.status}]  {view.title}  "
+        f"-- {view.assignee}  ({view.readiness})"
+    )
 
 
 def _format_task_detail(view: TaskView) -> str:
+    prerequisites = ", ".join(view.prerequisites) if view.prerequisites else "none"
     return "\n".join(
         [
-            f"id:          {view.id}",
-            f"title:       {view.title}",
-            f"description: {view.description}",
-            f"status:      {view.status}",
-            f"assignee:    {view.assignee}",
+            f"id:            {view.id}",
+            f"title:         {view.title}",
+            f"description:   {view.description}",
+            f"status:        {view.status}",
+            f"assignee:      {view.assignee}",
+            f"prerequisites: {prerequisites}",
+            f"readiness:     {view.readiness}",
         ]
     )
 
@@ -194,7 +211,7 @@ def _run(
                 file=out,
             )
     elif command == "create":
-        task_id = service.create_task(args.title, args.description)
+        task_id = service.create_task(args.title, args.description, args.needs or [])
         print(f"created task {task_id.value}", file=out)
     elif command == "assign":
         service.assign_task(args.task_id, args.member_id)

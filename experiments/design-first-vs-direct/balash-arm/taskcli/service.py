@@ -17,7 +17,7 @@ assignee of either kind.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import AbstractSet, Iterable, List, Optional, Tuple
 
 from .domain import (
     Agent,
@@ -25,6 +25,7 @@ from .domain import (
     AssigneeRef,
     Member,
     MemberId,
+    Prerequisites,
     Status,
     Task,
     TaskId,
@@ -35,14 +36,17 @@ from .storage import AgentRepository, MemberRepository, TaskRepository
 @dataclass(frozen=True)
 class TaskView:
     """A task as it should be shown to a person: ids as text, the assignee already
-    resolved to a display name. A read-only presentation record -- it carries no
-    behaviour because showing a task is not a domain decision."""
+    resolved to a display name, and the blocked/ready state already decided. A
+    read-only presentation record -- it carries no behaviour because showing a task is
+    not a domain decision."""
 
     id: str
     title: str
     description: str
     status: str
     assignee: str  # a display name, or "unassigned"
+    readiness: str = "ready"  # "ready" or "blocked", per the prerequisite rule
+    prerequisites: Tuple[str, ...] = ()  # the task ids this task waits on, as text
 
 
 class TaskService:
@@ -85,8 +89,19 @@ class TaskService:
 
     # --- tasks: commands ---
 
-    def create_task(self, title: str, description: str) -> TaskId:
-        task = Task.create(title=title, description=description)
+    def create_task(
+        self, title: str, description: str, needs: Iterable[str] = ()
+    ) -> TaskId:
+        # Prerequisites are set here, at creation, and never after. Every referenced id
+        # must already be a real task -- the one rule that both keeps readiness
+        # well-defined and (because a fresh task's own id is never among the existing
+        # ones) guarantees the prerequisite graph stays acyclic. The gate lives on
+        # Prerequisites; this is the single path that reaches it.
+        prerequisites = Prerequisites.of(TaskId(need) for need in needs)
+        prerequisites.require_all_known({task.id for task in self._tasks.all()})
+        task = Task.create(
+            title=title, description=description, prerequisites=prerequisites
+        )
         self._tasks.add(task)
         return task.id
 
@@ -121,20 +136,36 @@ class TaskService:
     def list_tasks(self) -> List[TaskView]:
         team = self._members.team()
         registry = self._agents.registry()
-        return [self._view(task, team, registry) for task in self._tasks.all()]
+        all_tasks = self._tasks.all()
+        completed = self._completed_ids(all_tasks)
+        return [self._view(task, team, registry, completed) for task in all_tasks]
 
     def show_task(self, task_id: str) -> TaskView:
         team = self._members.team()
         registry = self._agents.registry()
-        return self._view(self._tasks.get(TaskId(task_id)), team, registry)
+        completed = self._completed_ids(self._tasks.all())
+        # get() (not a scan of all_tasks) so a missing id still raises TaskNotFoundError.
+        task = self._tasks.get(TaskId(task_id))
+        return self._view(task, team, registry, completed)
 
-    def _view(self, task: Task, team, registry) -> TaskView:
+    @staticmethod
+    def _completed_ids(tasks: Iterable[Task]) -> AbstractSet[TaskId]:
+        """Which tasks are done -- the only world knowledge the readiness rule needs.
+        Built once per read so every task in a listing is judged against the same
+        snapshot."""
+        return {task.id for task in tasks if task.status is Status.DONE}
+
+    def _view(
+        self, task: Task, team, registry, completed: AbstractSet[TaskId]
+    ) -> TaskView:
         return TaskView(
             id=task.id.value,
             title=task.title,
             description=task.description,
             status=task.status.label,
             assignee=self._assignee_label(task.assignee, team, registry),
+            readiness=task.readiness(completed).label,
+            prerequisites=tuple(str(prereq) for prereq in task.prerequisites),
         )
 
     @staticmethod

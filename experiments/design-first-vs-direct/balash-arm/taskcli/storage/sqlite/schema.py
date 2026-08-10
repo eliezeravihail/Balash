@@ -21,6 +21,12 @@ Four real tables, one per entity -- native columns, not JSON blobs in a column:
   are no foreign keys here either, for the same read-tolerance reason.
 - ``succeeded`` is an INTEGER 0/1 (SQLite has no native boolean); the repository maps
   it back to a Python ``bool`` on read.
+- ``task_prerequisites`` is a join table -- one row per "task X depends on task Y" edge,
+  real columns rather than a list packed into a JSON column (the stage-3 requirement).
+  A task with no prerequisites simply has no rows here; declared order is recovered by
+  reading in insertion (rowid) order, the same device the other tables use. There is
+  deliberately NO foreign key, for the same read-tolerance reason as the rest of the
+  schema, and consistent with the JSON backend storing prerequisites as plain ids.
 """
 
 from __future__ import annotations
@@ -60,6 +66,14 @@ CREATE TABLE IF NOT EXISTS results (
 );
 
 CREATE INDEX IF NOT EXISTS ix_results_task ON results(task_id);
+
+CREATE TABLE IF NOT EXISTS task_prerequisites (
+    task_id   TEXT NOT NULL,          -- the dependent task
+    prereq_id TEXT NOT NULL,          -- a task it must wait on
+    PRIMARY KEY (task_id, prereq_id)  -- an edge is named once; dedup is structural
+);
+
+CREATE INDEX IF NOT EXISTS ix_prereq_task ON task_prerequisites(task_id);
 """
 
 

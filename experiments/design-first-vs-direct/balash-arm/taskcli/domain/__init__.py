@@ -15,10 +15,13 @@ from .errors import (
     TaskNotFoundError,
     UnknownAgentError,
     UnknownMemberError,
+    UnknownPrerequisiteError,
 )
 from .execution_result import ExecutionResult
 from .ids import AgentId, MemberId, TaskId
 from .member import Member, Team
+from .prerequisites import Prerequisites
+from .readiness import Readiness
 from .status import Status
 from .task import Task
 
@@ -30,6 +33,7 @@ __all__ = [
     "TaskNotFoundError",
     "UnknownAgentError",
     "UnknownMemberError",
+    "UnknownPrerequisiteError",
     "AgentId",
     "MemberId",
     "TaskId",
@@ -40,6 +44,8 @@ __all__ = [
     "ExecutionResult",
     "Member",
     "Team",
+    "Prerequisites",
+    "Readiness",
     "Status",
     "Task",
 ]

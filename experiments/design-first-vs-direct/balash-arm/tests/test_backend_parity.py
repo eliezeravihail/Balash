@@ -58,12 +58,25 @@ class BackendParityTests(unittest.TestCase):
             transcript.append(self._cli(data_dir, backend, "status", task_id, "in progress"))
             transcript.append(self._cli(data_dir, backend, "execute", task_id))
             transcript.append(self._cli(data_dir, backend, "execute", task_id))
+
+            # A dependent task, so the prerequisite/readiness path is exercised through
+            # the real CLI on BOTH backends (SQLite's join table included).
+            dependent = self._cli(data_dir, backend, "create", "--title", "Follow up", "--description", "after", "--needs", task_id)
+            dependent_id = dependent.split()[-1].strip()
+            transcript.append(dependent)
+            transcript.append(self._cli(data_dir, backend, "show", dependent_id))  # blocked
+            transcript.append(self._cli(data_dir, backend, "status", task_id, "done"))
+            transcript.append(self._cli(data_dir, backend, "show", dependent_id))  # now ready
+
             transcript.append(self._cli(data_dir, backend, "list"))
             transcript.append(self._cli(data_dir, backend, "show", task_id))
             transcript.append(self._cli(data_dir, backend, "history", task_id))
 
-            # Normalize the one legitimately-different token: the random task id.
-            return [chunk.replace(task_id, "<ID>") for chunk in transcript]
+            # Normalize the two legitimately-different tokens: the random task ids.
+            return [
+                chunk.replace(task_id, "<ID>").replace(dependent_id, "<ID2>")
+                for chunk in transcript
+            ]
 
     def test_json_and_sqlite_produce_identical_observable_output(self):
         json_transcript = self._run_flow("json")

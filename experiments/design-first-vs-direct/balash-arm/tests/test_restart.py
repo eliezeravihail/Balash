@@ -93,6 +93,30 @@ class RestartSurvivalTests(unittest.TestCase):
         self.assertIn("Bob Reyes", detail)
         self.assertIn("todo", detail)
 
+    def test_prerequisites_persist_and_block_until_done_across_processes(self):
+        # Process 1 & 2: a task, then a second task that depends on it.
+        dep = self._created_id(self.run_cli("create", "--title", "groundwork", "--description", ""))
+        main = self._created_id(
+            self.run_cli("create", "--title", "the feature", "--description", "", "--needs", dep)
+        )
+
+        # A fresh process reads the dependent back as blocked, naming its prerequisite.
+        detail = self.run_cli("show", main)
+        self.assertIn("blocked", detail)
+        self.assertIn(dep, detail)  # the prerequisite id survived the restart
+
+        # Finish the prerequisite; a later, separate process now sees it as ready.
+        self.run_cli("status", dep, "done")
+        self.assertIn("ready", self.run_cli("show", main))
+
+    def test_creating_with_an_unknown_prerequisite_is_rejected_across_processes(self):
+        stderr = self.run_cli_expecting_failure(
+            "create", "--title", "x", "--description", "", "--needs", "ghost"
+        )
+        self.assertIn("ghost", stderr)
+        # the rejection created nothing, verified by a fresh process
+        self.assertIn("no tasks yet", self.run_cli("list"))
+
     def test_assign_to_unknown_member_is_rejected_across_processes(self):
         task_id = self._created_id(self.run_cli("create", "--title", "t", "--description", "d"))
         stderr = self.run_cli_expecting_failure("assign", task_id, "--to", "ghost")
