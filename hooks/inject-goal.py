@@ -5,8 +5,17 @@ Fires on every user turn. If the current project is a Balash project (it has a
 `.balash/state.md`), it injects a short reminder of the current design objective
 into the model's context — so the goal stays present even when the conversation
 drifts onto something unrelated, and even across context compaction. On any
-project without that file, or on any parsing trouble, it stays completely silent
-and never blocks the turn.
+project without that file it stays completely silent and never blocks the turn.
+
+Schema contract: `assets/state-template.md` is the AUTHORITATIVE shape of the
+state file, and this hook depends on the headings/markers named there — the
+`## Current objective` heading (with its `**Objective:**` marker), `## Mode`, and
+`## Loop cursor`. That template, not this parser, owns the schema; the skill that
+writes state.md and this hook that reads it are two sides of the same contract.
+Because a drifted file (a renamed heading, a hand-edit) would otherwise make the
+goal stop being injected *silently*, this hook does NOT stay silent on a filled
+state file it cannot structurally recognize: it says so, so the drift is visible
+rather than a goal that quietly evaporates. It still never blocks the turn.
 
 Contract: reads the hook JSON on stdin, prints (on success) a JSON object with
 `hookSpecificOutput.additionalContext`, and always exits 0.
@@ -138,6 +147,22 @@ def main() -> int:
     objective = _objective(sections)
     cursor = _cursor(sections)
     mode = _mode(sections)
+
+    # Drift guard: the goal lives under the "## Current objective" heading. If a filled state file
+    # lacks that heading entirely, the schema has drifted from assets/state-template.md and the hook
+    # can no longer locate the objective — so the goal would stop being injected. Surface that loudly
+    # instead of silently degrading to the generic "no objective" nudge (which reads as "nothing to do"
+    # rather than "the state file is broken"). A genuinely empty/whitespace file is not drift.
+    has_content = any(line.strip() for line in text.splitlines())
+    if "current objective" not in sections and has_content:
+        _emit(
+            "[balash-guide] .balash/state.md exists but its structure is not recognized: the "
+            "'## Current objective' heading is missing, so this hook cannot read the objective and "
+            "the goal is NOT being injected this turn. The state file's headings have likely drifted "
+            "from the schema in assets/state-template.md — realign them (headings/markers are the "
+            "contract between the skill that writes state.md and this hook that reads it)."
+        )
+        return 0
 
     if objective:
         lines = [

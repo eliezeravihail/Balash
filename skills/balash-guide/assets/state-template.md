@@ -2,6 +2,13 @@
 
 This file stores durable engineering direction. Keep it short. Do not use it as a transcript or worker task log.
 
+<!-- SCHEMA CONTRACT (this template owns it): the injection hook (hooks/inject-goal.py) reads the goal
+     by heading and marker. The load-bearing anchors are the headings `## Current objective` (with its
+     `**Objective:**` and `**Kind:**` markers), `## Mode`, and `## Loop cursor`, and those marker
+     formats. Renaming or reformatting them stops the goal from being injected. If you must change the
+     shape, change it here AND in the hook together — they are two sides of one contract. (The hook now
+     says so loudly if a filled state file lacks `## Current objective`, rather than failing silent.) -->
+
 ## Product purpose
 
 <!-- One or two sentences. -->
