@@ -9,8 +9,8 @@ automatic wake (a returning Worker) or an explicit human command can resume from
 
 The Guide drives the whole loop end to end and pauses only at the **two legitimate human moments**:
 an *open product decision* it must not guess, and *receiving the next product change*. Everything
-between — choose objective → delegate → verify → evaluate → choose again — happens autonomously. A
-returning Worker **auto-advances** the loop (verify its evidence, evaluate, choose the next
+between — choose objective → delegate → measure → choose again — happens autonomously. A
+returning Worker **auto-advances** the loop (measure its evidence, choose the next
 objective). This is the behavior described throughout `SKILL.md`.
 
 ## Stepped mode (hands-on supervision)
@@ -19,7 +19,7 @@ The user wants to inspect and steer between phases. The loop stops at **every ph
 advances **only on an explicit command**. The two automatic-mode pause points still apply *on top* of
 the phase stops. The one behavioral change to internalize: **in stepped mode a returning Worker does
 NOT auto-advance** — it parks at `executed:awaiting-review` and waits for the review command. Never
-run verify/evaluate/choose-next off a Worker return while Mode is `stepped`.
+run measurement/choose-next off a Worker return while Mode is `stepped`.
 
 ### Explicit commands run inline, on your model — no subagent
 
@@ -45,7 +45,7 @@ watching.
 |---|---|---|---|
 | **plan** | 1–3: establish state, choose one objective, protect intent, draft the Worker handoff | the Current objective + a bounded handoff, written to `state.md` | `planned:awaiting-build` |
 | **build** (execute) | 4: delegate to a Worker (or run the handoff as a separated phase) | the Worker's result + evidence pointer | `executed:awaiting-review` |
-| **review** | 5: evaluate evidence against exit criteria, run the review panel | reproduced findings + a verdict + a recommendation | `reviewed:awaiting-decision` |
+| **review** | 5: measure evidence against exit criteria, run the review panel | reproduced readings + which criteria are met/unmet + implication for direction | `reviewed:awaiting-decision` |
 | **auto** | switches Mode to `auto` and runs to the next legitimate pause | — | wherever the loop next legitimately parks |
 
 After **review**, choosing the next objective (step 6) is simply the next **plan** — in stepped mode
@@ -57,13 +57,14 @@ the human triggers it; in auto mode the loop does it itself.
   before a line of code is written. Open product decisions are still asked here — planning is where
   questions live. Do not delegate from `plan`.
 - **build** requires the cursor at `planned:awaiting-build` (or a reopened objective). If there is no
-  current objective, say so and point to `plan`. Stop when the Worker returns; do **not** evaluate or
-  accept — that is review's job.
-- **review** requires the cursor at `executed:awaiting-review`. Evaluate per `review.md` and run the
-  panel per `review-panel.md`. End with a verdict (met | partially_met | invalidated | blocked) and a
-  recommendation (accept → `ready-to-choose-next`; or reopen → back to `plan`/`build` naming which
-  criterion failed). Do not silently repair everything the reviewer reports — decide what matters to
-  the product now.
+  current objective, say so and point to `plan`. Stop when the Worker returns; do **not** measure or
+  decide direction — that is review's job.
+- **review** requires the cursor at `executed:awaiting-review`. Measure per `review.md` and run the
+  panel per `review-panel.md`. Report the readings, describe which exit criteria they show met/unmet,
+  and what this implies for the next direction. Then record where the loop now is — `ready-to-choose-next`
+  when the objective is reached, or back toward `plan`/`build` when the readings say it isn't; this
+  records the loop's position, it does not accept or reject the Worker. Do not silently repair everything
+  the reviewer reports — the Guide/human decides what matters to the product now.
 
 ## Loop-cursor vocabulary (extended)
 
@@ -74,7 +75,7 @@ needs-plan
 planned:awaiting-build <objective>
 awaiting-worker <objective>
 executed:awaiting-review <objective>
-reviewed:awaiting-decision <verdict> <objective>
+reviewed:awaiting-decision <objective>
 ready-to-choose-next
 awaiting-human <named open product decision>
 ```

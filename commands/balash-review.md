@@ -1,22 +1,25 @@
 ---
-description: "Balash — run the REVIEW phase: evaluate against exit criteria with the review panel, producing reproduced findings (no scores). Also works standalone on any diff/branch/PR."
+description: "Balash — run the REVIEW phase: measure the result against the exit criteria with the review panel, producing reproduced readings (no scores). Also works standalone on any diff/branch/PR."
 argument-hint: "[optional target: a diff / branch / path / PR to review standalone]"
 ---
 
-Enter the `balash-guide` skill and run the **REVIEW phase**, following `references/review.md` and
+Enter the `balash-guide` skill and run the **REVIEW phase** — which *measures* the outcome against the
+objective and feeds the next direction; it is not a gate — following `references/review.md` and
 `references/review-panel.md`. **First read the objective's Kind** (`design` | `implementation` |
-`refactoring`) and apply that kind's lens per `review-panel.md` — a `design` review judges whether the
-*structure* is right (not tests), `implementation` judges correctness and conformance, `refactoring`
-judges behavior-preservation and whether the named smell went. If the declared kind and the actual
-deliverable disagree, that mismatch is the first finding. Two uses, decided by whether a target is given:
+`refactoring`) and take that kind's lens per `review-panel.md` — a `design` review measures whether the
+*structure* is right (not tests), `implementation` measures correctness and conformance, `refactoring`
+measures behavior-preservation and whether the named smell went. If the declared kind and the actual
+deliverable disagree, that mismatch is the first reading. Two uses, decided by whether a target is given:
 
 **In-loop review (no target given).** Reload `.balash/state.md`; require the Loop cursor at
-`executed:awaiting-review`. Evaluate the Worker's evidence against the objective's **exit criteria**,
-and run the review panel scaled to the objective (verification-probe first; add fidelity, subtractive,
-and an opposite-disposition second reviewer as the stakes warrant). End with reproduced findings, a
-verdict (met | partially_met | invalidated | blocked), and a recommendation (accept → set cursor
-`ready-to-choose-next`; or reopen → name the failed criterion and set the cursor back). Do not silently
-repair everything reported — decide what matters to the product now.
+`executed:awaiting-review`. Measure the Worker's evidence against the objective's **exit criteria**, and
+run the review panel scaled to the objective (probe reviewer first; add fidelity, subtractive, and an
+opposite-disposition second reviewer as the stakes warrant). Report reproduced readings, describe which
+exit criteria the readings show met/unmet, and what this implies for the next direction. Then record
+where the loop now is by updating the cursor (`ready-to-choose-next` when the objective is reached, or
+back toward `plan`/`build` when the readings say it isn't) — this records the loop's position, it does
+not accept or reject the Worker. Do not silently repair everything reported — the Guide/human decides
+what matters to the product now.
 
 **Standalone review (a target is given in the arguments).** Review the target change without requiring
 a `.balash/state.md`. First determine the review **kind** — `design`, `implementation`, or
@@ -29,8 +32,9 @@ Run the panel **inline, in this session, on the currently selected model — do 
 (this is an explicit command; the user picked this model and is supervising). Adopt each reviewer lens
 in turn, including the opposite-disposition check when the call is a judgment/taste one.
 
-In both uses, obey the panel's core rule: **every finding carries a reproduction (a failing probe /
-concrete input→wrong output) or a precise `file:line` citation — no scores, no percentages.** Before
-acting on a decisive finding, reproduce it yourself. An empty findings list is a valid, honest result.
+In both uses, obey the panel's core rule: **every reading carries a reproduction (a failing probe /
+concrete input→wrong output) or a precise `file:line` citation — no scores, no percentages.** Before a
+decisive reading informs direction, reproduce it yourself. An empty set of readings is a valid, honest
+measurement.
 
 Target (if any): $ARGUMENTS

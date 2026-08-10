@@ -91,9 +91,10 @@ Not mandatory phases — a control loop for deciding what to do next:
    the behavior as a constraint and the design principles as the target. A good handoff is one two strong
    engineers could satisfy with *genuinely different, equally good* designs — if it only permits the one
    design you already pictured, it's over-specified.
-5. **Evaluate evidence** — verify the exit criteria were actually demonstrated (run the tests, read the
-   code); never accept "done" on the Worker's word. For high-stakes work, escalate to the **review
-   panel** (§2.7). Outcome: met / partially_met / invalidated / blocked.
+5. **Measure the outcome** — measure whether the exit criteria were actually demonstrated (run the
+   tests, read the code) instead of trusting the Worker's "done"; the reading feeds the next direction,
+   it is not a gate. For high-stakes work, escalate to the **review panel** (§2.7). Reading: met /
+   partially_met / invalidated / blocked.
 6. **Choose again** — from the updated state; re-evaluate from evidence, no fixed phase order.
 
 ### 2.5 The durable goal: state file + hook
@@ -125,27 +126,30 @@ now runs a **mandatory subtractive pass**: for every type/guard/wrapper/abstract
 product force* that requires it, and delete the ones whose removal wouldn't damage a current
 rule/invariant/boundary. It's counter-architecture critique, not a line-count rule.
 
-### 2.7 Reviewing: scrutiny, not scoring
+### 2.7 Reviewing: measurement, not gating
 
-A plain "is this good?" LLM judgment is weak — with nothing to contrast against, it drifts to vague
-praise and invented grades. The **review panel** ([`references/review-panel.md`](skills/balash-guide/references/review-panel.md))
-rebuilds what made the experiment judges trustworthy: an adversarial contrast (against the *exit
-criteria*, in place of a second implementation) plus reproduction of every claim. Its core rule:
+Balash **directs and measures; it does not coerce.** A review is not a gate or a verdict against the
+Worker — it is honest *measurement of the outcome against the objective*, and what it shows feeds the
+next direction (the Guide/human decides). A plain "is this good?" LLM judgment is a weak measurement —
+with nothing to contrast against, it drifts to vague praise and invented grades. The **review panel**
+([`references/review-panel.md`](skills/balash-guide/references/review-panel.md)) rebuilds what made the
+experiment judges a trustworthy measurement: an adversarial contrast (against the *exit criteria*, in
+place of a second implementation) plus reproduction of every reading. Its core rule:
 
-> **Every finding carries a reproduction (a failing probe / a concrete input → wrong output) or a
-> precise `file:line` citation. No scores, no percentages.** A finding that can't be reproduced or
-> cited does not exist.
+> **Every reading carries a reproduction (a failing probe / a concrete input → wrong output) or a
+> precise `file:line` citation. No scores, no percentages.** A reading that can't be reproduced or
+> cited is not a measurement.
 
 Every task declares a **Kind — `design`, `implementation`, or `refactoring`** — and the review applies
 the matching lens, because what "good" means and what proves it differ by kind: a *design* review judges
 whether the structure is right (not tests), an *implementation* review judges correctness and
 conformance to the agreed design, a *refactoring* review judges behavior-preservation and whether the
 named smell actually went. Typing the review is what stops it sliding into proxy-checking (grading links
-and layout when the task was an architecture). Escalating roles then serve that lens: a **verification
-reviewer** that writes adversarial probes against the exit criteria (the role that catches real bugs), a
-**fidelity reviewer** (claims/comments vs code), a **subtractive reviewer** (the pass above), and an
-**opposite-disposition second reviewer** for genuine taste calls. The reviewer is *scrutinized, not
-trusted* — before acting on a decisive finding, the Guide reproduces it itself.
+and layout when the task was an architecture). Escalating roles then serve that lens: a **probe
+reviewer** that writes adversarial probes against the exit criteria (the role that surfaces real
+defects), a **fidelity reviewer** (claims/comments vs code), a **subtractive reviewer** (the pass above),
+and an **opposite-disposition second reviewer** for genuine taste calls. The reviewer's readings are
+*measured, not trusted* — before a decisive reading informs direction, the Guide reproduces it itself.
 
 ---
 
@@ -162,8 +166,8 @@ The same loop runs two ways, recorded in the `Mode` field of `.balash/state.md`
   - **`/balash-plan`** — choose one design objective and draft the Worker handoff; **stops before any
     code is written**, so you can approve or edit the objective first.
   - **`/balash-build`** — execute the planned objective; stops when done.
-  - **`/balash-review`** — evaluate the result with the review panel; stops with reproduced findings, a
-    verdict, and a recommendation.
+  - **`/balash-review`** — measure the result with the review panel; stops with reproduced readings and
+    what they imply for the next direction (it reports, it does not gate).
 
   In stepped mode a returning Worker **parks** at `executed:awaiting-review` instead of auto-advancing.
 
@@ -199,7 +203,7 @@ hook and commands come with it).
 ## 5. The experiments
 
 **The question:** does *making design the goal* — a Guide that hands a capable Worker a design/quality
-objective (feature as constraint), then verifies and iterates — produce better-designed software than a
+objective (feature as constraint), then measures and iterates — produce better-designed software than a
 plain session handed the product goal directly?
 
 ### 5.1 How a pilot is run

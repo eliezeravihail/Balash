@@ -1,6 +1,8 @@
 # Reviewing Worker results
 
-The Guide evaluates claims against the handoff's exit criteria.
+The Guide **measures** the result against the handoff's exit criteria. A review here informs the next
+direction; it is not a gate on the Worker. What the measurement shows feeds the Guide's next-objective
+choice — never a verdict that forces compliance.
 
 ## Review order
 
@@ -36,7 +38,7 @@ For **every** type, interface, guard, wrapper, or abstraction the Worker introdu
 
 - If deleting it damages a real, current ownership — it earns its place. Keep it.
 - If deleting it only costs "it's tidier" / "it's more consistent" / "a future change might want it"
-  — it is ceremony. Send it back to be removed or collapsed.
+  — it is ceremony. Record it as a reading: the next direction is to remove or collapse it.
 
 This is a counter-architecture critique, not a line-count rule. A 25-line class holding four fields
 with no behavior, a `Symbol`-guarded constructor on a single-author page, a two-value enum that is a
@@ -68,13 +70,15 @@ advantage is gone and a stronger executor was the right call. (Observed directly
 built a difficulty type exactly as designed but left its predicate dead and inlined the rule in the
 generator; a strong fidelity review caught and repaired precisely that, at review cost.)
 
-## When to reject a Worker result
+## When the measurement shows the objective not yet reached
 
-Reject or reopen when the Worker:
+These are readings that the objective has not been reached — the Guide takes them as input to the next
+direction (continue toward the objective), not as a verdict against the Worker. The measurement shows the
+objective unmet when the Worker:
 - optimized a proxy metric instead of the stated objective;
 - expanded scope without evidence that expansion was necessary;
 - created abstractions not tied to a current force;
 - changed preserved behavior;
-- claims success without observable verification;
-- violates a principle in `references/design-principles.md` in a way that matters for this
+- claims success without observable evidence;
+- diverges from a principle in `references/design-principles.md` in a way that matters for this
   objective (cite which one and why — these are understanding checks, use them the same way).

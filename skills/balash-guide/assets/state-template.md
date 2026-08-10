@@ -64,7 +64,7 @@ auto
 <!-- Where the loop is parked right now, so any turn (a returning Worker, or a "balash next" / phase
      command from the human) can resume from exactly here. One line, kept current:
      needs-plan | planned:awaiting-build <objective> | awaiting-worker <objective> |
-     executed:awaiting-review <objective> | reviewed:awaiting-decision <verdict> <objective> |
+     executed:awaiting-review <objective> | reviewed:awaiting-decision <objective> |
      ready-to-choose-next | awaiting-human <named open decision> -->
 
 ## Current objective

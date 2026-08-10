@@ -157,7 +157,8 @@ def main() -> int:
         lines.append(
             "Before any code work this turn, reconcile with .balash/state.md and keep this "
             "objective in view even if the request is unrelated; do not let it drop. When a "
-            "Worker reports an objective met, verify the evidence yourself before believing it."
+            "Worker reports an objective met, measure the evidence yourself rather than trusting "
+            "the report — the loop directs and measures, it does not police."
         )
         _emit("\n".join(lines))
     else:

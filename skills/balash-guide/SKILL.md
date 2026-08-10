@@ -1,6 +1,6 @@
 ---
 name: balash-guide
-description: Use whenever building a new software product or materially evolving an existing one — any coding task where architecture, encapsulation, maintainability, or long-term design quality matters (a new feature, a new module or subsystem, a refactor, a second implementation of an existing capability). Makes design the goal rather than a review applied after the fact: grounds product behavior with focused questions instead of guessing, chooses one design/quality objective at a time, delegates implementation to a capable worker subagent framed around the design outcome, verifies evidence before moving on, and keeps the goal in .balash/state.md so it survives side-conversations and context compaction.
+description: Use whenever building a new software product or materially evolving an existing one — any coding task where architecture, encapsulation, maintainability, or long-term design quality matters (a new feature, a new module or subsystem, a refactor, a second implementation of an existing capability). Makes design the goal rather than a review applied after the fact: grounds product behavior with focused questions instead of guessing, chooses one design/quality objective at a time, delegates implementation to a capable worker subagent framed around the design outcome, measures the result before moving on, and keeps the goal in .balash/state.md so it survives side-conversations and context compaction.
 ---
 
 # Balash Guide
@@ -41,6 +41,19 @@ Your objective as Guide is therefore:
 > proceeds.
 
 Do not optimize for feature completion, case count, architectural sophistication for its own sake, or amount of code changed.
+
+### Direct and measure — do not coerce
+
+The method has exactly two moves: **direct** (hand the Worker the right goal — design as the objective)
+and **measure** (observe honestly what came back). It does **not** coerce. There is no enforcement pillar
+here: you do not gate the Worker, force compliance, or make the design good by policing it — a design is
+made good at *construction* time by the goal you set, and a review only *measures* whether that goal was
+reached, feeding the next direction. So "check the Worker's evidence" never means "verify as a gate"; it
+means *measure the outcome yourself instead of trusting a self-report.* And the fact that Balash steers a
+model with prose rather than enforceable mechanism is **the intent, not a limitation** — direction and
+measurement are all the method needs; the only thing that must be robust is that the goal keeps reaching
+the Worker (the state file and hook), because a broken direction channel, not an unenforced rule, is the
+real failure.
 
 ## Sequence goals agile-style: a design goal, then implementation that conforms to it
 
@@ -107,8 +120,8 @@ If no subagent facility exists, produce the same bounded Worker Handoff and exec
 
 You, the Guide, drive the whole loop; nobody relays between you and the Worker. Concretely, for each
 objective you: formulate it → **spawn a Worker subagent** with the handoff → when it returns,
-**verify its evidence yourself** (run the tests, read the code — do not take the Worker's "done" on
-faith) → evaluate met/not → choose the next objective → repeat. You keep iterating like this,
+**measure its evidence yourself** (run the tests, read the code — do not take the Worker's "done" on
+faith) → read met/not from the measurement → choose the next objective → repeat. You keep iterating like this,
 through the design → implement rhythm, until the current objective is genuinely met and then until
 the current product change is fully delivered. This is the agile loop the user described: read
 state, produce an objective, hand it to a senior Worker, check the result, go again — until
@@ -119,13 +132,13 @@ Two things this loop is **not**:
 - **It is not unattended.** You pause for the human at exactly two kinds of moment, and only these:
   an *open product decision* you must not guess (see "No silent product decisions"), and *receiving
   the next product change* (you are fed changes as they arrive, never the product's whole future).
-  Everything between those — objective selection, delegation, verification, evaluation, the
+  Everything between those — objective selection, delegation, measurement, the
   design→implement sequencing — you do autonomously.
 - **It is not a licence to run away.** The guardrails that keep an autonomous loop honest are the
   same ones stated throughout: one objective at a time; never mark an objective met on the Worker's
-  word without verifying the evidence yourself; never silently guess an open product decision; do
+  word without measuring the evidence yourself; never silently guess an open product decision; do
   not pre-plan a roadmap of objectives. A loop that spawns Worker after Worker without your own
-  verification between them has stopped being this skill.
+  measurement between them has stopped being this skill.
 
 Practical note: spawning a Worker subagent requires that you are running where a subagent facility
 exists (typically the top-level agent). If you are yourself running inside a context that cannot
@@ -154,8 +167,8 @@ Re-reading state tells you *where you are*; it does not, by itself, take the nex
 **triggered**, two ways, and you support both:
 
 - **Automatically, when a Worker returns.** A dispatched Worker finishing wakes you; that is the cue
-  to verify its evidence, evaluate the objective, update state, and choose the next objective. This
-  is the loop advancing itself. *(Only in `auto` mode. In `stepped` mode a returning Worker parks at
+  to measure its evidence, read the objective's status, update state, and choose the next objective.
+  This is the loop advancing itself. *(Only in `auto` mode. In `stepped` mode a returning Worker parks at
   `executed:awaiting-review` and waits for the review command — do not auto-advance. See
   `references/modes.md`.)*
 - **Explicitly, when the human says to.** A resume verb — **"balash next"** (or the human simply
@@ -205,9 +218,9 @@ The same loop runs two ways, recorded in the **Mode** field of `.balash/state.md
   inline phase, conforming to the objective `plan` already produced. See `references/modes.md`.
   - **plan** — steps 1–3: choose one objective and draft the handoff; stop *before* delegating.
   - **build** — step 4: delegate to the Worker; stop when it returns, *before* evaluation.
-  - **review** — step 5 + the review panel; stop with reproduced findings, a verdict, and a
-    recommendation. (This same review also runs **standalone** on any diff/branch/PR — see
-    `references/review-panel.md`.)
+  - **review** — step 5 + the review panel; measure the outcome against the objective and stop with
+    reproduced readings and what they imply for the next direction (it reports, it does not gate). This
+    same review also runs **standalone** on any diff/branch/PR — see `references/review-panel.md`.
   - **auto** — switch back to automatic and resume from the current cursor.
 
 The two legitimate human pause points apply in *both* modes; stepped mode only adds the phase stops.
@@ -308,7 +321,7 @@ already pictured, pull back to the quality goal.
 
 The Worker may discover that the objective is based on a false assumption. In that case it should stop expanding the implementation and return the conflicting evidence to the Guide.
 
-### 5. Evaluate evidence
+### 5. Measure the outcome
 
 When the Worker returns, use `references/review.md`, and for work that carries an invariant, cuts
 across the codebase, or is otherwise high-stakes, escalate to the review panel in
