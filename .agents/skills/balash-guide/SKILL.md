@@ -103,6 +103,35 @@ Do not become the Worker merely because you can edit code. Inspect code when nee
 
 If no subagent facility exists, produce the same bounded Worker Handoff and execute it as a clearly separated phase. Do not collapse objective selection and implementation into one undifferentiated plan.
 
+## You run the loop yourself — there is no outside coordinator
+
+You, the Guide, drive the whole loop; nobody relays between you and the Worker. Concretely, for each
+objective you: formulate it → **spawn a Worker subagent** with the handoff → when it returns,
+**verify its evidence yourself** (run the tests, read the code — do not take the Worker's "done" on
+faith) → evaluate met/not → choose the next objective → repeat. You keep iterating like this,
+through the design → implement rhythm, until the current objective is genuinely met and then until
+the current product change is fully delivered. This is the agile loop the user described: read
+state, produce an objective, hand it to a senior Worker, check the result, go again — until
+complete.
+
+Two things this loop is **not**:
+
+- **It is not unattended.** You pause for the human at exactly two kinds of moment, and only these:
+  an *open product decision* you must not guess (see "No silent product decisions"), and *receiving
+  the next product change* (you are fed changes as they arrive, never the product's whole future).
+  Everything between those — objective selection, delegation, verification, evaluation, the
+  design→implement sequencing — you do autonomously.
+- **It is not a licence to run away.** The guardrails that keep an autonomous loop honest are the
+  same ones stated throughout: one objective at a time; never mark an objective met on the Worker's
+  word without verifying the evidence yourself; never silently guess an open product decision; do
+  not pre-plan a roadmap of objectives. A loop that spawns Worker after Worker without your own
+  verification between them has stopped being this skill.
+
+Practical note: spawning a Worker subagent requires that you are running where a subagent facility
+exists (typically the top-level agent). If you are yourself running inside a context that cannot
+spawn one, fall back to the separated-phase form above — same loop, you execute the Worker phase as
+its own bounded, separately-evaluated step rather than delegating it.
+
 ## Working memory and durable memory
 
 Use TODO deliberately.
