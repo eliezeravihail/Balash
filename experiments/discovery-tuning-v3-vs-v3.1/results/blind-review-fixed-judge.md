@@ -145,11 +145,47 @@ allocator ... and Y's provider dispatch ... both invisible to all twelve princip
 
 # FINAL — combining both parts
 
-**Overall: X** — Part B does not simply confirm Part A's pick, it argues against it on the one
-axis Part A had no vocabulary for (P1/P5: Y's rules live on the right object). X wins anyway
-because its design-principle misses are small and local while Y's cluster and compound into one
-concrete, user-reachable defect that also happens to be the storage robustness gap Part A already
-flagged independently.
+**Correction, applied after review.** The judge's first pass let Y's storage-boundary bug (the
+untranslated `KeyError`/`ValueError` leak, Part A2) carry structural weight in the overall pick —
+treating a current defect as evidence about architecture. That bug is local and cheap: Y already
+has the correct pattern (a dedicated error-translation boundary with a stated contract); it simply
+wasn't applied at two call sites, a few-line fix. It should not have decided "which architecture is
+better" any more than one over-long method would. The judge was asked to redo the FINAL section
+only, separating "current defects and their fix cost" from "architecture, judged as if those
+defects were already fixed" — Parts A and B stand unchanged below; only this section changed.
+
+**(a) Current defects, by fix cost.** Local/cheap in both repos: Y's mapping-error leak, its unread
+`version` field, its `[fail]`-in-title execution trigger, its closed provider registry; X's
+decorative provider dispatch (semi-local: needs a lookup + composition-root change, no seam
+change). The one item that is not purely local: X's max-suffix id allocator would reuse ids if a
+future delete requirement arrives — a conditional, not-yet-real risk, not a current fault.
+
+**(b) Architecture, defects aside.** Applying the same fix-cost lens to the Part B misses (which
+the first pass did not do): **X's four hybrid misses are all cheap** — moving the executability
+rule onto `Task` (P1/P5) is a ~10-line move with no signature change; narrowing
+`PrerequisiteRule`'s dependency (P3) is a one-line constructor edit. **Y's cluster is not cheap.**
+`JsonTaskRepository(TaskRepository, AgentRepository, ExecutionRepository)` (one class implementing
+three seam interfaces) is *why* `Backend.open()` returns a fat object the service must
+isinstance-sniff (P3), *why* the seam methods carry `_agent`/`_execution` suffixes, and *why* the
+mapping-error leak in (a) exists at all (three concerns' failure modes funneled through one
+class's error handling). Undoing it means splitting both backends into three classes each,
+introducing a store/bundle concept, and rewriting the composition root — rebuilding what X's
+`Store` already is. Add P6 (X's equivalence suite auto-binds a new backend by iterating `Backend`;
+Y needs a hand-written test class plus a hardcoded-set edit) and X's boundaries are the more
+extensible ones. Y's genuine wins — rule placement in the domain (P1/P5) and `PrerequisiteGraph`
+depending on a bare `Callable` rather than a repository (the best segregation in either repo) —
+remain real, and are also the cheapest things for X to adopt.
+
+**Overall: X**, decided on axis (b) — its boundaries would survive an unknown requirement without
+restructuring, and its own misses are local. Axis (a) is secondary and largely cancels; the only
+non-cheap item on it (X's id allocator) is a conditional risk, not a present fault.
+
+**Direct answer to the question this correction was about:** if Y's mapping-error leak were fixed
+with the few-line change of applying its own existing pattern to the remaining call sites, **the
+pick would not change.** The corrected verdict does not rest on that bug — it rests on the
+merged-three-interfaces-into-one-class decision in Y versus the `Store`/three-narrow-repositories
+decision in X, which the first pass had correctly identified in Part B but then let get outweighed
+by an unrelated, easily-patched defect when forming the overall pick.
 
 **Honest counterweight, stated by the judge:** for a hypothetical fifth requirement about a real
 provider integration, Y's per-agent provider dispatch already exists and X would need to add a

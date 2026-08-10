@@ -51,8 +51,14 @@ found, before the blind judge ever saw the code.
 | Design-principles tally (Correct / Hybrid / Incorrect) | 8 / 4 / 0 | 6 / 5 / 1 |
 | Blind judge's overall pick | X (this one) | — |
 
-The judge's pick for X was decided by a storage-layer robustness gap (Y's JSON backend leaks raw
-`KeyError`/`ValueError` on malformed stored data, contradicting Y's own written error-handling
-contract) — not by anything traceable to the discovery-question difference. See the README of
-`experiments/guide-vs-direct/` and `FINDINGS.md` at the repo root for the fuller synthesis across
-all pilots.
+The judge's first pass let a storage-layer defect in Y (a raw `KeyError`/`ValueError` leak on
+malformed stored data, contradicting Y's own written error-handling contract) carry weight in its
+overall pick — conflating a cheap, local bug with an architecture judgment. Asked to redo the
+verdict separating "current defects, by fix cost" from "architecture, judged as if those defects
+were fixed," the corrected pick is still X, but for a structural reason: Y's one class implementing
+three storage interfaces is *why* the bug, the fat-interface issue, and the method-name smell all
+exist, and undoing it means rebuilding what X's `Store` already is — whereas X's own misses are
+each a cheap, local fix. Fixing Y's leak would not flip the pick. See
+`results/blind-review-fixed-judge.md` for both the original and corrected FINAL sections, and the
+README of `experiments/guide-vs-direct/` plus `FINDINGS.md` at the repo root for the fuller
+synthesis across all pilots.
