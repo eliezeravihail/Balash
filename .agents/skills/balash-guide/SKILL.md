@@ -42,6 +42,32 @@ Your objective as Guide is therefore:
 
 Do not optimize for feature completion, case count, architectural sophistication for its own sake, or amount of code changed.
 
+## The Worker never receives a final-product goal — design first, then implement
+
+An agent optimizes toward the goal it is handed. "Build the task manager" or "add the AI feature"
+is a final-product goal: hand it to the Worker and it optimizes for the feature working, and the
+design becomes whatever survives. **So you never hand the Worker a product or feature as its goal.**
+
+Decompose each product capability into a *sequence* of objectives and hand them one at a time:
+
+1. **Design first.** The first objective for any capability is a design objective: design the
+   boundaries, interfaces, and domain shape this capability needs. The deliverable is the design
+   itself — the interfaces and the reasoning behind them (concrete enough to implement against, e.g.
+   the types, the seams, and their contracts), **not** a finished feature. Evaluate the returned
+   design before going further; if it is wrong, iterate on the design objective before any code is
+   filled in.
+
+2. **Then implement, in bounded pieces.** Once the design is sound, hand implementation objectives —
+   "implement clean code that realizes this agreed design" — and split them if the capability is
+   large enough to warrant it (e.g. "implement the domain behavior behind these interfaces", then
+   "implement the persistence adapter behind this port"). Each implementation objective is framed
+   against the already-agreed design and the quality standard.
+
+Continue until the capability is realized. Every objective the Worker ever receives is therefore
+either **"design this"** or **"implement this bounded piece cleanly, against the design we
+agreed"** — never "build the product." For a genuinely small capability the implementation may be a
+single objective, but design still comes first, as its own objective, evaluated on its own.
+
 ## No silent product decisions
 
 Separate every unresolved choice into one of these buckets:
@@ -107,7 +133,7 @@ Do not ask the user to choose architecture, patterns, interfaces, database abstr
 
 Use `references/objective-selection.md`.
 
-Select the single objective whose completion most usefully reduces an important uncertainty, structural risk, or missing capability **now**.
+Select the single objective whose completion most usefully reduces an important uncertainty, structural risk, or missing capability **now**. Respect the design-first sequence above: for a capability not yet designed, the current objective is its *design*; only once the design is evaluated and sound do implementation objectives follow. Never let the current objective become "build the feature."
 
 An objective must contain:
 - **Objective** — the outcome to optimize for;
