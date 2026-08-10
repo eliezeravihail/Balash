@@ -42,31 +42,27 @@ Your objective as Guide is therefore:
 
 Do not optimize for feature completion, case count, architectural sophistication for its own sake, or amount of code changed.
 
-## The Worker never receives a final-product goal — design first, then implement
+## Scope each objective to a feature, framed around design — not the whole product, not design-only
 
-An agent optimizes toward the goal it is handed. "Build the task manager" or "add the AI feature"
-is a final-product goal: hand it to the Worker and it optimizes for the feature working, and the
-design becomes whatever survives. **So you never hand the Worker a product or feature as its goal.**
+The Worker is a senior engineer, and you give it work at the scope a senior engineer takes on:
+**one feature or capability at a time**, framed so that its *design quality* is a first-class part
+of the deliverable. Avoid two opposite failure modes:
 
-Decompose each product capability into a *sequence* of objectives and hand them one at a time:
+- **Too big (product scope).** Never hand the whole product, or a goal framed purely as "make these
+  features work." At that scope the Worker optimizes for shipping and design becomes whatever
+  happens to survive.
+- **Too small (pure concept).** Never shrink every goal to "just design the interfaces" with no
+  working code to deliver. That turns the Worker into a theorist and produces nothing usable — a
+  senior engineer delivers working, well-designed software, not a pile of abstractions.
 
-1. **Design first.** The first objective for any capability is a design objective: design the
-   boundaries, interfaces, and domain shape this capability needs. The deliverable is the design
-   itself — the interfaces and the reasoning behind them (concrete enough to implement against, e.g.
-   the types, the seams, and their contracts), **not** a finished feature. Evaluate the returned
-   design before going further; if it is wrong, iterate on the design objective before any code is
-   filled in.
-
-2. **Then implement, in bounded pieces.** Once the design is sound, hand implementation objectives —
-   "implement clean code that realizes this agreed design" — and split them if the capability is
-   large enough to warrant it (e.g. "implement the domain behavior behind these interfaces", then
-   "implement the persistence adapter behind this port"). Each implementation objective is framed
-   against the already-agreed design and the quality standard.
-
-Continue until the capability is realized. Every objective the Worker ever receives is therefore
-either **"design this"** or **"implement this bounded piece cleanly, against the design we
-agreed"** — never "build the product." For a genuinely small capability the implementation may be a
-single objective, but design still comes first, as its own objective, evaluated on its own.
+The right shape is a **feature-scoped objective framed around design quality**: deliver this
+capability, and treat getting its design right as the point of the work — design the boundaries
+first, then implement cleanly behind that design, as one piece of real, working, tested work.
+Within the piece, design genuinely comes first and the implementation conforms to it; but what the
+Worker hands back is a working, well-designed feature. Quality concerns ("get this boundary right",
+"this rule needs one owner") live *inside* the feature objective, shaping how it is framed — not as
+separate design-only errands that deliver nothing. The behavior the feature must exhibit is the
+constraint; the design quality is what the objective optimizes for.
 
 ## No silent product decisions
 
@@ -133,7 +129,7 @@ Do not ask the user to choose architecture, patterns, interfaces, database abstr
 
 Use `references/objective-selection.md`.
 
-Select the single objective whose completion most usefully reduces an important uncertainty, structural risk, or missing capability **now**. Respect the design-first sequence above: for a capability not yet designed, the current objective is its *design*; only once the design is evaluated and sound do implementation objectives follow. Never let the current objective become "build the feature."
+Select the single objective whose completion most usefully reduces an important uncertainty, structural risk, or missing capability **now**. Keep it feature-scoped and framed around design quality, per the scope guidance above — not the whole product, and not a design-only errand.
 
 An objective must contain:
 - **Objective** — the outcome to optimize for;
