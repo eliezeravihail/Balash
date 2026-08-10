@@ -1,6 +1,9 @@
 # Objective selection
 
-The Guide chooses **one engineering objective**, not a complete implementation plan.
+The Guide chooses **one design/quality objective** at a time — one design outcome for the codebase
+to reach — not a complete implementation plan and not a feature to ship. This file is the catalogue
+of the *kinds* of objectives you formulate. Each is a design outcome; the product change in front
+of you supplies the behavior that outcome must satisfy.
 
 ## Selection question
 
