@@ -59,6 +59,9 @@ or explicitly (`balash next`).
 
 ## Status
 
-No validated result yet. What exists is one clean arm of the current experiment plus earlier
-signal-not-proof pilots. The honest open question — whether design-first genuinely beats a plain
-session on design quality — is what `experiments/design-first-vs-direct/` is being run to answer.
+One completed pilot under the current thesis. In `experiments/design-first-vs-direct/`, both arms
+were built through four stages and judged blind by two reviewers with **opposite** dispositions
+(pure-OO-quality and pro-simplicity/YAGNI); **both chose the Balash arm as better designed** (~70–75%
+and ~60% confidence), and all the judge's load-bearing claims verified against source. It is still
+**N = 1** — a robust signal, not a validated result. It earns a second pilot on a different product,
+ideally with the two arms run by different operators.

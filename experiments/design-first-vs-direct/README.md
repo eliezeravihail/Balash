@@ -21,13 +21,18 @@ conditions, and — crucially — how the quality judge is scrutinized rather th
 - [`logs/architect-questions.md`](logs/architect-questions.md) — the oracle: the fixed product facts
   and the questions asked of it.
 
-## Status (honest)
+## Status — complete (one pilot)
 
-- Balash arm: through stage 3, self-verified.
-- Direct arm: **not built yet**.
-- Blind judge + judge-scrutiny pass: **not run yet** for this framing.
+- Balash arm (`balash-arm/`): all four stages, self-verified, 110 tests.
+- Direct arm (`direct-arm/`): all four stages, self-verified, 87 tests.
+- Blind judge: run twice with **opposite** dispositions (pure-OO-quality and pro-simplicity/YAGNI).
+- Judge scrutiny: claims verified against source; oracle reconciliation done.
 
-No comparison result exists yet for the design-first framing. The prior, differently-framed pilots
-(`../guide-vs-direct/`) are the only completed comparisons, and their main lesson — the blind judge
-is unreliable without ground truth — is exactly why `CHARTER.md` builds judge-scrutiny into the
-method here.
+**Result (see [`FINDINGS.md`](FINDINGS.md)): both blind judges chose the Balash arm** (Y) as better
+designed — ~70–75% and ~60% confidence — so the verdict is robust to the judge's philosophy. The
+margin is moderate, not a rout; the plain arm (X) is genuinely good and wins on a few axes (a stronger
+status invariant, atomic whole-state writes, two masterclass minimal abstractions). The single most
+decisive, disposition-independent finding: on the cycle requirement the design-first arm wrote *less*
+by reasoning cycles impossible, while the plain arm built dead detection machinery. All seven of the
+judge's load-bearing claims verified against source (`verdicts/claim-verification.md`) — unlike the
+earlier pilots' judge. Still **N = 1**: a signal, not a validated result. Full caveats in `FINDINGS.md`.
