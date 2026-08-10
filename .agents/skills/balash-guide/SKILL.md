@@ -128,7 +128,7 @@ The Worker must receive:
 - explicit non-goals;
 - requested evidence in its return report.
 
-The handoff must distinguish grounded product facts from technical freedoms. It must not contain unverified product assumptions.
+The handoff must distinguish grounded product facts from technical freedoms. It must not contain unverified product assumptions. Point the Worker at `references/design-principles.md` — comprehension-based design questions (grounded in established software-design literature, not code-measurable thresholds) it should check its own work against before returning.
 
 The Worker may discover that the objective is based on a false assumption. In that case it should stop expanding the implementation and return the conflicting evidence to the Guide.
 

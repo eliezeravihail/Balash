@@ -28,4 +28,6 @@ Reject or reopen when the Worker:
 - expanded scope without evidence that expansion was necessary;
 - created abstractions not tied to a current force;
 - changed preserved behavior;
-- claims success without observable verification.
+- claims success without observable verification;
+- violates a principle in `references/design-principles.md` in a way that matters for this
+  objective (cite which one and why — these are understanding checks, use them the same way).

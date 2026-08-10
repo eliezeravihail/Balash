@@ -32,8 +32,12 @@ WORKING METHOD
 1. Inspect the relevant code/evidence.
 2. Create and maintain your own execution TODO.
 3. Choose the smallest implementation that can meet the objective.
-4. Run relevant verification.
-5. Do not hide newly discovered risks; report them.
+4. Before returning, check your own design against references/design-principles.md — these are
+   comprehension questions (is there a real interface here, or a costume; is this object told
+   what to do or asked for its guts; does one place own this rule), not a line-count or
+   diagnostic-tool check.
+5. Run relevant verification.
+6. Do not hide newly discovered risks; report them.
 
 RETURN TO GUIDE
 - Result: met | partially_met | invalidated | blocked

@@ -1,0 +1,155 @@
+# Design principles
+
+These are comprehension checks, not code metrics. None of them is computed from a line count,
+a parameter count, or a diagnostic tool. Each is a question a reader answers by understanding
+what the code means and does — the same way a human reviewer would, grounded in established
+software-design literature rather than invented for this project.
+
+Apply every principle in both directions when building AND when reviewing:
+- **Building (Worker):** before delegating or returning work, check the current objective's design
+  against these questions.
+- **Reviewing (Judge):** for each principle, state per repository whether it holds, cite the
+  specific code, and rule out the case that only looks like it holds.
+
+## 1. Tell, Don't Ask / the Law of Demeter
+
+**The question:** Does calling code *tell* an object what to do and let it decide how, or does the
+caller *ask* the object for its internal data and then make the decision itself, outside the
+object?
+
+An object that hands out its raw internal state so callers can inspect it and decide what to do
+next has effectively moved its own logic outside itself. The Law of Demeter sharpens this: code
+should only talk to its immediate collaborators, not reach through one object to manipulate
+another it only knows about indirectly (`a.getB().getC().doSomething()` is the classic violation
+shape).
+
+**Not the test:** whether Python *can* technically reach in and mutate a field — it always can.
+The test is whether there is a small, meaningful public interface that real callers actually use
+instead of reaching past it, and whether that interface exposes decisions ("assign this task") or
+just data ("give me the fields so I can decide").
+
+## 2. Program to an interface, not an implementation — and ask whether the interface is *generic*
+
+**The question:** If this type has an abstraction/interface, does that interface express behavior
+that would make sense for more than one genuinely different implementation — or does it just
+rename one concrete thing's methods with an `I`-prefix or an ABC that has exactly one real
+implementation and no reason to expect a second?
+
+The distinguishing example: `Animal.make_sound()` is a real abstraction — many different animals
+implement it differently, and calling code that only knows "this is an Animal" is meaningfully
+decoupled from which one. `ICat` with a `meow()` method is not an abstraction at all — it's the
+concrete thing wearing a costume; nothing is gained, and the interface leaks the concrete
+implementation's specific behavior right through its name.
+
+**How to tell them apart:** ask what a second, legitimately different implementation would need to
+look like. If you can't describe one that isn't a trivial variation, the "interface" is decorative.
+
+## 3. Interface Segregation
+
+**The question:** Does anything that depends on this interface actually use everything on it, or
+is it forced to depend on methods it has no use for because they were bundled in?
+
+A fat, bundled interface makes every consumer couple to methods it never calls, and makes every
+future change to any one of those methods a risk to every consumer, not just the ones that use it.
+
+## 4. Primitive obsession
+
+**The question:** Does a concept that has its own meaning, validation, and identity (an id, a
+status, a name with rules about what makes it valid) get its own small type — or is it a bare
+string/int passed around and re-validated ad hoc everywhere it appears?
+
+A raw string standing in for something with real rules (a member id, a provider name) forces every
+caller to remember the rules and re-implement the validation, and gives the compiler/reader no
+help noticing when the wrong kind of string was passed where another kind belonged.
+
+## 5. Anemic domain model
+
+**The question:** Do the objects that represent the product's core concepts (a task, an agent)
+carry real behavior and enforce their own rules — or are they just data bags, with all the actual
+logic living in separate "service"/"manager" functions that pull the data out and decide
+everything externally?
+
+A model with data but no behavior is not really object-oriented design; it is procedural code
+wearing class syntax. The test: could you describe what this type *does*, not just what fields it
+holds?
+
+## 6. High cohesion, low coupling — Feature Envy and Shotgun Surgery
+
+**The question, feature envy:** Does a piece of code use another module's data/behavior more than
+its own module's? If a method spends most of its body reaching into a different object's internals
+to do its work, that logic probably belongs on the other object.
+
+**The question, shotgun surgery:** Does a single product-level change require touching many
+unrelated files/classes to be complete — a sign that responsibility for one concept is scattered
+rather than owned in one cohesive place?
+
+Both are read from the same underlying question: does "things that change together" actually live
+together, and does "things that don't" actually live apart?
+
+## 7. Leaky abstractions are normal — the question is *which* details leak
+
+**The question:** Every abstraction leaks some detail eventually (Spolsky's law) — the standard is
+not "does this leak nothing," which is impossible, but "does what leaks through match what a
+caller legitimately needs to know?"
+
+A storage interface that lets a caller learn "a write can fail" is a reasonable, necessary leak.
+One that forces a caller to know the on-disk field names to use the interface correctly is not —
+that's not a necessary leak, it's a missing abstraction.
+
+## 8. Single Responsibility, and the God Object smell
+
+**The question:** Can you state, in one sentence, the one reason this class/module would need to
+change? If a second, unrelated reason exists ("this class changes if the storage format changes,
+*and* if the CLI's argument format changes, *and* if a validation rule changes"), that's two
+responsibilities pretending to be one class.
+
+## 9. Where is a stated rule actually enforced?
+
+**The question:** For a rule the product declares must always hold, is there one place every real
+path capable of breaking it must pass through — and do all real paths actually route through it,
+or does at least one take a shortcut to the same effect (e.g. writing directly to storage instead
+of going through the guarded method)?
+
+This is not about whether Python can technically be tricked into bypassing it (it always can, in
+any dynamic language) — it's about whether the *intended, documented, actually-used* paths funnel
+through one place, so a reader auditing "is this rule safe" only has one place to check.
+
+## 10. Duplication is not automatically wrong — the wrong abstraction is worse
+
+**The question, per Sandi Metz:** "duplication is far cheaper than the wrong abstraction." Before
+flagging two similar-looking pieces of code as a DRY violation, ask: are these actually the same
+concept that must change together, or two independent things that merely look alike today and
+would be harder to change independently if forced to share code?
+
+Only flag duplication when unifying it would remove a real, current coupling — not merely because
+two blocks of code resemble each other.
+
+## 11. Naming and failure should not surprise a reasonable reader
+
+**The question:** Does a name accurately describe what the thing does (including any side effect a
+reader would care about), and does an error message tell a reasonable reader what happened and
+what to do about it, in terms of the concept they're using — not an internal variable name or a
+raw exception they were never meant to see?
+
+## 12. Size as a forcing question, not a verdict
+
+**The question, per Sandi Metz's own framing (including her explicit "Rule 0" — any rule can be
+broken with a stated reason):** when a method, class, or parameter list grows large, the question
+is not "is it over some line count" but "can you explain, in one sentence, why this much
+complexity belongs together here" — and if you can't, that's the actual smell, independent of any
+specific number.
+
+---
+
+### Sources these principles are drawn from (for context, not to be cited verbatim in a review)
+
+- Tell, Don't Ask; Law of Demeter — object-oriented design literature (Pragmatic Programmer;
+  https://sauln.github.io/blog/law-of-demeter/, https://en.wikipedia.org/wiki/Law_of_Demeter)
+- "Program to an interface, not an implementation" — Gang of Four, *Design Patterns*
+- Interface Segregation Principle — Robert C. Martin, SOLID
+- Primitive Obsession, Anemic Domain Model — Martin Fowler, *Refactoring*;
+  https://martinfowler.com/bliki/AnemicDomainModel.html
+- Feature Envy, Shotgun Surgery — Fowler, *Refactoring* catalog of code smells
+- Law of Leaky Abstractions — Joel Spolsky, https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/
+- Single Responsibility Principle — Robert C. Martin, SOLID
+- Sandi Metz's rules (including Rule 0) — *Practical Object-Oriented Design*, https://sandimetz.com/
