@@ -64,6 +64,17 @@ RETURN TO GUIDE
 - New facts or risks discovered.
 ```
 
+## Implementation objectives: track fidelity to the design with a TODO list
+
+When the objective is an *implementation* that must conform to a design already agreed and evaluated
+(the design → implement rhythm), the handoff carries the binding design decisions and the required
+evidence explicitly. Tell the Worker to turn those into a checklist and work against it: **maintain
+a TODO list with one item per binding design decision and one per required test/evidence item, and
+check each off before returning.** For a task whose whole point is fidelity to a prior design,
+tracking each decision beats hoping none was dropped — a single quietly-skipped decision is exactly
+how an implementation drifts from a sound design into something else. (A pure design objective does
+not need this; a large or fidelity-bound implementation does.)
+
 ## Context discipline
 
 Do not pass the entire project transcript. The Worker should get the objective and the evidence it needs. It can inspect repository files as needed.
