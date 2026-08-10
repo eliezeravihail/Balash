@@ -62,8 +62,12 @@ or explicitly (`balash next`).
 **[`experiments/RESULTS.md`](experiments/RESULTS.md) is the clear at-a-glance summary of all pilots.**
 
 Three completed pilots under the current thesis, on three different domains (including one with the
-executing Worker on **Sonnet**) — and all point the same way: **six blind reviews across opposite
-dispositions, six-for-six for the Balash arm.** The completed pilots:
+executing Worker on **Sonnet**) — and all point the same way. In each, two reviewers with opposite
+dispositions chose the Balash arm; read that as **three experimental units with robustness-checked
+verdicts, not six independent wins.** The strongest evidence is the *sequence*: Balash needed *less*
+mechanism (pilot #1), *more* guarantee (pilot #2), and gave a shared guarantee a *better owner*
+(pilot #3) — three faces of "when design is the goal, the agent asks where a truth should live, not
+just how to pass the feature." The completed pilots:
 
 - [`experiments/design-first-vs-direct/`](experiments/design-first-vs-direct) — pilot #1, a Python task
   CLI evolved through four stages.

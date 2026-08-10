@@ -19,9 +19,27 @@ disposition (pro-simplicity/YAGNI) re-judges to test whether the verdict is an a
 | **#2** | Printable bingo-card generator (static web) | strong default | Balash ~8/10 | Balash ~65% | **Balash** | all ✓ |
 | **#3** | Printable Sudoku generator (static web) | **Sonnet (Worker)** | Balash ~80% | Balash ~70% | **Balash** | all ✓ |
 
-In every pilot, **both reviewers — with opposite dispositions — chose the Balash arm. Six blind reviews,
-three domains, two executor tiers: six-for-six.** The verdict is robust to the judge's philosophy (the
-failure mode we most worried about).
+In every pilot, both reviewers — with opposite dispositions — chose the Balash arm. Read that as **three
+experimental units, each with its verdict robustness-checked**, not as six independent wins: the two
+judges in a pilot read the *same* two codebases, so they test whether the verdict is a taste artifact
+(the failure mode we most worried about), not whether the effect replicates. Replication is the count of
+*pilots* — three, on three domains — and the honest strength of the evidence is less the tally than the
+**sequence** below.
+
+### The strongest evidence is the sequence, not the tally
+
+The same idea shows up three different ways — which is harder to explain by chance than a raw win count:
+
+- **Pilot #1 — needed *less* mechanism.** The plain arm built a cycle-detector; Balash reasoned cycles
+  were impossible and enforced one existence rule. (Balash *removed* machinery.)
+- **Pilot #2 — needed *more* guarantee.** The plain arm let batch cards silently collide; Balash made
+  distinctness an enforced guarantee. (Balash *added* a guarantee.)
+- **Pilot #3 — same guarantee, *better owner*.** Both arms enforced the one-solution invariant; Balash
+  made it true *by construction* (`Puzzle.tryCreate`) where the plain arm held it by convention.
+
+Three manifestations of one thing: **when design is the goal, the agent spends cognition on "where should
+this truth live?" instead of only "how do I make the feature pass?"** That is the result worth taking
+seriously.
 
 ## The decisive finding is the same shape each time
 
@@ -38,10 +56,19 @@ explicitly asked the Worker to reason about:
   made within-batch distinctness a first-class enforced guarantee (reject-and-redraw on a card
   fingerprint) and honestly reports when the word pool is too shallow.
 
-Consistent secondary pattern: **Balash over-builds at the edges** (pilot #1: a boolean-as-enum, a
-four-way JSON split; pilot #2: triplicated construction-token guards, a dead method). It is sound at
-the center, ceremony at the seams — and both judges dock it for that. The plain arm is genuinely good
-and wins the readability/size axis.
+Consistent secondary pattern, and it is a real defect in the method, not noise: **Balash over-builds at
+the edges in all three pilots** (pilot #1: a boolean-as-enum, a four-way JSON split; pilot #2: triplicated
+construction-token guards, a dead method; pilot #3: a data-only `PuzzleBatch` class, an over-built
+`Difficulty` API, a dead `isSatisfiedBy`). Sound at the center, ceremony at the seams — both judges dock
+it every time, and the plain arm wins the readability/size axis. This replicated failure is why the skill
+now carries a mandatory **subtractive pass** (`references/review.md`): for every abstraction, name the
+present product force that requires it, and delete the ones whose removal wouldn't damage a current
+rule/invariant/boundary.
+
+**Design quality is not product quality.** Pilot #3 made this sharp: the plain arm shipped a genuinely
+better *product* (technique-based difficulty) while losing on *design*. Future pilots should carry **two
+separate verdicts — a product-outcome verdict and a design-outcome verdict — never merged into one
+score.** Winning design while losing product is a possible and important outcome.
 
 ## Why the method plausibly causes it
 
@@ -52,12 +79,29 @@ surfaces the judgment the feature framing lets evaporate.
 
 ## What the pilots do NOT establish (honest limits)
 
-- **Small N, one operator.** The same person ran both arms in every pilot. Operator bias is
-  uncontrolled; the strongest next step is independent operators per arm.
-- **Part of the win is the Guide's handoff** asking the right design question — that *is* the method,
-  but it means the result reflects the objective's quality, not the Worker alone.
-- **Balash is not strictly better** — it over-builds at the seams and loses on readability/size.
+- **Same operator ran both arms — now the primary threat.** One person ran Balash *and* the plain arm in
+  every pilot. Until arms are run by isolated operators, this is the biggest hole in the evidence.
+- **Only pilot #1 was an evolving product.** Bingo and Sudoku are essentially one-shot builds. So the
+  pilots support "design-first improves the *initial* design"; they barely touch Balash's bigger claim,
+  "design-first *preserves* quality as the product changes over hidden stages" — that has one data point.
+- **Part of the win is the Guide's handoff** naming the hard decision (e.g. "what do you guarantee?").
+  That *is* the method, but the pilot #2 win is therefore not "product info held constant, pure better
+  design" — it is partly Balash surfacing a latent guarantee. Real value, arguably larger, but a
+  different claim than "discovery was neutralized."
+- **Balash is not strictly better** — it over-builds at the seams (3/3) and loses on readability/size,
+  and can lose on product quality (pilot #3) while winning design.
+- **The Sonnet result is narrow.** It shows `strong-Guide + Sonnet-Worker > plain-Sonnet`. It does *not*
+  show that beats "run a strong model on the whole task"; that needs a `strong-direct` vs
+  `strong-Guide + cheap-Worker (+ strong review)` comparison on both cost *and* the two verdicts.
 - **The judges are LLMs**, trusted only because their specific claims were source-verified each time.
+
+### The highest-value next experiment
+
+Stop producing more same-type one-shot pilots. The next one worth running is a single, stronger study:
+**isolated operators per arm; a new product; several hidden changes over time** (to test quality *under
+evolution*, Balash's real claim); a **product verdict kept separate from the design verdict**; and an
+**explicit check of the edge-over-engineering** that recurred 3/3. If Balash still wins there, the claim
+becomes materially more serious.
 
 ## Pilot #3 — a weaker executor (Sonnet) still clears the bar
 

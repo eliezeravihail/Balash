@@ -33,15 +33,25 @@ narrower, more design-purist win than before.
 difficulty rater (Easy = provably solvable by singles, no guessing) as genuinely better than Y's
 admittedly-"approximate" given-count bands. On *product*, X arguably leads; on *design*, Y leads.
 
-**The Sonnet executor left a real, verified fidelity slip.** Judge B caught — and source-verification
-confirmed — that Y's `Difficulty.isSatisfiedBy` is **dead in production**: the design specified the
-generator would "ask Difficulty to judge," the Sonnet Worker built the method, but then wired the
-generator to compare `difficulty.min/max` inline and left `isSatisfiedBy` used only by tests, with a doc
-comment that overstates reality. A stronger executor might have routed it through. This is honest
-evidence about the cost of a weaker executor: the design was sound, the conformance was ~95%, and the 5%
-gap is exactly the kind of thing to expect from a weaker implementer. It did not sink the design, but it
-is a real ding, and both judges also flagged Y's other edge-ceremony (a data-only `PuzzleBatch` class,
-an over-built `Difficulty` API, an immutable `Grid.withCell` copying 81 cells in the solver's hot path).
+**The Sonnet executor left one verified design-conformance failure.** Judge B caught — and
+source-verification confirmed — that Y's `Difficulty.isSatisfiedBy` is **dead in production**: the design
+specified the generator would "ask Difficulty to judge," the Sonnet Worker built the method, but then
+wired the generator to compare `difficulty.min/max` inline and left `isSatisfiedBy` used only by tests,
+with a doc comment that overstates reality. That is the honest statement — *one verified conformance
+failure*, not a "~95% conformance / 5% gap" (there is no measurement that produced such a number, and
+inventing quality percentages is exactly what this project exists to avoid). It did not sink the design,
+and both judges also flagged Y's other edge-ceremony (a data-only `PuzzleBatch` class, an over-built
+`Difficulty` API, an immutable `Grid.withCell` copying 81 cells in the solver's hot path).
+
+**Follow-up — the "cheap Worker + strong review" policy caught and fixed it.** A separate strong-model
+design-fidelity review was then run over this same Sonnet arm (see
+[`../../skills/balash-guide/references/review.md`](../../skills/balash-guide/references/review.md),
+"Mixed-tier execution"). It found *exactly* this one gap and no invented others, routed the generator
+through `difficulty.isSatisfiedBy` so the ownership the design claimed became real, added a regression
+test (16 pass, was 15), and confirmed the one-solution invariant and the seams were untouched. So the
+conformance failure a cheaper executor introduced was repairable at *review* cost — direct evidence for
+the policy, though a single case, not a validated cost model. (The judged arm in this folder is kept as
+the pre-review artifact; the fix lives in the working copy.)
 
 ## Cross-pilot synthesis (now N = 3, three domains, two executor tiers)
 

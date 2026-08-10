@@ -86,3 +86,9 @@ implementation details — and, more than details, the *design*: which modules, 
 interfaces exist and how they relate — inside the handoff, unless a durable project decision
 constrains them. Choreographing the design defeats the purpose; the Worker's design judgment is
 exactly what the quality goal is meant to elicit.
+
+Before returning, tell the Worker to run the **subtractive pass** on its own design (see
+`references/review.md`): for every type, guard, wrapper, or abstraction it introduced, ask what
+present product force requires it — and remove the ones whose deletion would not damage the ownership
+of a current rule, invariant, or boundary. A design objective reliably over-produces machinery at the
+seams; catching it before the handoff comes back is cheaper than catching it in review.

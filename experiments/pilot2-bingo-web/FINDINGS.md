@@ -51,6 +51,15 @@ identical; stop at the max producible; report truncation — never pad, never lo
 implementation conformed. The plain session, handed the feature, produced cards by sub-seed and moved
 on. **Making the design the goal surfaced a guarantee the feature framing let evaporate.**
 
+*Framing caveat (added on review):* this makes pilot #2 a weaker example of "product info held
+constant, so the win is pure process" than first stated. Product *facts* were held constant (both arms
+knew it was a batch for a group), but the Balash handoff explicitly asked "what uniqueness do you
+guarantee?" and the plain arm was never asked. So part of the win is the Guide *posing that design
+question* — design-level discovery, not "same information, better design." That is arguably a *more*
+valuable capability of the method, but it is a different claim; do not read pilot #2 as discovery being
+fully neutralized. Pilot #3 (both arms independently confronted the hard invariant) is the cleaner test
+of "same understanding, better structural owner."
+
 ## Honest counter-evidence (Balash over-built at the edges — again)
 
 Both judges docked X for real over-engineering, verified in source: the **triplicated `Symbol`
