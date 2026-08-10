@@ -44,6 +44,17 @@ implementation's specific behavior right through its name.
 **How to tell them apart:** ask what a second, legitimately different implementation would need to
 look like. If you can't describe one that isn't a trivial variation, the "interface" is decorative.
 
+**A worked example.** `ObjectDetectionModel.detect(image) -> list[DetectedObject]` is a real
+abstraction: YOLO, DETR, and a hosted cloud API all satisfy it identically. Returning the concrete
+`YOLOv26`, or the vendor's `ultralytics ...Results` object, is not — it forces every consumer to know
+*which* implementation you chose (an **identity leak**) or the vendor's output schema (a **format
+leak**). The fix is a domain type — `DetectedObject{box, label, score}` — defined by *what the
+consumer needs*, not the vendor's fields renamed. That last point is the `ICat` trap again: if a DETR
+backend can't fill the same `DetectedObject` without contortion, the type only mirrors one vendor and
+is decorative. **Operational test — would the type in your public signature survive you swapping your
+implementation?** `np.ndarray` survives a Keras→PyTorch swap; `keras.Model` does not — so a
+`keras.Model` in a public signature *is* your implementation leaking through the interface.
+
 ## 3. Interface Segregation
 
 **The question:** Does anything that depends on this interface actually use everything on it, or
@@ -95,6 +106,29 @@ caller legitimately needs to know?"
 A storage interface that lets a caller learn "a write can fail" is a reasonable, necessary leak.
 One that forces a caller to know the on-disk field names to use the interface correctly is not —
 that's not a necessary leak, it's a missing abstraction.
+
+**Which types may cross a public boundary — decide it at day zero, normatively.** The load-bearing
+special case of "which details leak" is the *vocabulary a public seam is allowed to speak*. The
+permitted set is exactly two things: (1) generic interface types and your own domain types, and (2) a
+small, **closed set of foundational, cross-infrastructure dependencies agreed in advance** (e.g.
+`numpy`, `cv2`). Nothing else — in particular, never a concrete type from a dependency you chose as an
+*implementation detail* (`keras.Model`, `tf.data.Dataset`, a vendor's result object), neither accepted
+as a parameter (that forces the caller to know it) nor returned as output (that forces the consumer to
+know it).
+
+Decide that permitted set **normatively and up front — not empirically.** "Pass whatever the other
+side already depends on" is the wrong, dangerous test: you do not know what a given consumer depends
+on, cannot inspect it, and "surely everyone depends on X" is precisely the rationalization that lets
+an implementation type leak. The permitted foundation is a *day-zero design decision* — a small,
+published, shared vocabulary you commit to — and "the consumer also depends on it" is then a
+*consequence* of that decision, not an assumption about the consumer. (This is a shared-kernel /
+published-language choice. It is **not** the Stable-Dependencies Principle, which is about the
+*direction of dependency between components*, not the payload types allowed at a seam.)
+
+Balance this against primitive obsession (§4): the answer to "don't leak your impl type" is *your own
+domain type*, not a retreat to bare strings, tuples, and dicts. `list[DetectedObject]` beats both the
+vendor's `Results` (leaks the implementation) and `list[tuple[float, ...]]` (primitive obsession).
+"Minimal dependency" means *a small agreed foundation*, not "only primitives."
 
 ## 8. Single Responsibility, and the God Object smell
 
@@ -153,3 +187,5 @@ specific number.
 - Law of Leaky Abstractions — Joel Spolsky, https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/
 - Single Responsibility Principle — Robert C. Martin, SOLID
 - Sandi Metz's rules (including Rule 0) — *Practical Object-Oriented Design*, https://sandimetz.com/
+- Shared Kernel / Published Language (the day-zero agreed vocabulary a boundary may speak) — Eric
+  Evans, *Domain-Driven Design*
