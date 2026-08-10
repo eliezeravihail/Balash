@@ -51,14 +51,25 @@ found, before the blind judge ever saw the code.
 | Design-principles tally (Correct / Hybrid / Incorrect) | 8 / 4 / 0 | 6 / 5 / 1 |
 | Blind judge's overall pick | X (this one) | — |
 
-The judge's first pass let a storage-layer defect in Y (a raw `KeyError`/`ValueError` leak on
-malformed stored data, contradicting Y's own written error-handling contract) carry weight in its
-overall pick — conflating a cheap, local bug with an architecture judgment. Asked to redo the
-verdict separating "current defects, by fix cost" from "architecture, judged as if those defects
-were fixed," the corrected pick is still X, but for a structural reason: Y's one class implementing
-three storage interfaces is *why* the bug, the fat-interface issue, and the method-name smell all
-exist, and undoing it means rebuilding what X's `Store` already is — whereas X's own misses are
-each a cheap, local fix. Fixing Y's leak would not flip the pick. See
-`results/blind-review-fixed-judge.md` for both the original and corrected FINAL sections, and the
-README of `experiments/guide-vs-direct/` plus `FINDINGS.md` at the repo root for the fuller
-synthesis across all pilots.
+The judge went through two corrections before landing:
+
+1. **First pass** let a storage-layer defect in Y (a raw `KeyError`/`ValueError` leak on malformed
+   stored data, contradicting Y's own written error-handling contract) carry weight in its overall
+   pick — conflating a bug with an architecture judgment.
+2. **Second pass**, asked to separate "current defects, by fix cost" from "architecture, judged as
+   if those defects were fixed," called the leak a "local, few-line fix" and picked X on structural
+   grounds instead — Y's one class implementing three storage interfaces is *why* the bug, the
+   fat-interface issue, and the method-name smell all exist, and undoing it means rebuilding what
+   X's `Store` already is.
+3. **That "few-line fix" claim was itself unverified** — checked directly against the source: Y's
+   `JsonTaskRepository` has no centralized decode point at all (five independent call sites each
+   invoke a mapper function with zero exception handling); X funnels all three of its equivalents
+   through one `_decode`. Fixing Y properly means introducing that same centralizing pattern, not
+   patching two lines. The bug and the architecture pick were never actually separable — the bug
+   *is* what the merged-interfaces decision looks like from outside.
+
+Net effect: the pick stays X throughout, but the *reasoning* moved from "one bug" → "architecture,
+bug aside" → "the bug is the architecture, and neither correction should have been taken at its
+word without checking the source." See `results/blind-review-fixed-judge.md` for all three states
+of the FINAL section, and the README of `experiments/guide-vs-direct/` plus `FINDINGS.md` at the
+repo root for the fuller synthesis across all pilots.

@@ -154,11 +154,24 @@ better" any more than one over-long method would. The judge was asked to redo th
 only, separating "current defects and their fix cost" from "architecture, judged as if those
 defects were already fixed" — Parts A and B stand unchanged below; only this section changed.
 
-**(a) Current defects, by fix cost.** Local/cheap in both repos: Y's mapping-error leak, its unread
-`version` field, its `[fail]`-in-title execution trigger, its closed provider registry; X's
-decorative provider dispatch (semi-local: needs a lookup + composition-root change, no seam
-change). The one item that is not purely local: X's max-suffix id allocator would reuse ids if a
-future delete requirement arrives — a conditional, not-yet-real risk, not a current fault.
+**(a) Current defects, by fix cost — corrected after direct inspection.** The judge's "local, a
+few lines" claim about Y's mapping-error leak does not hold up against the actual source.
+`JsonTaskRepository` has **no centralized decode point at all**: `get`, `list_all` (tasks），
+`get_agent`, `list_agents`, `list_executions`, and `_record_to_assignment` are five independent
+call sites, each invoking a `_record_to_*` mapper directly with zero exception handling anywhere
+(`taskapp/storage/json_repository.py:70-118`). By contrast X funnels all three of its `list_all`
+methods through one `self._decode(section, mapper)` (`taskcli/json_repository.py:110-169`) —
+verified directly, three call sites, one implementation. Properly fixing Y therefore means either
+five duplicated try/excepts (itself the duplicated-error-checking smell) or introducing a
+centralized decode function and routing all five paths through it — i.e. adopting the structural
+pattern X already has, not patching two lines. This is not a cosmetic defect independent of
+architecture; it is a direct, visible symptom of the same merged-responsibility decision Part B
+already flagged (P3/P8) — the "fix cost: local" framing in the first correction was itself an
+unverified assumption, not a claim checked against the code. Other items remain genuinely local:
+Y's unread `version` field, its `[fail]`-in-title trigger, its closed provider registry; X's
+decorative provider dispatch (semi-local: a lookup + composition-root change, no seam change). The
+one non-local item on X's side: its max-suffix id allocator would reuse ids if a future delete
+requirement arrives — a conditional, not-yet-real risk, not a current fault.
 
 **(b) Architecture, defects aside.** Applying the same fix-cost lens to the Part B misses (which
 the first pass did not do): **X's four hybrid misses are all cheap** — moving the executability
@@ -180,12 +193,14 @@ remain real, and are also the cheapest things for X to adopt.
 restructuring, and its own misses are local. Axis (a) is secondary and largely cancels; the only
 non-cheap item on it (X's id allocator) is a conditional risk, not a present fault.
 
-**Direct answer to the question this correction was about:** if Y's mapping-error leak were fixed
-with the few-line change of applying its own existing pattern to the remaining call sites, **the
-pick would not change.** The corrected verdict does not rest on that bug — it rests on the
-merged-three-interfaces-into-one-class decision in Y versus the `Store`/three-narrow-repositories
-decision in X, which the first pass had correctly identified in Part B but then let get outweighed
-by an unrelated, easily-patched defect when forming the overall pick.
+**Direct answer, corrected again after inspecting the actual code:** the premise "fixed with a
+few-line change" was false — Y has no centralized decode point to extend; fixing it properly means
+building one, which is adopting X's own pattern. So the honest answer is not "the bug is
+irrelevant to architecture" but the reverse: **the bug is not a separate, incidental fact — it is
+architecture, observed.** It is what "one class implementing three storage interfaces with no
+shared error-translation point" looks like from the outside. The pick was always resting on that
+structural decision; the earlier claim that the two were separable understated how directly the
+defect and the design are the same thing.
 
 **Honest counterweight, stated by the judge:** for a hypothetical fifth requirement about a real
 provider integration, Y's per-agent provider dispatch already exists and X would need to add a

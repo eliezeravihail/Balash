@@ -134,6 +134,15 @@ reading and manual CLI probing, not by any of the twelve principles. See
 `experiments/discovery-tuning-v3-vs-v3.1/README.md` for the full result, including the discovery-
 budget tuning (v3 vs v3.1) this same pilot tested simultaneously.
 
+That same pilot's blind judge also re-demonstrated Section 2's lesson, one level up. Its corrected
+FINAL verdict called a defect fix "local, a few lines" without checking the source; the repository
+it was defending actually had no centralized error-translation point at all, so a proper fix meant
+adopting the *other* repository's structural pattern, not patching two lines. The claim was only
+caught by reading the actual call sites, not by asking the judge to reconsider again. A judge's
+self-correction is not automatically more reliable than its first answer — every factual claim it
+makes, including claims about fix cost or complexity, needs the same independent verification as
+its claims about behavior.
+
 ## Open items for the next iteration
 
 1. ~~Tune `references/discovery.md` with a soft budget, a stop-rule, and a provisional-default
