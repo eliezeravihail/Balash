@@ -17,10 +17,11 @@ disposition (pro-simplicity/YAGNI) re-judges to test whether the verdict is an a
 |---|---|---|---|---|---|---|
 | **#1** | Task-manager CLI, 4 evolving stages (Python) | strong default | Balash ~70–75% | Balash ~60% | **Balash** | all ✓ |
 | **#2** | Printable bingo-card generator (static web) | strong default | Balash ~8/10 | Balash ~65% | **Balash** | all ✓ |
-| **#3** | Printable Sudoku generator (static web) | **Sonnet (Worker)** | _running_ | _running_ | _running_ | — |
+| **#3** | Printable Sudoku generator (static web) | **Sonnet (Worker)** | Balash ~80% | Balash ~70% | **Balash** | all ✓ |
 
-In every completed pilot, **both reviewers — with opposite dispositions — chose the Balash arm.** The
-verdict is robust to the judge's philosophy (the failure mode we most worried about).
+In every pilot, **both reviewers — with opposite dispositions — chose the Balash arm. Six blind reviews,
+three domains, two executor tiers: six-for-six.** The verdict is robust to the judge's philosophy (the
+failure mode we most worried about).
 
 ## The decisive finding is the same shape each time
 
@@ -58,13 +59,20 @@ surfaces the judgment the feature framing lets evaporate.
 - **Balash is not strictly better** — it over-builds at the seams and loses on readability/size.
 - **The judges are LLMs**, trusted only because their specific claims were source-verified each time.
 
-## Pilot #3 in progress — does a weaker executor still clear the bar?
+## Pilot #3 — a weaker executor (Sonnet) still clears the bar
 
-Pilot #3 repeats the method on a Sudoku generator, but the **executing Worker runs on Sonnet** while the
-Guide (design direction) stays strong. It tests the standing hypothesis that Balash's value is letting a
-strong director carry a weaker implementer: if a strong *design objective* is what matters, a Sonnet
-Worker conforming to it should still produce good design — and still beat a plain Sonnet session. Result
-will be added here.
+Pilot #3 repeated the method on a Sudoku generator with the **executing Worker on Sonnet** (Guide stayed
+strong). **Both judges still chose Balash** (~80% / ~70%): the strong design objective carried the weaker
+implementer — Sonnet built the hard invariant *by construction* (`Puzzle.tryCreate`, so a puzzle cannot
+exist unless it has exactly one solution), the load-bearing evidence that a strong director carries a
+weaker executor.
+
+Honest caveats, and they matter: this was the **closest** pilot. Because uniqueness is *intrinsic* to
+Sudoku, the plain Sonnet arm did not miss it (it enforced it too, by convention rather than construction),
+so the win narrowed to *ownership quality*. The plain arm also shipped a **better product feature** (a
+technique-based difficulty rater vs Balash's approximate given-count bands). And the Sonnet executor left a
+**verified fidelity slip** — a dead `Difficulty.isSatisfiedBy` with a doc comment that overstates it — the
+kind of ~5% conformance gap a weaker executor introduces. Bottom line: **good enough, with caveats.**
 
 Per-pilot detail: [`design-first-vs-direct/`](design-first-vs-direct) (#1),
-[`pilot2-bingo-web/`](pilot2-bingo-web) (#2), `pilot3-sudoku-sonnet/` (#3, pending).
+[`pilot2-bingo-web/`](pilot2-bingo-web) (#2), [`pilot3-sudoku-sonnet/`](pilot3-sudoku-sonnet) (#3).

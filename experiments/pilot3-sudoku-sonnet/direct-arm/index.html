@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Printable Sudoku Generator</title>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <header class="app-header no-print">
+    <h1>Printable Sudoku Generator</h1>
+    <p class="tagline">Generate a batch of Sudoku puzzles for printing, each with its own answer key.</p>
+  </header>
+
+  <form id="controls" class="controls no-print">
+    <div class="field">
+      <label for="seed">Seed</label>
+      <div class="seed-row">
+        <input type="text" id="seed" name="seed" autocomplete="off" spellcheck="false" placeholder="e.g. family-game-night" />
+        <button type="button" id="randomize-seed" title="Use a new random seed">New</button>
+      </div>
+      <p class="hint">The seed fully determines this batch. Share the seed (or the URL) to reproduce it exactly.</p>
+    </div>
+
+    <div class="field">
+      <label for="difficulty">Difficulty</label>
+      <select id="difficulty" name="difficulty">
+        <option value="easy">Easy</option>
+        <option value="medium" selected>Medium</option>
+        <option value="hard">Hard</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="count">Number of puzzles</label>
+      <input type="number" id="count" name="count" min="1" max="50" value="4" />
+    </div>
+
+    <div class="field actions">
+      <button type="submit" id="generate" class="primary">Generate</button>
+      <button type="button" id="copy-link">Copy shareable link</button>
+      <button type="button" id="print-btn">Print</button>
+    </div>
+  </form>
+
+  <p id="status" class="status no-print" role="status" aria-live="polite"></p>
+
+  <main id="output"></main>
+
+  <template id="tpl-puzzle-page">
+    <article class="page puzzle-page">
+      <header class="page-header">
+        <h2 class="puzzle-title"></h2>
+        <p class="page-meta"></p>
+      </header>
+      <div class="grid-wrap">
+        <div class="sudoku-grid" role="table" aria-label="Sudoku puzzle"></div>
+      </div>
+      <footer class="page-footer"></footer>
+    </article>
+  </template>
+
+  <template id="tpl-answers-page">
+    <section class="page answers-page">
+      <header class="page-header">
+        <h2>Answer Keys</h2>
+        <p class="page-meta"></p>
+      </header>
+      <div class="answers-grid"></div>
+    </section>
+  </template>
+
+  <script src="src/rng.js"></script>
+  <script src="src/sudoku-core.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

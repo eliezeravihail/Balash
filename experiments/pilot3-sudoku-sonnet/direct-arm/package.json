@@ -1,0 +1,11 @@
+{
+  "name": "printable-sudoku",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static, deterministic printable Sudoku batch generator (no backend, no build step).",
+  "scripts": {
+    "test": "node tests/test-core.js",
+    "serve": "python3 -m http.server 8000"
+  },
+  "license": "UNLICENSED"
+}

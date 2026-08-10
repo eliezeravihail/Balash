@@ -61,21 +61,27 @@ or explicitly (`balash next`).
 
 **[`experiments/RESULTS.md`](experiments/RESULTS.md) is the clear at-a-glance summary of all pilots.**
 
-Two completed pilots under the current thesis (a third, testing a Sonnet executor, is running), on
-different domains — and the completed ones point the same way:
+Three completed pilots under the current thesis, on three different domains (including one with the
+executing Worker on **Sonnet**) — and all point the same way: **six blind reviews across opposite
+dispositions, six-for-six for the Balash arm.** The completed pilots:
 
 - [`experiments/design-first-vs-direct/`](experiments/design-first-vs-direct) — pilot #1, a Python task
   CLI evolved through four stages.
 - [`experiments/pilot2-bingo-web/`](experiments/pilot2-bingo-web) — pilot #2, a static-web printable
-  bingo-card generator (the Balash arm shipped as a draft PR to its own product repo).
+  bingo-card generator (the Balash arm shipped to its own product repo).
+- [`experiments/pilot3-sudoku-sonnet/`](experiments/pilot3-sudoku-sonnet) — pilot #3, a static-web
+  Sudoku generator built with the executing Worker on **Sonnet**.
 
-In **both**, the two final codebases were judged blind by two reviewers with **opposite** dispositions
-(pure-OO-quality and pro-simplicity/YAGNI), and in both, **both reviewers chose the Balash arm as
-better designed** (pilot #1: ~70–75% / ~60%; pilot #2: ~80% / ~65%), with every load-bearing judge
-claim verified against source. The consistent mechanism: design-first won by right-sizing the one
-subtle, product-consequential design decision the feature framing glosses over — writing *less* where
-a guard was dead (pilot #1's cycle detection) and *more* where a real guarantee was needed (pilot #2's
-card distinctness) — while paying an edge tax of speculative ceremony each time.
+In each, the two final codebases were judged blind by two reviewers with **opposite** dispositions
+(pure-OO-quality and pro-simplicity/YAGNI), and in each, **both reviewers chose the Balash arm**
+(pilot #1: ~70–75% / ~60%; #2: ~80% / ~65%; #3: ~80% / ~70%), with every load-bearing judge claim
+verified against source. The consistent mechanism: design-first won by right-sizing — or properly
+owning — the one subtle, product-consequential design decision the feature framing glosses over:
+writing *less* where a guard was dead (pilot #1's cycle detection), *more* where a guarantee was
+missing (pilot #2's card distinctness), and owning-by-construction what the plain arm left to
+convention (pilot #3's one-solution invariant) — while paying an edge tax of speculative ceremony
+each time. Pilot #3 also showed a **Sonnet executor is good enough** to realize a strong design
+objective (including its hardest invariant), with small conformance gaps a stronger executor might avoid.
 
-Still **N = 2, one operator** — a meaningfully stronger signal than one, but not a validated result.
+Still **N = 3, one operator** — a meaningfully stronger signal than one, but not a validated result.
 The strongest next step is independent operators per arm. Full caveats in each pilot's `FINDINGS.md`.

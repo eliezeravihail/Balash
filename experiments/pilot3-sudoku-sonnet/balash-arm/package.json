@@ -1,0 +1,10 @@
+{
+  "name": "balash-sudoku",
+  "private": true,
+  "type": "module",
+  "description": "Deterministic printable Sudoku generator. Static site, no build step; this file exists only so Node treats *.js as ES modules when running the test suite.",
+  "scripts": {
+    "test": "node --test",
+    "serve": "python3 -m http.server 8000"
+  }
+}

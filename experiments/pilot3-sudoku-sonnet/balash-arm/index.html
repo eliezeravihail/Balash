@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balash — Printable Sudoku Generator</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="app-bar no-print">
+  <h1>Balash</h1>
+  <p class="tagline">Deterministic printable Sudoku generator</p>
+</header>
+
+<form id="controls" class="controls no-print">
+  <div class="field">
+    <label for="difficulty">Difficulty</label>
+    <select id="difficulty" name="difficulty">
+      <option value="easy">Easy</option>
+      <option value="medium" selected>Medium</option>
+      <option value="hard">Hard</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="count">Count</label>
+    <input id="count" name="count" type="number" min="1" max="12" step="1" value="4">
+  </div>
+
+  <div class="field field--seed">
+    <label for="seed">Seed <span class="hint">(optional — blank mints a new one)</span></label>
+    <input id="seed" name="seed" type="text" placeholder="e.g. weekend-batch-1" autocomplete="off">
+  </div>
+
+  <div class="field field--actions">
+    <button type="submit" id="generate-btn">Generate</button>
+    <button type="button" id="print-btn" disabled>Print</button>
+  </div>
+</form>
+
+<p id="status" class="status no-print" role="status" aria-live="polite"></p>
+
+<main id="result-info" class="result-info no-print" hidden>
+  <p>
+    Seed <code id="result-seed"></code> · <span id="result-difficulty"></span> ·
+    <span id="result-count"></span> puzzle(s).
+    <a id="permalink" href="#">Permalink</a>
+  </p>
+</main>
+
+<section id="puzzles" class="pages" aria-label="Puzzles"></section>
+<section id="answers" class="pages" aria-label="Answer keys"></section>
+
+<script type="module" src="app/controller.js"></script>
+</body>
+</html>

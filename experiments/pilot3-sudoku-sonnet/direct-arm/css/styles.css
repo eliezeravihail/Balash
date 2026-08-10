@@ -1,0 +1,300 @@
+:root {
+  --ink: #1b1b1f;
+  --paper: #ffffff;
+  --muted: #62636c;
+  --line: #d9dade;
+  --accent: #2f5d9e;
+  --accent-ink: #ffffff;
+  --panel: #f4f5f7;
+  --thin: 1px;
+  --thick: 2px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 1.5rem;
+  font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  background: var(--panel);
+}
+
+.app-header {
+  max-width: 46rem;
+  margin: 0 auto 1.25rem;
+  text-align: center;
+}
+
+.app-header h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.6rem;
+}
+
+.tagline {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* ---------------------------------------------------------------- */
+/* Controls                                                          */
+/* ---------------------------------------------------------------- */
+
+.controls {
+  max-width: 46rem;
+  margin: 0 auto 0.5rem;
+  padding: 1.25rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.25rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.field.actions {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.25rem;
+}
+
+label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  font: inherit;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.seed-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.seed-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+button {
+  font: inherit;
+  padding: 0.55rem 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: var(--accent);
+}
+
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+
+button.primary:hover {
+  filter: brightness(1.08);
+}
+
+.status {
+  max-width: 46rem;
+  margin: 0 auto 1.5rem;
+  min-height: 1.2rem;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.status.error {
+  color: #a3271f;
+}
+
+/* ---------------------------------------------------------------- */
+/* Printable pages                                                   */
+/* ---------------------------------------------------------------- */
+
+#output {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.page {
+  width: 100%;
+  max-width: 46rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 2rem 1.75rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.page-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.page-meta {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.page-footer {
+  margin-top: 1.25rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ---------------------------------------------------------------- */
+/* Sudoku grid                                                       */
+/* ---------------------------------------------------------------- */
+
+.grid-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.sudoku-grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+  width: min(100%, 26rem);
+  aspect-ratio: 1 / 1;
+  border: var(--thick) solid var(--ink);
+}
+
+.sudoku-grid .cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(0.85rem, 3.4vw, 1.2rem);
+  border: var(--thin) solid var(--line);
+  aspect-ratio: 1 / 1;
+}
+
+.sudoku-grid .cell.given {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.sudoku-grid .cell.solution-value {
+  color: var(--accent);
+}
+
+.sudoku-grid .cell.border-right {
+  border-right: var(--thick) solid var(--ink);
+}
+
+.sudoku-grid .cell.border-bottom {
+  border-bottom: var(--thick) solid var(--ink);
+}
+
+/* Answer key page: smaller grids, several per page */
+
+.answers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 1.5rem 1.25rem;
+}
+
+.answer-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.answer-item .answer-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.answer-item .sudoku-grid {
+  width: 100%;
+}
+
+.answer-item .sudoku-grid .cell {
+  font-size: clamp(0.6rem, 2.2vw, 0.85rem);
+}
+
+/* ---------------------------------------------------------------- */
+/* Print                                                             */
+/* ---------------------------------------------------------------- */
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    padding: 0;
+    background: var(--paper);
+  }
+
+  #output {
+    gap: 0;
+  }
+
+  .page {
+    max-width: none;
+    border: none;
+    border-radius: 0;
+    padding: 0.5cm;
+    page-break-after: always;
+  }
+
+  .page:last-child {
+    page-break-after: auto;
+  }
+
+  .answers-page {
+    page-break-before: always;
+  }
+}
+
+@page {
+  margin: 1.4cm;
+}
