@@ -61,13 +61,16 @@ or explicitly (`balash next`).
 
 **[`experiments/RESULTS.md`](experiments/RESULTS.md) is the clear at-a-glance summary of all pilots.**
 
-Three completed pilots under the current thesis, on three different domains (including one with the
-executing Worker on **Sonnet**) — and all point the same way. In each, two reviewers with opposite
-dispositions chose the Balash arm; read that as **three experimental units with robustness-checked
-verdicts, not six independent wins.** The strongest evidence is the *sequence*: Balash needed *less*
-mechanism (pilot #1), *more* guarantee (pilot #2), and gave a shared guarantee a *better owner*
-(pilot #3) — three faces of "when design is the goal, the agent asks where a truth should live, not
-just how to pass the feature." The completed pilots:
+Four completed pilots under the current thesis. Pilots #1–#3 all pointed one way (design-first won a
+blind design verdict on three domains); **pilot #4 — the strongest design — deliberately split them
+apart and did not sweep.** The strongest evidence from #1–#3 is the *sequence*: Balash needed *less*
+mechanism (#1), *more* guarantee (#2), and gave a shared guarantee a *better owner* (#3) — three faces
+of "when design is the goal, the agent asks where a truth should live." Pilot #4 then tested that under
+**isolated operators, an evolving product, and separate design/product verdicts** — and found design-first
+still wins *design* (it deleted a structural assumption a new invariant had falsified) but **loses
+*product*** here, shipping two real bugs and cutting an affordance by the very same minimalist discipline.
+That "win design, lose product" split is the honest headline, and it is why the two verdicts are scored
+separately. The completed pilots:
 
 - [`experiments/design-first-vs-direct/`](experiments/design-first-vs-direct) — pilot #1, a Python task
   CLI evolved through four stages.
@@ -75,6 +78,9 @@ just how to pass the feature." The completed pilots:
   bingo-card generator (the Balash arm shipped to its own product repo).
 - [`experiments/pilot3-sudoku-sonnet/`](experiments/pilot3-sudoku-sonnet) — pilot #3, a static-web
   Sudoku generator built with the executing Worker on **Sonnet**.
+- [`experiments/pilot4-roombook-evolving/`](experiments/pilot4-roombook-evolving) — pilot #4, an
+  evolving meeting-room booking core with **isolated operators** and **separate design/product verdicts**
+  (design → Balash, product → Direct).
 
 In each, the two final codebases were judged blind by two reviewers with **opposite** dispositions
 (pure-OO-quality and pro-simplicity/YAGNI), and in each, **both reviewers chose the Balash arm**
@@ -87,5 +93,18 @@ convention (pilot #3's one-solution invariant) — while paying an edge tax of s
 each time. Pilot #3 also showed a **Sonnet executor is good enough** to realize a strong design
 objective (including its hardest invariant), with small conformance gaps a stronger executor might avoid.
 
-Still **N = 3, one operator** — a meaningfully stronger signal than one, but not a validated result.
-The strongest next step is independent operators per arm. Full caveats in each pilot's `FINDINGS.md`.
+**Pilot #4 is the most informative and the least flattering.** With isolated operators and an evolving
+product, design-first produced the deepest design of the set — it recognized a Stage-4 cross-room rule
+had *falsified* the "rooms are independent" assumption, fused two conflict rules into one owned
+predicate, and deleted the now-dead partition — and *both* opposite-disposition judges scored its design
+a clear win. But a separate product assessor scored the **Direct** arm the better product: the same
+subtractive minimalism cut a waitlist-inspection affordance and left two real bugs (a cross-room
+promotion that never fires; a recurring series that books backwards on a negative stride). Design-first
+is not strictly better — it can win design and lose product. One bright spot: pilot #4 is the first run
+after the skill gained its mandatory **subtractive pass**, and the edge-ceremony tax that recurred in
+#1–#3 **reversed** — the leaner arm was Balash's this time (n=1).
+
+Still small N, and pilot #4 improved but did not fully remove the operator confound (isolated agent
+contexts, but one orchestrator authored both prompts) and collapsed the Guide→Worker split into a single
+agent. A meaningfully stronger signal than one pilot, not a validated result. Full caveats in each
+pilot's `FINDINGS.md`.

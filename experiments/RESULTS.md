@@ -18,13 +18,27 @@ disposition (pro-simplicity/YAGNI) re-judges to test whether the verdict is an a
 | **#1** | Task-manager CLI, 4 evolving stages (Python) | strong default | Balash ~70–75% | Balash ~60% | **Balash** | all ✓ |
 | **#2** | Printable bingo-card generator (static web) | strong default | Balash ~8/10 | Balash ~65% | **Balash** | all ✓ |
 | **#3** | Printable Sudoku generator (static web) | **Sonnet (Worker)** | Balash ~80% | Balash ~70% | **Balash** | all ✓ |
+| **#4** | RoomBook booking core, 4 evolving stages, **isolated operators** | strong (both) | **design → Balash** (2 opp. judges, "clear") | **product → Direct** (clear) | **split** | all ✓ (probed) |
 
-In every pilot, both reviewers — with opposite dispositions — chose the Balash arm. Read that as **three
+In pilots #1–#3 both reviewers — with opposite dispositions — chose the Balash arm. Read that as **three
 experimental units, each with its verdict robustness-checked**, not as six independent wins: the two
 judges in a pilot read the *same* two codebases, so they test whether the verdict is a taste artifact
 (the failure mode we most worried about), not whether the effect replicates. Replication is the count of
-*pilots* — three, on three domains — and the honest strength of the evidence is less the tally than the
-**sequence** below.
+*pilots*, and the honest strength of the evidence is less the tally than the **sequence** below.
+
+**Pilot #4 is the important one, and it did not sweep.** It is the first pilot with isolated operators,
+an evolving product, and *separate* design / product verdicts — and the arms **split**: the two
+opposite-disposition judges chose Balash for **design** (clear), while a blind product assessor chose
+Direct for **product** (clear). Design-first produced the deeper design (it saw the Stage-4 cross-room
+person-rule *falsify* the "rooms are independent" assumption, fused both conflict rules into one owned
+predicate, and *deleted* the now-false per-room partition) — and, by the *same* minimalist discipline,
+shipped two real bugs and cut a real affordance (a broken cross-room waitlist promotion; a series that
+books backwards on a negative stride; no way to inspect the waitlist). This is the "win design, lose
+product" outcome the method can produce, now demonstrated rather than hypothesized — the reason the two
+verdicts must never be merged. See [`pilot4-roombook-evolving/FINDINGS.md`](pilot4-roombook-evolving/FINDINGS.md).
+Notably, pilot #4 is the first run *after* the skill gained its mandatory **subtractive pass**, and the
+edge-over-engineering that recurred in #1–#3 **reversed**: the blind edge auditor found the *Direct* arm
+carried the ceremony this time and the Balash arm was leaner (n=1, suggestive).
 
 ### The strongest evidence is the sequence, not the tally
 
@@ -79,29 +93,35 @@ surfaces the judgment the feature framing lets evaporate.
 
 ## What the pilots do NOT establish (honest limits)
 
-- **Same operator ran both arms — now the primary threat.** One person ran Balash *and* the plain arm in
-  every pilot. Until arms are run by isolated operators, this is the biggest hole in the evidence.
-- **Only pilot #1 was an evolving product.** Bingo and Sudoku are essentially one-shot builds. So the
-  pilots support "design-first improves the *initial* design"; they barely touch Balash's bigger claim,
-  "design-first *preserves* quality as the product changes over hidden stages" — that has one data point.
+- **Operators: improved in pilot #4, not yet fully controlled.** Pilots #1–#3 had one operator run both
+  arms. Pilot #4 ran the arms as **two isolated agent contexts** that never saw each other — but one
+  orchestrator still authored both arms' stage prompts from identical spec text. Genuine independent
+  human operators remain the stronger control.
+- **Evolving product: now two pilots (#1, #4), still small.** Bingo and Sudoku are one-shot builds. The
+  "design-first *preserves* quality as the product changes over hidden stages" claim rests on #1 and #4.
 - **Part of the win is the Guide's handoff** naming the hard decision (e.g. "what do you guarantee?").
   That *is* the method, but the pilot #2 win is therefore not "product info held constant, pure better
   design" — it is partly Balash surfacing a latent guarantee. Real value, arguably larger, but a
   different claim than "discovery was neutralized."
-- **Balash is not strictly better** — it over-builds at the seams (3/3) and loses on readability/size,
-  and can lose on product quality (pilot #3) while winning design.
+- **Balash is not strictly better — and pilot #4 proves it can lose product while winning design.** In
+  #1–#3 it over-built at the seams and lost on readability/size; in #4 it shipped two real bugs and cut a
+  real affordance by the same minimalist discipline that won the design. Design quality ≠ product quality.
+- **Within-arm role separation was not enacted in #4.** One agent played both Guide and Worker there; the
+  design-first cognition was present but the Guide→Worker delegation of #1–#3 was not.
 - **The Sonnet result is narrow.** It shows `strong-Guide + Sonnet-Worker > plain-Sonnet`. It does *not*
   show that beats "run a strong model on the whole task"; that needs a `strong-direct` vs
   `strong-Guide + cheap-Worker (+ strong review)` comparison on both cost *and* the two verdicts.
 - **The judges are LLMs**, trusted only because their specific claims were source-verified each time.
 
-### The highest-value next experiment
+### Next steps the pilots now point to
 
-Stop producing more same-type one-shot pilots. The next one worth running is a single, stronger study:
-**isolated operators per arm; a new product; several hidden changes over time** (to test quality *under
-evolution*, Balash's real claim); a **product verdict kept separate from the design verdict**; and an
-**explicit check of the edge-over-engineering** that recurred 3/3. If Balash still wins there, the claim
-becomes materially more serious.
+Pilot #4 ran the "isolated operators + evolving product + separate verdicts + edge-audit" study the
+earlier results called for. What it surfaced sets the next questions: (1) restore the **Guide→Worker
+delegation** inside the Balash arm (it was collapsed to one agent in #4) and re-check whether the product
+bugs persist when a Worker executes a Guide's explicit exit criteria; (2) **genuinely independent
+operators** (not one orchestrator authoring both prompts); (3) confirm the **subtractive-pass reversal**
+of edge-over-engineering on more than one pilot; (4) the standing **cost** comparison —
+`strong-direct` vs `strong-Guide + cheap-Worker + strong review`.
 
 ## Pilot #3 — a weaker executor (Sonnet) still clears the bar
 

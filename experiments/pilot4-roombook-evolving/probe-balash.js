@@ -1,0 +1,14 @@
+const { BookingRegistry } = require('./balash-arm/src/registry');
+let s = new BookingRegistry();
+s.book('A','org',10,20,['P']);
+console.log('BALASH person-overlap single rejected:', s.book('B','org',15,25,['P']) === null);
+s.setCapacity('C',2);
+console.log('BALASH capacity reject :', s.book('C','o',0,10,['x','y','z']) === null);
+console.log('BALASH capacity accept :', s.book('C','o',0,10,['x','y']) !== null);
+let t = new BookingRegistry();
+const a = t.book('A','o',10,20,['P']);
+const w = t.waitlist('B','o',10,20,['P']);
+console.log('BALASH B waitlisted      :', !!w && w.room === 'B');
+t.cancel(a);
+const b = t.scheduleFor('B');
+console.log('BALASH cross-room PROMOTED:', b.length === 1 && b[0].start === 10);
