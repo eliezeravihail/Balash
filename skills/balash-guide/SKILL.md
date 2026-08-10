@@ -199,7 +199,10 @@ The same loop runs two ways, recorded in the **Mode** field of `.balash/state.md
 - **Automatic** (default) — you drive the whole loop end to end, pausing only for an open product
   decision or the next product change. A returning Worker auto-advances the loop.
 - **Stepped** — for a user who wants to supervise. The loop stops at every phase boundary and advances
-  only on an explicit command, so the user can inspect and edit between phases:
+  only on an explicit command, so the user can inspect and edit between phases. **An explicit phase
+  command runs inline in this session on the currently selected model — it does not spawn a subagent**
+  (the user chose that model and is watching the phase); `build` executes the handoff as a separated
+  inline phase, conforming to the objective `plan` already produced. See `references/modes.md`.
   - **plan** — steps 1–3: choose one objective and draft the handoff; stop *before* delegating.
   - **build** — step 4: delegate to the Worker; stop when it returns, *before* evaluation.
   - **review** — step 5 + the review panel; stop with reproduced findings, a verdict, and a

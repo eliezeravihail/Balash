@@ -19,6 +19,10 @@ a `.balash/state.md`. Establish the ground truth to probe against — the change
 acceptance criteria; if it is unstated and material, ask the user one concrete question rather than
 inventing criteria. Run the same panel roles, scaled to the change.
 
+Run the panel **inline, in this session, on the currently selected model — do NOT spawn subagents**
+(this is an explicit command; the user picked this model and is supervising). Adopt each reviewer lens
+in turn, including the opposite-disposition check when the call is a judgment/taste one.
+
 In both uses, obey the panel's core rule: **every finding carries a reproduction (a failing probe /
 concrete input→wrong output) or a precise `file:line` citation — no scores, no percentages.** Before
 acting on a decisive finding, reproduce it yourself. An empty findings list is a valid, honest result.

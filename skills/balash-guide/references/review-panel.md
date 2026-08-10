@@ -23,7 +23,15 @@ intent**: probe the deliverable against *that* ground truth, not against taste.
 ## The reviewer roles — spawn what the task needs, scale to it
 
 Do not convene a panel for a one-line change; the Guide's own step-5 check is enough. **Escalate** for
-invariant-bearing, cross-cutting, evolving, or high-stakes work. Roles, in value order:
+invariant-bearing, cross-cutting, evolving, or high-stakes work.
+
+**Where the roles run.** When review is reached by an explicit command (the `review` phase, or a
+standalone `review <target>`), run the roles **inline in this session on the currently selected model —
+no subagents**; adopt each lens in turn. Only in `auto` mode may the roles be spawned as subagents (for
+independent contexts when no human is watching). The reproduce-or-cite rule below is what guarantees an
+inline review is honest — not a process boundary.
+
+Roles, in value order:
 
 1. **Verification reviewer (the one that catches real defects).** Writes *adversarial probes* against
    each exit criterion and each invariant/boundary — especially the paths the tests don't exercise —

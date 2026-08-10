@@ -21,6 +21,24 @@ the phase stops. The one behavioral change to internalize: **in stepped mode a r
 NOT auto-advance** — it parks at `executed:awaiting-review` and waits for the review command. Never
 run verify/evaluate/choose-next off a Worker return while Mode is `stepped`.
 
+### Explicit commands run inline, on your model — no subagent
+
+When the user drives a phase with an explicit command, **do the work in this session, on the currently
+selected model, and do not spawn a subagent.** The user chose that model and is supervising the phase;
+a subagent would run on a different model and put the work behind a boundary they can't watch turn by
+turn. So in stepped mode:
+
+- **build** executes the drafted handoff **yourself, inline, as a clearly separated phase** — the same
+  bounded handoff a Worker would have received, run in-session instead of delegated.
+- **review** runs the panel roles **inline** on the current model (adopting each lens in turn, still
+  obeying the reproduce-or-cite rule).
+
+This does not collapse the Guide/Worker separation, because the separation that carries the value is
+that **the design objective was produced first, as its own `plan` step** — the handoff already exists
+and is being *conformed to*, not invented mid-build. Auto mode is different: there the loop delegates to
+a Worker subagent, because autonomous delegation and context isolation are the point when no human is
+watching.
+
 ## The phases, mapped to the loop steps
 
 | Command (names are configurable) | Runs loop steps | Produces | Then parks at |

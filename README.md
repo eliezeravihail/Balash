@@ -39,9 +39,12 @@ The same loop runs two ways, recorded in the `Mode` field of `.balash/state.md`
   only on an explicit command, so you can inspect and edit between phases:
   - `/balash-plan` — choose one design objective and draft the Worker handoff; **stops before writing
     any code**, so you can approve or edit the objective first.
-  - `/balash-build` — delegate the planned objective to a Worker; stops when it returns.
+  - `/balash-build` — execute the planned objective; stops when done.
   - `/balash-review` — evaluate the result with the **review panel** and stop with reproduced findings,
     a verdict, and a recommendation.
+
+  Explicit phase commands run **inline in your session on the model you selected** — no subagent —
+  since you're supervising the phase; only automatic mode delegates to Worker subagents.
 
 The review panel ([`references/review-panel.md`](skills/balash-guide/references/review-panel.md)) is
 scrutiny, not scoring: adversarial probes against the objective's exit criteria, where **every finding
