@@ -44,7 +44,22 @@ implementation's specific behavior right through its name.
 **How to tell them apart:** ask what a second, legitimately different implementation would need to
 look like. If you can't describe one that isn't a trivial variation, the "interface" is decorative.
 
-**A worked example.** `ObjectDetectionModel.detect(image) -> list[DetectedObject]` is a real
+**The general rule — domain-free; the example below only illustrates it, it is not the rule.** The
+type that crosses an interface should be the *most generic type that is still complete for the consumer
+and still honestly producible by every implementation you unify*. Two independent bounds pin it: the
+consumer's needed information is the **floor** (more generic than that loses information and pushes the
+consumer outside the interface), and the least-capable intended producer is the **ceiling** (more
+specific than that forces some producer to fabricate or distort). When no single type satisfies both
+bounds, that is evidence of *more than one concept* — segregate into distinct types (a shared supertype
+for the common part, specializations for the richer ones) so each producer implements only what it
+genuinely has and each consumer depends only on what it genuinely needs. Never resolve the tension by
+flattening a richer producer (losing information) or by cramming a poorer one into the richer type (a
+technically-valid but foreign field); distortion in either direction is the smell. The one invariant
+underneath all of it: **minimize the knowledge you force on the other side — no more than the concept
+requires, no less than it needs, and never your own implementation choice.** What follows is one worked
+example of this rule, in a single domain — do not mistake the example for the principle.
+
+**A worked example (illustration only).** `ObjectDetectionModel.detect(image) -> list[DetectedObject]` is a real
 abstraction: YOLO, DETR, and a hosted cloud API all satisfy it identically. Returning the concrete
 `YOLOv26`, or the vendor's `ultralytics ...Results` object, is not — it forces every consumer to know
 *which* implementation you chose (an **identity leak**) or the vendor's output schema (a **format
