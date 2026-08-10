@@ -45,6 +45,14 @@ This file stores durable engineering direction. Keep it short. Do not use it as 
 
 <!-- Real constraints, not generic quality wishes. -->
 
+### Foundational dependencies (day-zero)
+
+<!-- The very-infrastructural substrate everything is built on (numpy, scipy, cv2 ...): replacing it
+     would rewrite everything. Decided up front (by the Guide unless it materially affects the product),
+     kept minimal, extended only rarely. These + the framework's own domain types are the ONLY things
+     allowed to cross a public seam (design-principles §7). Heavy but replaceable deps (model / data /
+     augmentation libraries) are NOT listed here — they are confined behind a boundary and chosen later. -->
+
 ### Explicit non-goals
 
 <!-- Things we deliberately do not design for yet. -->

@@ -176,7 +176,10 @@ Decide that permitted set **normatively and up front — not empirically.** "Pas
 side already depends on" is the wrong, dangerous test: you do not know what a given consumer depends
 on, cannot inspect it, and "surely everyone depends on X" is precisely the rationalization that lets
 an implementation type leak. The permitted foundation is a *day-zero design decision* — a small,
-published, shared vocabulary you commit to — and "the consumer also depends on it" is then a
+published, shared vocabulary you commit to (established up front during discovery — see the operating
+loop's step 1 and `references/discovery.md`; keep it minimal, only very-infrastructural things whose
+replacement would rewrite everything, and note that a heavy but *replaceable* dependency is not
+foundational and does not belong in it) — and "the consumer also depends on it" is then a
 *consequence* of that decision, not an assumption about the consumer. (This is a shared-kernel /
 published-language choice. It is **not** the Stable-Dependencies Principle, which is about the
 *direction of dependency between components*, not the payload types allowed at a seam.)

@@ -250,6 +250,22 @@ Ask the user one concrete question at a time for open product decisions whose an
 
 Record each answer and reclassify the affected decision. Do not select an objective or delegate while a material open product decision remains unresolved.
 
+**Establish the foundational dependencies at day zero.** Part of establishing state is deciding the
+*foundational dependencies* — the very-infrastructural substrate every object will be built on, whose
+replacement would mean rewriting essentially everything (numpy, scipy, cv2 are typical). The test is
+pervasiveness, not weight: *if everything ends up standing on it, replacing it rewrites everything.* A
+heavy but **replaceable** dependency — a model framework, a data loader, an augmentation library — is
+**not** foundational: it is confined behind a boundary and can be adopted later. Keep the foundational
+set minimal and extend it only rarely, deliberately, and only for genuinely necessary infrastructure.
+These foundational dependencies, together with the framework's own domain types, are the only things
+permitted to cross a public seam (`references/design-principles.md` §7). This is the one technical
+decision you must **not** leave to accrete through the Worker's incidental choices — left unset, the
+whole codebase silently couples to whatever got picked. It is a *user* decision only when it materially
+changes product-visible coupling or replaceability; otherwise you, the Guide, decide it — but either
+way decide it up front and record it. This sets a *constraint* (the substrate, and what may cross a
+boundary), not an architecture: do not, under this heading, pick the heavy replaceable libraries or the
+layering.
+
 Do not ask the user to choose architecture, patterns, interfaces, database abstractions, or other technical freedoms. Do not propose architecture while the product forces that would justify it are still unclear.
 
 ### 2. Choose one current objective
