@@ -59,8 +59,10 @@ or explicitly (`balash next`).
 
 ## Status
 
-**Two completed pilots** under the current thesis, on two different domains — and both point the same
-way:
+**[`experiments/RESULTS.md`](experiments/RESULTS.md) is the clear at-a-glance summary of all pilots.**
+
+Two completed pilots under the current thesis (a third, testing a Sonnet executor, is running), on
+different domains — and the completed ones point the same way:
 
 - [`experiments/design-first-vs-direct/`](experiments/design-first-vs-direct) — pilot #1, a Python task
   CLI evolved through four stages.
