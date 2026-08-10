@@ -1,0 +1,382 @@
+<title>Direct vs. Guide — Pilot Dossier</title>
+<style>
+  :root{
+    --paper:#f5f2ea; --surface:#ffffff; --ink:#221f1a; --ink-muted:#6e6656;
+    --line:#ddd6c5; --line-strong:#c9c0a8;
+    --accent:#3c5b52; --accent-soft:#e4ebe7;
+    --warm:#a8632c; --warm-soft:#f3e6d6;
+    --danger:#9c3b3b; --danger-soft:#f3dfdc;
+    --mono-bg:#efeadb;
+    --shadow: 0 1px 0 rgba(34,31,26,0.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#17150f; --surface:#1d1b14; --ink:#ece7d9; --ink-muted:#a89f8a;
+      --line:#3a362a; --line-strong:#4c4636;
+      --accent:#7fada0; --accent-soft:#213330;
+      --warm:#d99a5c; --warm-soft:#3a2c1c;
+      --danger:#dd8b83; --danger-soft:#3a2320;
+      --mono-bg:#221f17;
+      --shadow: 0 1px 0 rgba(0,0,0,0.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#17150f; --surface:#1d1b14; --ink:#ece7d9; --ink-muted:#a89f8a;
+    --line:#3a362a; --line-strong:#4c4636;
+    --accent:#7fada0; --accent-soft:#213330;
+    --warm:#d99a5c; --warm-soft:#3a2c1c;
+    --danger:#dd8b83; --danger-soft:#3a2320;
+    --mono-bg:#221f17;
+    --shadow: 0 1px 0 rgba(0,0,0,0.4);
+  }
+
+  * { box-sizing: border-box; }
+  body{
+    background: var(--paper);
+    color: var(--ink);
+    font-family: Charter, "Iowan Old Style", "Palatino Linotype", Georgia, "Noto Serif", serif;
+    font-size: 17px;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0 20px 96px;
+  }
+  .sans{ font-family: ui-sans-serif, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif; }
+  .mono{ font-family: ui-monospace, "SF Mono", "Cascadia Code", Consolas, "Liberation Mono", monospace;
+    font-variant-numeric: tabular-nums; }
+
+  .wrap{ max-width: 780px; margin: 0 auto; }
+
+  /* ---- Header / case file block ---- */
+  .case-header{
+    margin-top: 56px;
+    padding-bottom: 28px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .case-id{
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    display: flex; flex-wrap: wrap; gap: 6px 18px;
+    margin-bottom: 18px;
+  }
+  .case-id span b{ color: var(--ink); font-weight: 600; }
+  h1{
+    font-size: clamp(2rem, 4vw, 2.7rem);
+    line-height: 1.08;
+    margin: 0 0 10px;
+    text-wrap: balance;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .dek{
+    font-size: 1.15rem;
+    color: var(--ink-muted);
+    max-width: 60ch;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  /* ---- section rhythm ---- */
+  section{ margin-top: 52px; }
+  .eyebrow{
+    font-family: ui-sans-serif, -apple-system, "Segoe UI", sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 10px;
+  }
+  .eyebrow::after{ content:""; flex:1; height:1px; background: var(--line-strong); }
+  h2{
+    font-size: 1.5rem;
+    margin: 0 0 16px;
+    font-weight: 600;
+    text-wrap: balance;
+  }
+  h3{
+    font-size: 1.08rem;
+    margin: 28px 0 10px;
+    font-weight: 700;
+  }
+  p{ margin: 0 0 14px; max-width: 68ch; }
+  ul, ol{ margin: 0 0 14px; padding-inline-start: 1.3em; }
+  li{ margin-bottom: 6px; max-width: 64ch; }
+  a{ color: var(--accent); }
+
+  /* ---- pills ---- */
+  .pill{
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: ui-sans-serif, -apple-system, "Segoe UI", sans-serif;
+    font-size: 11.5px; font-weight: 700; letter-spacing: 0.04em;
+    padding: 2px 9px; border-radius: 3px;
+    white-space: nowrap;
+  }
+  .pill-ok{ background: var(--accent-soft); color: var(--accent); }
+  .pill-warn{ background: var(--warm-soft); color: var(--warm); }
+  .pill-bad{ background: var(--danger-soft); color: var(--danger); }
+
+  /* ---- callout summary card ---- */
+  .verdict-card{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+  }
+  .verdict-card p:last-child{ margin-bottom: 0; }
+  .verdict-card .lede{ font-size: 1.05rem; }
+
+  blockquote{
+    margin: 16px 0; padding: 4px 0 4px 18px;
+    border-left: 3px solid var(--line-strong);
+    color: var(--ink-muted);
+    font-style: italic;
+    max-width: 64ch;
+  }
+  blockquote p{ margin: 0; }
+
+  code{
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    background: var(--mono-bg);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+    font-size: 0.88em;
+  }
+  pre{
+    background: var(--mono-bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  pre code{ background: none; padding: 0; }
+
+  /* ---- tables ---- */
+  .table-scroll{ overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; }
+  table{
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 560px;
+    background: var(--surface);
+    font-size: 14.5px;
+  }
+  caption{
+    text-align: left;
+    font-family: ui-sans-serif, -apple-system, "Segoe UI", sans-serif;
+    font-size: 12px; color: var(--ink-muted);
+    letter-spacing: 0.03em;
+    padding: 8px 4px 10px;
+    caption-side: bottom;
+  }
+  th, td{
+    text-align: left;
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  thead th{
+    font-family: ui-sans-serif, -apple-system, "Segoe UI", sans-serif;
+    font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-muted); font-weight: 700;
+    border-bottom: 1px solid var(--line-strong);
+  }
+  tbody tr:last-child td{ border-bottom: none; }
+  td.num, th.num{ font-family: ui-monospace, "SF Mono", Consolas, monospace; font-variant-numeric: tabular-nums; text-align: right; }
+
+  /* ---- two-column evidence blocks ---- */
+  .split{
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    margin: 16px 0 20px;
+  }
+  @media (max-width: 640px){ .split{ grid-template-columns: 1fr; } }
+  .side{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 16px 18px;
+  }
+  .side h4{
+    margin: 0 0 8px; font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase;
+    font-family: ui-sans-serif, -apple-system, "Segoe UI", sans-serif;
+    color: var(--ink-muted); font-weight: 700;
+  }
+  .side ul{ margin-bottom: 0; }
+  .side li{ font-size: 15px; margin-bottom: 8px; }
+
+  hr.brk{ border: none; border-top: 1px dashed var(--line-strong); margin: 40px 0; }
+
+  footer{
+    margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line);
+    font-family: ui-sans-serif, -apple-system, "Segoe UI", sans-serif;
+    font-size: 12.5px; color: var(--ink-muted);
+  }
+
+  @media (prefers-reduced-motion: no-preference){
+    .verdict-card, .side{ transition: border-color .15s ease; }
+  }
+</style>
+
+<div class="wrap">
+
+  <div class="case-header">
+    <div class="case-id">
+      <span>PILOT&nbsp;<b>N=1</b></span>
+      <span>CONDITIONS&nbsp;<b>Direct · Guide</b></span>
+      <span>STAGES&nbsp;<b>4 / 4 complete</b></span>
+      <span>VERIFIER&nbsp;<b>independent, blind</b></span>
+    </div>
+    <h1>Direct vs. Guide</h1>
+    <p class="dek">A staged pilot of the <code>balash-guide-experiment-v2</code> protocol: does separating engineering-objective selection from implementation change what gets built, as a small task manager absorbs four unforeseen product changes?</p>
+  </div>
+
+  <section>
+    <div class="eyebrow">Headline</div>
+    <div class="verdict-card">
+      <p class="lede">The result is a genuine split, not a win for either side. An independent, blind, adversarial reviewer — shown only anonymized final code, no process history — preferred <strong>Guide's tests</strong> as a safety net for future change, but said it would rather have inherited <strong>Direct's production code</strong> as the base to build on.</p>
+      <p>Guide's process produced stronger structural guarantees (proof-carrying tests that a rule is enforced in exactly one place; a backend-equivalence suite that auto-enrolls new backends) at the cost of real unrequested complexity (an agent registry nobody asked for, dead code, duplicated adapters). Direct's process produced leaner code that matched each requirement's literal scope — and shipped three real, untested invariant violations that the blind reviewer found by adversarial probing, not by reading the test suite.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Method</div>
+    <h2>What actually ran</h2>
+    <p>Two isolated git repositories, each built from the same four product requirements delivered one at a time (no future stage visible to either condition). Both used the same implementation model. <strong>Direct</strong> received each requirement verbatim and built it. <strong>Guide</strong> was played by the orchestrating session itself: one discovery question per stage answered from a fixed non-technical-owner oracle, one narrow engineering objective chosen and written to durable state, implementation delegated to a fresh Worker subagent, evidence evaluated before moving on.</p>
+    <p>After every stage, before committing, the orchestrator independently re-ran each test suite and spot-checked the load-bearing claims in the subagent's report by reading the diff and grepping the source — not just trusting "tests pass." At the end, both final repositories were stripped of every process artifact (state files, skill folders, instructions) and handed to a third, separate agent as anonymous <code>X</code> / <code>Y</code> folders, with the review rubric and per-stage metrics table but no knowledge of which was which.</p>
+  </section>
+
+  <section>
+    <div class="eyebrow">Evidence · 01</div>
+    <h2>Per-stage metrics</h2>
+    <div class="table-scroll">
+      <table class="mono">
+        <caption>Guide = X in the blind review; Direct = Y. Both suites passed at every stage, every time.</caption>
+        <thead>
+          <tr><th class="sans" style="font-family:inherit">Stage</th><th class="sans" style="font-family:inherit">Condition</th><th class="num">Prod files</th><th class="num">Prod LOC</th><th class="num">Files touched</th><th class="num">+ lines</th><th class="num">− lines</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="sans" style="font-family:inherit">1 · CRUD + persistence</td><td>Guide</td><td class="num">7</td><td class="num">447</td><td class="num">18</td><td class="num">1310</td><td class="num">0</td></tr>
+          <tr><td></td><td>Direct</td><td class="num">6</td><td class="num">376</td><td class="num">10</td><td class="num">779</td><td class="num">0</td></tr>
+          <tr><td class="sans" style="font-family:inherit">2 · AI agent assignees</td><td>Guide</td><td class="num">8</td><td class="num">923</td><td class="num">10</td><td class="num">1044</td><td class="num">73</td></tr>
+          <tr><td></td><td>Direct</td><td class="num">7</td><td class="num">545</td><td class="num">7</td><td class="num">452</td><td class="num">16</td></tr>
+          <tr><td class="sans" style="font-family:inherit">3 · second storage backend</td><td>Guide</td><td class="num">9</td><td class="num">1277</td><td class="num">8</td><td class="num">1053</td><td class="num">84</td></tr>
+          <tr><td></td><td>Direct</td><td class="num">7</td><td class="num">787</td><td class="num">7</td><td class="num">640</td><td class="num">21</td></tr>
+          <tr><td class="sans" style="font-family:inherit">4 · prerequisite invariant</td><td>Guide</td><td class="num">9</td><td class="num">1510</td><td class="num">9</td><td class="num">955</td><td class="num">105</td></tr>
+          <tr><td></td><td>Direct</td><td class="num">7</td><td class="num">1048</td><td class="num">7</td><td class="num">873</td><td class="num">25</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:14px">Guide reworked existing code at every stage (rising deletion counts: 73 → 84 → 105); Direct mostly only added (16 → 21 → 25). Final size: Guide 1510 production lines across 9 files, Direct 1048 across 7 — roughly 44% larger for the same four requirements.</p>
+  </section>
+
+  <section>
+    <div class="eyebrow">Evidence · 02</div>
+    <h2>Independent verification log</h2>
+    <p>Before each commit, the orchestrator re-ran the full suite and checked at least one structural claim by reading source directly, rather than accepting the subagent's report. Every single claim held up across all four stages, on both conditions:</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Stage</th><th>Claim checked</th><th>Method</th><th>Outcome</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1</td><td>43 / 33 tests pass (Direct / Guide)</td><td>Re-ran <code>unittest discover</code> myself</td><td><span class="pill pill-ok">confirmed</span></td></tr>
+          <tr><td class="mono">1</td><td>Guide's domain/service import no storage format</td><td>Re-read source</td><td><span class="pill pill-ok">confirmed</span></td></tr>
+          <tr><td class="mono">2</td><td>72 tests pass both sides; stage-1 test files untouched</td><td>Re-ran suite + <code>git diff</code> on test files</td><td><span class="pill pill-ok">confirmed</span></td></tr>
+          <tr><td class="mono">2</td><td>Direct overwrites execution result; Guide appends history</td><td>Re-read <code>execute_task</code></td><td><span class="pill pill-ok">confirmed — real divergence</span></td></tr>
+          <tr><td class="mono">3</td><td>140 / 102 tests pass; domain/service/tests byte-identical to stage 2</td><td>Re-ran suite + diff</td><td><span class="pill pill-ok">confirmed</span></td></tr>
+          <tr><td class="mono">3</td><td>Default backend still <code>json</code> on both sides</td><td>Grepped source</td><td><span class="pill pill-ok">confirmed</span></td></tr>
+          <tr><td class="mono">4</td><td>196 / 152 tests pass; single shared guard on both sides</td><td>Re-ran suite + grepped call sites</td><td><span class="pill pill-ok">confirmed</span></td></tr>
+          <tr><td class="mono">4</td><td>Direct's guard called from exactly 2 sites</td><td><code>grep _require_unblocked</code></td><td><span class="pill pill-ok">confirmed</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:14px">This light-touch check — rerun the suite, grep for the specific structural claim — is cheap and it never once caught a false report from either subagent across sixteen checkpoints. It is also, as the next section shows, <em>not the same test</em> as an adversarial review, and it did not catch what the blind judge found.</p>
+  </section>
+
+  <section>
+    <div class="eyebrow">Evidence · 03</div>
+    <h2>What the blind reviewer found</h2>
+    <p>A separate agent, shown only the anonymized final code and the rubric, ran both suites again itself and then went looking for ways to break each repository's stated invariants — not just reading whether tests were green.</p>
+
+    <h3>Invariant table (reproduced from the blind review)</h3>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Invariant</th><th>Guide (X)</th><th>Direct (Y)</th></tr></thead>
+        <tbody>
+          <tr><td>Non-empty title</td><td><span class="pill pill-ok">enforced everywhere</span></td><td><span class="pill pill-bad">bypassable via <code>from_dict</code></span></td></tr>
+          <tr><td>Exactly one assignee, human <em>or</em> AI</td><td><span class="pill pill-ok">structurally impossible to violate</span></td><td><span class="pill pill-bad">violable + untested — a loaded dual-assignee record silently hides the human</span></td></tr>
+          <tr><td>Only agent-assigned tasks execute</td><td><span class="pill pill-ok">enforced, tested</span></td><td><span class="pill pill-ok">enforced, tested</span></td></tr>
+          <tr><td>Prerequisite graph acyclic</td><td><span class="pill pill-ok">batch-atomic, 7 tests</span></td><td><span class="pill pill-ok">enforced, 4 tests</span></td></tr>
+          <tr><td>No <code>in progress</code> / execution until prerequisites done</td><td><span class="pill pill-ok">runtime-proven singular</span></td><td><span class="pill pill-warn">enforced, but persists a self-contradictory state — see below</span></td></tr>
+          <tr><td>Task ids unique</td><td><span class="pill pill-bad">unchecked — a UUID collision silently destroys a task</span></td><td><span class="pill pill-ok">persisted counter, tested</span></td></tr>
+          <tr><td>Data survives restart</td><td><span class="pill pill-ok">real subprocess restart, both backends</span></td><td><span class="pill pill-warn">tested via fresh in-process object only, not a real process</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="split">
+      <div class="side">
+        <h4>Strongest evidence for Guide</h4>
+        <ul>
+          <li>Stage 4's single-enforcement-point claim is <em>runtime-proven</em>: the reviewer found a test that monkey-patches the shared guard to a no-op and asserts <em>both</em> start paths open, then patches it to always refuse and asserts both close — not string-matching, a real proof.</li>
+          <li>Backend equivalence is structural: a new storage backend is auto-enrolled into ~40 shared behavioral cases and two full CLI-transcript comparisons; forgetting to register one fails the suite by design.</li>
+          <li>One assignment concept with a kind tag makes "human or AI, never both" unrepresentable, rather than relying on two fields kept in sync by convention.</li>
+        </ul>
+      </div>
+      <div class="side">
+        <h4>Strongest evidence for Direct</h4>
+        <ul>
+          <li>Consistently smaller, more literal changes per stage — stage 2 alone: +452/−16 across 7 files vs. Guide's +1044/−73 across 10, for the identical request.</li>
+          <li>Built almost exactly what was asked: an AI agent really is just <code>(provider, model)</code>. Guide's agent registry, ids, display names, and execution history were all invented beyond the ask, and had to be carried through every later stage.</li>
+          <li>Better "clearly report why a task is blocked" — proactively shown in <code>show</code>, reusing one shared message function; Guide's equivalent prints bare hex ids with no explanation until you actually try the blocked action.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>The real bugs neither self-report caught</h3>
+    <p>These surfaced only when the blind reviewer constructed adversarial inputs — not from either subagent's own tests, and not from the orchestrator's lighter spot-checks:</p>
+    <blockquote><p>"I loaded a record with both [a human assignee and an agent] set… the human silently disappears… Neither the invariant nor this case is tested in [Direct]."</p></blockquote>
+    <blockquote><p>"In [Direct], <code>get_task</code> returns the live object… a mutation persists… the stored state ends up self-contradictory" — a task can be saved as <code>in progress</code> while its own <code>blocked_reason()</code> still calls it blocked.</p></blockquote>
+    <blockquote><p>"Because [Direct]'s <code>TaskService.__init__</code> loads the whole list once and <code>_save()</code> writes that same snapshot, a second session's work is silently destroyed" — demonstrated directly: one concurrent session's task vanishes from the file.</p></blockquote>
+    <p>And the reviewer was equally willing to find Guide's protection accidental where it was accidental: <em>"Neither repo defends invariant 8 against direct mutation. Guide happens to be safe in its shipping configuration; running Guide against an in-memory repository — exactly what Guide's own tests use — the bypass works identically."</em></p>
+  </section>
+
+  <hr class="brk" />
+
+  <section>
+    <div class="eyebrow">Synthesis</div>
+    <h2>What this says about the original question</h2>
+    <p>Two things this pilot was set up to probe, weighed against what happened:</p>
+
+    <h3>Was the deterministic layer a waste of time?</h3>
+    <p>This pilot didn't run Balash's rule engine on either repository, so it can't speak to that engine directly. But it does bear on the deeper claim — that shaping the model's own objective can substitute for external verification. It doesn't support that reading. Guide's real advantage wasn't "trust the model's judgment more"; it was <strong>building verification that outlives the coding session</strong> — a test that would fail if someone later duplicated the enforcement rule, a suite that auto-enrolls a forgotten backend. That is a deterministic instinct, expressed as code the model wrote, not a reason to drop deterministic checking.</p>
+
+    <h3>Was the earlier citation-hallucination problem a weak-model artifact?</h3>
+    <p>Partially, and only partially. Across all four stages, light verification — rerun the suite, grep for one specific claimed structure — never caught a false statement from either strong-model subagent; that's consistent with your hypothesis. But the blind reviewer, working adversarially rather than confirmatively, found three real defects in Direct's code that this same light verification walked straight past: a violable core invariant, a persisted contradictory state, and a lost-update bug under concurrent sessions. Stronger models reduced the rate of the model simply <em>lying about what it did</em>. They did not reduce the rate of the model's <em>own test suite having a blind spot</em> — and that second failure mode is what an adversarial pass is for, independent of how strong the model writing the code was.</p>
+  </section>
+
+  <section>
+    <div class="eyebrow">Limits</div>
+    <h2>What this pilot doesn't establish</h2>
+    <ul>
+      <li>n = 1 per condition. The runbook's own bar for trustworthy evidence is three independent runs per condition with fresh contexts; this is the minimum pilot, not a conclusion.</li>
+      <li>The blind reviewer had final-snapshot code plus stage-level metrics, not full stage-by-stage trees — "did this stage need a preparatory refactor?" was inferred from diff size, not observed directly.</li>
+      <li>Both conditions used the same implementation model by design (a controlled variable), so this pilot doesn't yet test your two-strong-models split (a dedicated objective-setting model vs. a dedicated execution model) as a distinct condition.</li>
+    </ul>
+    <h2 style="margin-top:34px">Natural next steps</h2>
+    <ul>
+      <li>Replicate: two more independent runs per condition before treating any of this as a trend rather than an anecdote.</li>
+      <li>Reveal a fifth, still-hidden stage — the protocol's own prediction is that the gap should widen or narrow more clearly as change accumulates.</li>
+      <li>Point Balash's actual deterministic CLI at both final repositories, to see what it would have caught statically versus what only the blind adversarial pass found.</li>
+    </ul>
+  </section>
+
+  <footer>
+    Generated from a live run of <code>balash-guide-experiment-v2</code> — repositories, state file, and full blind-review transcript preserved in the run's scratch directory.
+  </footer>
+
+</div>

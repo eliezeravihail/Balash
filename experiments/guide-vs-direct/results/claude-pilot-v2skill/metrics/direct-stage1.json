@@ -1,0 +1,119 @@
+{
+  "stage": 1,
+  "repository": "/tmp/claude-0/-home-user-Balash/10f7158b-a6b6-53e8-8416-b31f4ad9fdc5/scratchpad/experiment-run/direct-run",
+  "production_python_files": 6,
+  "test_python_files": 4,
+  "production_loc": 376,
+  "largest_production_files": [
+    [
+      "taskman/cli.py",
+      139
+    ],
+    [
+      "taskman/service.py",
+      83
+    ],
+    [
+      "taskman/storage.py",
+      70
+    ],
+    [
+      "taskman/models.py",
+      66
+    ],
+    [
+      "taskman/__init__.py",
+      15
+    ],
+    [
+      "taskman/__main__.py",
+      3
+    ]
+  ],
+  "module_fan_out": {},
+  "import_cycles": [],
+  "syntax_errors": [],
+  "stage_diff": {
+    "available": true,
+    "files_changed": 14,
+    "production_files_changed": 10,
+    "added_lines": 779,
+    "deleted_lines": 0,
+    "files": [
+      {
+        "path": ".gitignore",
+        "added": 3,
+        "deleted": 0
+      },
+      {
+        "path": "AGENT_INSTRUCTIONS.md",
+        "added": 12,
+        "deleted": 0
+      },
+      {
+        "path": "CURRENT_STAGE",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "path": "USER_REQUEST.md",
+        "added": 11,
+        "deleted": 0
+      },
+      {
+        "path": "taskman/__init__.py",
+        "added": 15,
+        "deleted": 0
+      },
+      {
+        "path": "taskman/__main__.py",
+        "added": 3,
+        "deleted": 0
+      },
+      {
+        "path": "taskman/cli.py",
+        "added": 139,
+        "deleted": 0
+      },
+      {
+        "path": "taskman/models.py",
+        "added": 66,
+        "deleted": 0
+      },
+      {
+        "path": "taskman/service.py",
+        "added": 83,
+        "deleted": 0
+      },
+      {
+        "path": "taskman/storage.py",
+        "added": 70,
+        "deleted": 0
+      },
+      {
+        "path": "tests/test_cli.py",
+        "added": 124,
+        "deleted": 0
+      },
+      {
+        "path": "tests/test_models.py",
+        "added": 44,
+        "deleted": 0
+      },
+      {
+        "path": "tests/test_service.py",
+        "added": 151,
+        "deleted": 0
+      },
+      {
+        "path": "tests/test_storage.py",
+        "added": 57,
+        "deleted": 0
+      }
+    ]
+  },
+  "unittest": {
+    "exit_code": 0,
+    "output_tail": "test_add_reports_the_new_task_id (test_cli.CommandTests.test_add_reports_the_new_task_id) ... ok\ntest_list_shows_dash_for_unassigned_task (test_cli.CommandTests.test_list_shows_dash_for_unassigned_task) ... ok\ntest_list_shows_title_status_and_assignee (test_cli.CommandTests.test_list_shows_title_status_and_assignee) ... ok\ntest_list_with_no_tasks (test_cli.CommandTests.test_list_with_no_tasks) ... ok\ntest_show_displays_the_description (test_cli.CommandTests.test_show_displays_the_description) ... ok\ntest_status_accepts_each_status (test_cli.CommandTests.test_status_accepts_each_status) ... ok\ntest_corrupt_data_file_reports_error (test_cli.ErrorHandlingTests.test_corrupt_data_file_reports_error) ... ok\ntest_empty_title_reports_error (test_cli.ErrorHandlingTests.test_empty_title_reports_error) ... ok\ntest_invalid_status_reports_error (test_cli.ErrorHandlingTests.test_invalid_status_reports_error) ... ok\ntest_unknown_command_exits_with_usage_error (test_cli.ErrorHandlingTests.test_unknown_command_exits_with_usage_error) ... usage: taskman [-h] [--file FILE] {add,assign,status,list,show} ...\ntaskman: error: argument command: invalid choice: 'frobnicate' (choose from 'add', 'assign', 'status', 'list', 'show')\nok\ntest_unknown_task_reports_error (test_cli.ErrorHandlingTests.test_unknown_task_reports_error) ... ok\ntest_data_survives_between_invocations (test_cli.PersistenceTests.test_data_survives_between_invocations) ... ok\ntest_uses_env_var_when_no_file_given (test_cli.PersistenceTests.test_uses_env_var_when_no_file_given) ... ok\ntest_label_is_human_readable (test_models.StatusParseTests.test_label_is_human_readable) ... ok\ntest_parses_canonical_values (test_models.StatusParseTests.test_parses_canonical_values) ... ok\ntest_parses_friendly_spellings (test_models.StatusParseTests.test_parses_friendly_spellings) ... ok\ntest_rejects_unknown_status (test_models.StatusParseTests.test_rejects_unknown_status) ... ok\ntest_defaults (test_models.TaskSerialisationTests.test_defaults) ... ok\ntest_round_trips_through_dict (test_models.TaskSerialisationTests.test_round_trips_through_dict) ... ok\ntest_assigning_unknown_task_fails (test_service.AssignTests.test_assigning_unknown_task_fails) ... ok\ntest_assigns_task_to_team_member (test_service.AssignTests.test_assigns_task_to_team_member) ... ok\ntest_empty_assignee_is_rejected (test_service.AssignTests.test_empty_assignee_is_rejected) ... ok\ntest_reassigning_replaces_previous_assignee (test_service.AssignTests.test_reassigning_replaces_previous_assignee) ... ok\ntest_creates_task_with_title_and_description (test_service.CreateTaskTests.test_creates_task_with_title_and_description) ... ok\ntest_empty_title_is_rejected (test_service.CreateTaskTests.test_empty_title_is_rejected) ... ok\ntest_ids_are_not_reused_after_restart (test_service.CreateTaskTests.test_ids_are_not_reused_after_restart) ... ok\ntest_ids_are_unique_and_increasing (test_service.CreateTaskTests.test_ids_are_unique_and_increasing) ... ok\ntest_new_task_starts_in_todo_and_unassigned (test_service.CreateTaskTests.test_new_task_starts_in_todo_and_unassigned) ... ok\ntest_empty_when_nothing_created (test_service.ListTests.test_empty_when_nothing_created) ... ok\ntest_lists_tasks_in_creation_order_with_assignee_and_status (test_service.ListTests.test_lists_tasks_in_creation_order_with_assignee_and_status) ... ok\ntest_returned_list_does_not_alias_internal_state (test_service.ListTests.test_returned_list_does_not_alias_internal_state) ... ok\ntest_missing_file_starts_empty (test_service.PersistenceTests.test_missing_file_starts_empty) ... ok\ntest_tasks_survive_a_restart (test_service.PersistenceTests.test_tasks_survive_a_restart) ... ok\ntest_accepts_status_as_text (test_service.StatusTests.test_accepts_status_as_text) ... ok\ntest_moves_through_the_three_statuses (test_service.StatusTests.test_moves_through_the_three_statuses) ... ok\ntest_rejects_unknown_status (test_service.StatusTests.test_rejects_unknown_status) ... ok\ntest_unknown_task_fails (test_service.StatusTests.test_unknown_task_fails) ... ok\ntest_corrupt_file_raises_storage_error (test_storage.StorageTests.test_corrupt_file_raises_storage_error) ... ok\ntest_creates_parent_directory (test_storage.StorageTests.test_creates_parent_directory) ... ok\ntest_file_is_readable_json (test_storage.StorageTests.test_file_is_readable_json) ... ok\ntest_missing_file_loads_as_empty (test_storage.StorageTests.test_missing_file_loads_as_empty) ... ok\ntest_save_leaves_no_temporary_files_behind (test_storage.StorageTests.test_save_leaves_no_temporary_files_behind) ... ok\ntest_save_then_load_round_trip (test_storage.StorageTests.test_save_then_load_round_trip) ... ok\n\n----------------------------------------------------------------------\nRan 43 tests in 0.093s\n\nOK"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "stage": 3,
+  "repository": "/tmp/claude-0/-home-user-Balash/10f7158b-a6b6-53e8-8416-b31f4ad9fdc5/scratchpad/experiment-run/guide-run",
+  "production_python_files": 9,
+  "test_python_files": 5,
+  "production_loc": 1277,
+  "largest_production_files": [
+    [
+      "taskman/sqlite_repository.py",
+      290
+    ],
+    [
+      "taskman/cli.py",
+      237
+    ],
+    [
+      "taskman/json_repository.py",
+      219
+    ],
+    [
+      "taskman/domain.py",
+      188
+    ],
+    [
+      "taskman/service.py",
+      172
+    ],
+    [
+      "taskman/repository.py",
+      75
+    ],
+    [
+      "taskman/provider.py",
+      48
+    ],
+    [
+      "taskman/__init__.py",
+      45
+    ],
+    [
+      "taskman/__main__.py",
+      3
+    ]
+  ],
+  "module_fan_out": {},
+  "import_cycles": [],
+  "syntax_errors": [],
+  "stage_diff": {
+    "available": true,
+    "files_changed": 9,
+    "production_files_changed": 8,
+    "added_lines": 1053,
+    "deleted_lines": 84,
+    "files": [
+      {
+        "path": ".balash/state.md",
+        "added": 99,
+        "deleted": 63
+      },
+      {
+        "path": "CURRENT_STAGE",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "path": "USER_REQUEST.md",
+        "added": 6,
+        "deleted": 4
+      },
+      {
+        "path": "taskman/__init__.py",
+        "added": 2,
+        "deleted": 1
+      },
+      {
+        "path": "taskman/cli.py",
+        "added": 45,
+        "deleted": 8
+      },
+      {
+        "path": "taskman/json_repository.py",
+        "added": 17,
+        "deleted": 4
+      },
+      {
+        "path": "taskman/repository.py",
+        "added": 16,
+        "deleted": 3
+      },
+      {
+        "path": "taskman/sqlite_repository.py",
+        "added": 290,
+        "deleted": 0
+      },
+      {
+        "path": "tests/test_backend_equivalence.py",
+        "added": 577,
+        "deleted": 0
+      }
+    ]
+  },
+  "unittest": {
+    "exit_code": 0,
+    "output_tail": "test_saving_an_agent_replaces_it_in_place_and_keeps_its_position (test_backend_equivalence.JsonBackendTests.test_saving_an_agent_replaces_it_in_place_and_keeps_its_position) ... ok\ntest_service_needs_nothing_but_the_seam (test_backend_equivalence.JsonBackendTests.test_service_needs_nothing_but_the_seam) ... ok\ntest_status_filter_matches_after_reload (test_backend_equivalence.JsonBackendTests.test_status_filter_matches_after_reload) ... ok\ntest_store_implements_both_repository_seams (test_backend_equivalence.JsonBackendTests.test_store_implements_both_repository_seams) ... ok\ntest_tasks_are_listed_in_creation_order_after_reload (test_backend_equivalence.JsonBackendTests.test_tasks_are_listed_in_creation_order_after_reload) ... ok\ntest_unassignment_survives_a_fresh_store (test_backend_equivalence.JsonBackendTests.test_unassignment_survives_a_fresh_store) ... ok\ntest_unknown_agent_raises_the_same_domain_error (test_backend_equivalence.JsonBackendTests.test_unknown_agent_raises_the_same_domain_error) ... ok\ntest_unknown_task_raises_the_same_domain_error (test_backend_equivalence.JsonBackendTests.test_unknown_task_raises_the_same_domain_error) ... ok\ntest_updating_a_task_replaces_it_in_place_and_keeps_its_position (test_backend_equivalence.JsonBackendTests.test_updating_a_task_replaces_it_in_place_and_keeps_its_position) ... ok\ntest_a_storage_failure_is_not_a_domain_error (test_backend_equivalence.NoAutomaticMigrationTests.test_a_storage_failure_is_not_a_domain_error) ... ok\ntest_json_refuses_a_sqlite_store_and_leaves_it_alone (test_backend_equivalence.NoAutomaticMigrationTests.test_json_refuses_a_sqlite_store_and_leaves_it_alone) ... ok\ntest_sqlite_refuses_a_json_store_and_leaves_it_alone (test_backend_equivalence.NoAutomaticMigrationTests.test_sqlite_refuses_a_json_store_and_leaves_it_alone) ... ok\ntest_the_stores_are_independent_files (test_backend_equivalence.NoAutomaticMigrationTests.test_the_stores_are_independent_files) ... ok\ntest_a_human_keeps_a_human_kind_even_with_an_agents_id (test_backend_equivalence.SqliteBackendTests.test_a_human_keeps_a_human_kind_even_with_an_agents_id) ... ok\ntest_agent_assignment_survives_a_fresh_store (test_backend_equivalence.SqliteBackendTests.test_agent_assignment_survives_a_fresh_store) ... ok\ntest_agents_are_listed_in_creation_order_after_reload (test_backend_equivalence.SqliteBackendTests.test_agents_are_listed_in_creation_order_after_reload) ... ok\ntest_awkward_text_round_trips_unchanged (test_backend_equivalence.SqliteBackendTests.test_awkward_text_round_trips_unchanged) ... ok\ntest_cli_agent_create_assign_execute_and_show_history (test_backend_equivalence.SqliteBackendTests.test_cli_agent_create_assign_execute_and_show_history) ... ok\ntest_cli_create_assign_status_list_and_show (test_backend_equivalence.SqliteBackendTests.test_cli_create_assign_status_list_and_show) ... ok\ntest_cli_list_is_friendly_when_empty (test_backend_equivalence.SqliteBackendTests.test_cli_list_is_friendly_when_empty) ... ok\ntest_cli_reports_domain_errors_the_same_way (test_backend_equivalence.SqliteBackendTests.test_cli_reports_domain_errors_the_same_way) ... ok\ntest_created_agent_survives_a_fresh_store (test_backend_equivalence.SqliteBackendTests.test_created_agent_survives_a_fresh_store) ... ok\ntest_created_task_survives_a_fresh_store (test_backend_equivalence.SqliteBackendTests.test_created_task_survives_a_fresh_store) ... ok\ntest_data_written_by_one_process_is_read_by_a_later_process (test_backend_equivalence.SqliteBackendTests.test_data_written_by_one_process_is_read_by_a_later_process) ... ok\ntest_duplicate_agent_id_is_rejected_across_a_restart (test_backend_equivalence.SqliteBackendTests.test_duplicate_agent_id_is_rejected_across_a_restart) ... ok\ntest_execution_does_not_disturb_status_or_assignee_after_reload (test_backend_equivalence.SqliteBackendTests.test_execution_does_not_disturb_status_or_assignee_after_reload) ... ok\ntest_execution_history_survives_a_fresh_store_in_order (test_backend_equivalence.SqliteBackendTests.test_execution_history_survives_a_fresh_store_in_order) ... ok\ntest_execution_is_rejected_identically_for_human_and_unassigned (test_backend_equivalence.SqliteBackendTests.test_execution_is_rejected_identically_for_human_and_unassigned) ... ok\ntest_human_assignment_and_status_survive_a_fresh_store (test_backend_equivalence.SqliteBackendTests.test_human_assignment_and_status_survive_a_fresh_store) ... ok\ntest_missing_store_reads_as_empty_and_is_not_created (test_backend_equivalence.SqliteBackendTests.test_missing_store_reads_as_empty_and_is_not_created) ... ok\ntest_saving_a_task_does_not_drop_agents_and_the_reverse (test_backend_equivalence.SqliteBackendTests.test_saving_a_task_does_not_drop_agents_and_the_reverse) ... ok\ntest_saving_an_agent_replaces_it_in_place_and_keeps_its_position (test_backend_equivalence.SqliteBackendTests.test_saving_an_agent_replaces_it_in_place_and_keeps_its_position) ... ok\ntest_service_needs_nothing_but_the_seam (test_backend_equivalence.SqliteBackendTests.test_service_needs_nothing_but_the_seam) ... ok\ntest_status_filter_matches_after_reload (test_backend_equivalence.SqliteBackendTests.test_status_filter_matches_after_reload) ... ok\ntest_store_implements_both_repository_seams (test_backend_equivalence.SqliteBackendTests.test_store_implements_both_repository_seams) ... ok\ntest_tasks_are_listed_in_creation_order_after_reload (test_backend_equivalence.SqliteBackendTests.test_tasks_are_listed_in_creation_order_after_reload) ... ok\ntest_unassignment_survives_a_fresh_store (test_backend_equivalence.SqliteBackendTests.test_unassignment_survives_a_fresh_store) ... ok\ntest_unknown_agent_raises_the_same_domain_error (test_backend_equivalence.SqliteBackendTests.test_unknown_agent_raises_the_same_domain_error) ... ok\ntest_unknown_task_raises_the_same_domain_error (test_backend_equivalence.SqliteBackendTests.test_unknown_task_raises_the_same_domain_error) ... ok\ntest_updating_a_task_replaces_it_in_place_and_keeps_its_position (test_backend_equivalence.SqliteBackendTests.test_updating_a_task_replaces_it_in_place_and_keeps_its_position) ... ok\ntest_every_selectable_backend_runs_the_shared_cases (test_backend_equivalence.SuiteCoverageTests.test_every_selectable_backend_runs_the_shared_cases) ... ok\ntest_the_shared_cases_are_not_trivially_empty (test_backend_equivalence.SuiteCoverageTests.test_the_shared_cases_are_not_trivially_empty) ... ok\ntest_create_reports_the_new_id (test_cli.CliTests.test_create_reports_the_new_id) ... ok\ntest_invalid_status_is_rejected_by_the_parser (test_cli.CliTests.test_invalid_status_is_rejected_by_the_parser) ... ok\ntest_list_filters_by_status (test_cli.CliTests.test_list_filters_by_status) ... ok\ntest_list_is_friendly_when_empty (test_cli.CliTests.test_list_is_friendly_when_empty) ... ok\ntest_list_shows_id_status_assignee_and_title (test_cli.CliTests.test_list_shows_id_status_assignee_and_title) ... ok\ntest_show_includes_the_description (test_cli.CliTests.test_show_includes_the_description) ... ok\ntest_unassign_clears_the_assignee (test_cli.CliTests.test_unassign_clears_the_assignee) ... ok\ntest_unassigned_task_lists_a_placeholder_assignee (test_cli.CliTests.test_unassigned_task_lists_a_placeholder_assignee) ... ok\ntest_unknown_task_exits_non_zero_with_a_message (test_cli.CliTests.test_unknown_task_exits_non_zero_with_a_message) ... ok\ntest_all_tasks_are_listed_after_reload (test_persistence.FreshInstanceTests.test_all_tasks_are_listed_after_reload) ... ok\ntest_assignment_and_status_survive_a_fresh_repository_instance (test_persistence.FreshInstanceTests.test_assignment_and_status_survive_a_fresh_repository_instance) ... ok\ntest_missing_file_reads_as_empty_rather_than_failing (test_persistence.FreshInstanceTests.test_missing_file_reads_as_empty_rather_than_failing) ... ok\ntest_save_leaves_no_temporary_files_behind (test_persistence.FreshInstanceTests.test_save_leaves_no_temporary_files_behind) ... ok\ntest_stored_file_is_valid_json_with_a_schema_version (test_persistence.FreshInstanceTests.test_stored_file_is_valid_json_with_a_schema_version) ... ok\ntest_task_survives_a_fresh_repository_instance (test_persistence.FreshInstanceTests.test_task_survives_a_fresh_repository_instance) ... ok\ntest_data_written_by_one_process_is_read_by_a_later_process (test_persistence.SeparateProcessTests.test_data_written_by_one_process_is_read_by_a_later_process) ... ok\ntest_assign_records_member_id_and_display_name (test_service.AssignmentTests.test_assign_records_member_id_and_display_name) ... ok\ntest_assignee_may_be_cleared (test_service.AssignmentTests.test_assignee_may_be_cleared) ... ok\ntest_assigning_unknown_task_raises (test_service.AssignmentTests.test_assigning_unknown_task_raises) ... ok\ntest_display_name_defaults_to_member_id (test_service.AssignmentTests.test_display_name_defaults_to_member_id) ... ok\ntest_reassignment_replaces_previous_assignee (test_service.AssignmentTests.test_reassignment_replaces_previous_assignee) ... ok\ntest_created_task_has_id_title_description_and_starts_todo (test_service.CreateTaskTests.test_created_task_has_id_title_description_and_starts_todo) ... ok\ntest_empty_title_is_rejected (test_service.CreateTaskTests.test_empty_title_is_rejected) ... ok\ntest_ids_are_distinct (test_service.CreateTaskTests.test_ids_are_distinct) ... ok\ntest_list_can_filter_by_status (test_service.ListTests.test_list_can_filter_by_status) ... ok\ntest_list_is_empty_at_first (test_service.ListTests.test_list_is_empty_at_first) ... ok\ntest_list_returns_tasks_with_assignee_and_status (test_service.ListTests.test_list_returns_tasks_with_assignee_and_status) ... ok\ntest_domain_and_service_do_not_import_a_storage_format (test_service.SeamTests.test_domain_and_service_do_not_import_a_storage_format) ... ok\ntest_service_works_against_any_repository_implementation (test_service.SeamTests.test_service_works_against_any_repository_implementation) ... ok\ntest_full_todo_in_progress_done_cycle (test_service.StatusTests.test_full_todo_in_progress_done_cycle) ... ok\ntest_status_change_on_unknown_task_raises (test_service.StatusTests.test_status_change_on_unknown_task_raises) ... ok\ntest_status_parsing_is_forgiving_about_case_and_separators (test_service.StatusTests.test_status_parsing_is_forgiving_about_case_and_separators) ... ok\ntest_unknown_status_raises (test_service.StatusTests.test_unknown_status_raises) ... ok\n\n----------------------------------------------------------------------\nRan 140 tests in 1.941s\n\nOK"
+  }
+}

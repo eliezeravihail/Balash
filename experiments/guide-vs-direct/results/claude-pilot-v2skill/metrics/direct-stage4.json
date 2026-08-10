@@ -1,0 +1,93 @@
+{
+  "stage": 4,
+  "repository": "/tmp/claude-0/-home-user-Balash/10f7158b-a6b6-53e8-8416-b31f4ad9fdc5/scratchpad/experiment-run/direct-run",
+  "production_python_files": 7,
+  "test_python_files": 8,
+  "production_loc": 1048,
+  "largest_production_files": [
+    [
+      "taskman/storage.py",
+      317
+    ],
+    [
+      "taskman/cli.py",
+      272
+    ],
+    [
+      "taskman/service.py",
+      250
+    ],
+    [
+      "taskman/models.py",
+      131
+    ],
+    [
+      "taskman/__init__.py",
+      40
+    ],
+    [
+      "taskman/agents.py",
+      35
+    ],
+    [
+      "taskman/__main__.py",
+      3
+    ]
+  ],
+  "module_fan_out": {},
+  "import_cycles": [],
+  "syntax_errors": [],
+  "stage_diff": {
+    "available": true,
+    "files_changed": 8,
+    "production_files_changed": 7,
+    "added_lines": 873,
+    "deleted_lines": 25,
+    "files": [
+      {
+        "path": "CURRENT_STAGE",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "path": "USER_REQUEST.md",
+        "added": 3,
+        "deleted": 7
+      },
+      {
+        "path": "taskman/__init__.py",
+        "added": 7,
+        "deleted": 1
+      },
+      {
+        "path": "taskman/cli.py",
+        "added": 80,
+        "deleted": 6
+      },
+      {
+        "path": "taskman/models.py",
+        "added": 9,
+        "deleted": 1
+      },
+      {
+        "path": "taskman/service.py",
+        "added": 133,
+        "deleted": 4
+      },
+      {
+        "path": "taskman/storage.py",
+        "added": 49,
+        "deleted": 5
+      },
+      {
+        "path": "tests/test_prerequisites.py",
+        "added": 591,
+        "deleted": 0
+      }
+    ]
+  },
+  "unittest": {
+    "exit_code": 0,
+    "output_tail": "test_all_prerequisites_must_be_done (test_prerequisites.BlockedStatusTests.test_all_prerequisites_must_be_done) ... ok\ntest_blocked_task_cannot_be_moved_to_in_progress (test_prerequisites.BlockedStatusTests.test_blocked_task_cannot_be_moved_to_in_progress) ... ok\ntest_removing_the_prerequisite_unblocks_the_task (test_prerequisites.BlockedStatusTests.test_removing_the_prerequisite_unblocks_the_task) ... ok\ntest_task_can_start_once_the_prerequisite_is_done (test_prerequisites.BlockedStatusTests.test_task_can_start_once_the_prerequisite_is_done) ... ok\ntest_the_error_names_every_unfinished_prerequisite (test_prerequisites.BlockedStatusTests.test_the_error_names_every_unfinished_prerequisite) ... ok\ntest_the_error_names_the_prerequisite_and_its_status (test_prerequisites.BlockedStatusTests.test_the_error_names_the_prerequisite_and_its_status) ... ok\ntest_a_diamond_is_allowed (test_prerequisites.CycleTests.test_a_diamond_is_allowed)\nTwo tasks may share a prerequisite - that is not a cycle. ... ok\ntest_a_direct_cycle_is_rejected (test_prerequisites.CycleTests.test_a_direct_cycle_is_rejected) ... ok\ntest_a_task_cannot_depend_on_itself (test_prerequisites.CycleTests.test_a_task_cannot_depend_on_itself) ... ok\ntest_an_indirect_cycle_is_rejected (test_prerequisites.CycleTests.test_an_indirect_cycle_is_rejected) ... ok\ntest_an_unknown_prerequisite_blocks_and_is_reported (test_prerequisites.DanglingPrerequisiteTests.test_an_unknown_prerequisite_blocks_and_is_reported) ... ok\ntest_add_prerequisite_reports_the_dependency (test_prerequisites.PrerequisiteCliTests.test_add_prerequisite_reports_the_dependency) ... ok\ntest_cycles_and_unknown_tasks_are_reported (test_prerequisites.PrerequisiteCliTests.test_cycles_and_unknown_tasks_are_reported) ... ok\ntest_executing_a_blocked_task_reports_why (test_prerequisites.PrerequisiteCliTests.test_executing_a_blocked_task_reports_why) ... ok\ntest_prerequisites_survive_between_invocations (test_prerequisites.PrerequisiteCliTests.test_prerequisites_survive_between_invocations) ... ok\ntest_remove_prerequisite_reports_the_dependency_is_gone (test_prerequisites.PrerequisiteCliTests.test_remove_prerequisite_reports_the_dependency_is_gone) ... ok\ntest_show_lists_prerequisites_and_why_the_task_is_blocked (test_prerequisites.PrerequisiteCliTests.test_show_lists_prerequisites_and_why_the_task_is_blocked) ... ok\ntest_show_of_a_task_without_prerequisites_is_unchanged (test_prerequisites.PrerequisiteCliTests.test_show_of_a_task_without_prerequisites_is_unchanged) ... ok\ntest_show_stops_reporting_blocked_once_prerequisites_are_done (test_prerequisites.PrerequisiteCliTests.test_show_stops_reporting_blocked_once_prerequisites_are_done) ... ok\ntest_starting_a_blocked_task_reports_why (test_prerequisites.PrerequisiteCliTests.test_starting_a_blocked_task_reports_why) ... ok\ntest_the_whole_flow_works_from_the_command_line (test_prerequisites.PrerequisiteCliTests.test_the_whole_flow_works_from_the_command_line) ... ok\ntest_prerequisites_survive_a_save_and_load (test_prerequisites.PrerequisiteStorageTests.test_prerequisites_survive_a_save_and_load) ... ok\ntest_removing_a_prerequisite_is_persisted (test_prerequisites.PrerequisiteStorageTests.test_removing_a_prerequisite_is_persisted) ... ok\ntest_sqlite_database_written_before_this_feature_still_opens (test_prerequisites.PrerequisiteStorageTests.test_sqlite_database_written_before_this_feature_still_opens)\nAn old database has no task_prerequisites table; it gains an empty one. ... ok\ntest_blocking_is_reported_the_same_way_on_both_backends (test_prerequisites.PrerequisitesAcrossBackendsTests.test_blocking_is_reported_the_same_way_on_both_backends) ... ok\ntest_the_same_records_are_produced_on_both_backends (test_prerequisites.PrerequisitesAcrossBackendsTests.test_the_same_records_are_produced_on_both_backends) ... ok\ntest_a_prerequisite_can_be_removed (test_prerequisites.RecordingPrerequisitesTests.test_a_prerequisite_can_be_removed) ... ok\ntest_a_task_can_have_several_prerequisites_in_order (test_prerequisites.RecordingPrerequisitesTests.test_a_task_can_have_several_prerequisites_in_order) ... ok\ntest_prerequisites_survive_a_restart (test_prerequisites.RecordingPrerequisitesTests.test_prerequisites_survive_a_restart) ... ok\ntest_recording_the_same_prerequisite_twice_changes_nothing (test_prerequisites.RecordingPrerequisitesTests.test_recording_the_same_prerequisite_twice_changes_nothing) ... ok\ntest_records_a_prerequisite (test_prerequisites.RecordingPrerequisitesTests.test_records_a_prerequisite) ... ok\ntest_removing_a_prerequisite_that_is_not_there_is_rejected (test_prerequisites.RecordingPrerequisitesTests.test_removing_a_prerequisite_that_is_not_there_is_rejected) ... ok\ntest_unknown_tasks_are_rejected (test_prerequisites.RecordingPrerequisitesTests.test_unknown_tasks_are_rejected) ... ok\ntest_a_new_task_has_no_prerequisites (test_prerequisites.TaskPrerequisiteModelTests.test_a_new_task_has_no_prerequisites) ... ok\ntest_order_of_prerequisites_is_kept (test_prerequisites.TaskPrerequisiteModelTests.test_order_of_prerequisites_is_kept) ... ok\ntest_prerequisites_round_trip_through_dict (test_prerequisites.TaskPrerequisiteModelTests.test_prerequisites_round_trip_through_dict) ... ok\ntest_records_written_before_dependencies_existed_still_load (test_prerequisites.TaskPrerequisiteModelTests.test_records_written_before_dependencies_existed_still_load) ... ok\ntest_two_tasks_do_not_share_one_prerequisite_list (test_prerequisites.TaskPrerequisiteModelTests.test_two_tasks_do_not_share_one_prerequisite_list) ... ok\ntest_assigning_unknown_task_fails (test_service.AssignTests.test_assigning_unknown_task_fails) ... ok\ntest_assigns_task_to_team_member (test_service.AssignTests.test_assigns_task_to_team_member) ... ok\ntest_empty_assignee_is_rejected (test_service.AssignTests.test_empty_assignee_is_rejected) ... ok\ntest_reassigning_replaces_previous_assignee (test_service.AssignTests.test_reassigning_replaces_previous_assignee) ... ok\ntest_creates_task_with_title_and_description (test_service.CreateTaskTests.test_creates_task_with_title_and_description) ... ok\ntest_empty_title_is_rejected (test_service.CreateTaskTests.test_empty_title_is_rejected) ... ok\ntest_ids_are_not_reused_after_restart (test_service.CreateTaskTests.test_ids_are_not_reused_after_restart) ... ok\ntest_ids_are_unique_and_increasing (test_service.CreateTaskTests.test_ids_are_unique_and_increasing) ... ok\ntest_new_task_starts_in_todo_and_unassigned (test_service.CreateTaskTests.test_new_task_starts_in_todo_and_unassigned) ... ok\ntest_empty_when_nothing_created (test_service.ListTests.test_empty_when_nothing_created) ... ok\ntest_lists_tasks_in_creation_order_with_assignee_and_status (test_service.ListTests.test_lists_tasks_in_creation_order_with_assignee_and_status) ... ok\ntest_returned_list_does_not_alias_internal_state (test_service.ListTests.test_returned_list_does_not_alias_internal_state) ... ok\ntest_missing_file_starts_empty (test_service.PersistenceTests.test_missing_file_starts_empty) ... ok\ntest_tasks_survive_a_restart (test_service.PersistenceTests.test_tasks_survive_a_restart) ... ok\ntest_accepts_status_as_text (test_service.StatusTests.test_accepts_status_as_text) ... ok\ntest_moves_through_the_three_statuses (test_service.StatusTests.test_moves_through_the_three_statuses) ... ok\ntest_rejects_unknown_status (test_service.StatusTests.test_rejects_unknown_status) ... ok\ntest_unknown_task_fails (test_service.StatusTests.test_unknown_task_fails) ... ok\ntest_agent_and_result_round_trip (test_sqlite_storage.SqliteStorageTests.test_agent_and_result_round_trip) ... ok\ntest_corrupt_file_raises_storage_error (test_sqlite_storage.SqliteStorageTests.test_corrupt_file_raises_storage_error) ... ok\ntest_creates_parent_directory (test_sqlite_storage.SqliteStorageTests.test_creates_parent_directory) ... ok\ntest_empty_result_output_round_trips (test_sqlite_storage.SqliteStorageTests.test_empty_result_output_round_trips) ... ok\ntest_file_is_a_sqlite_database_with_one_row_per_task (test_sqlite_storage.SqliteStorageTests.test_file_is_a_sqlite_database_with_one_row_per_task) ... ok\ntest_missing_file_is_not_created_by_load (test_sqlite_storage.SqliteStorageTests.test_missing_file_is_not_created_by_load) ... ok\ntest_missing_file_loads_as_empty (test_sqlite_storage.SqliteStorageTests.test_missing_file_loads_as_empty) ... ok\ntest_save_leaves_no_temporary_files_behind (test_sqlite_storage.SqliteStorageTests.test_save_leaves_no_temporary_files_behind) ... ok\ntest_save_then_load_round_trip (test_sqlite_storage.SqliteStorageTests.test_save_then_load_round_trip) ... ok\ntest_saving_replaces_previous_content (test_sqlite_storage.SqliteStorageTests.test_saving_replaces_previous_content) ... ok\ntest_tasks_come_back_in_creation_order (test_sqlite_storage.SqliteStorageTests.test_tasks_come_back_in_creation_order) ... ok\ntest_corrupt_file_raises_storage_error (test_storage.StorageTests.test_corrupt_file_raises_storage_error) ... ok\ntest_creates_parent_directory (test_storage.StorageTests.test_creates_parent_directory) ... ok\ntest_file_is_readable_json (test_storage.StorageTests.test_file_is_readable_json) ... ok\ntest_missing_file_loads_as_empty (test_storage.StorageTests.test_missing_file_loads_as_empty) ... ok\ntest_save_leaves_no_temporary_files_behind (test_storage.StorageTests.test_save_leaves_no_temporary_files_behind) ... ok\ntest_save_then_load_round_trip (test_storage.StorageTests.test_save_then_load_round_trip) ... ok\n\n----------------------------------------------------------------------\nRan 152 tests in 0.568s\n\nOK"
+  }
+}

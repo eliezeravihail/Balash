@@ -1,0 +1,158 @@
+{
+  "stage": 1,
+  "repository": "/tmp/claude-0/-home-user-Balash/10f7158b-a6b6-53e8-8416-b31f4ad9fdc5/scratchpad/experiment-run/guide-run",
+  "production_python_files": 7,
+  "test_python_files": 3,
+  "production_loc": 447,
+  "largest_production_files": [
+    [
+      "taskman/cli.py",
+      137
+    ],
+    [
+      "taskman/json_repository.py",
+      108
+    ],
+    [
+      "taskman/domain.py",
+      88
+    ],
+    [
+      "taskman/service.py",
+      66
+    ],
+    [
+      "taskman/repository.py",
+      28
+    ],
+    [
+      "taskman/__init__.py",
+      17
+    ],
+    [
+      "taskman/__main__.py",
+      3
+    ]
+  ],
+  "module_fan_out": {},
+  "import_cycles": [],
+  "syntax_errors": [],
+  "stage_diff": {
+    "available": true,
+    "files_changed": 21,
+    "production_files_changed": 18,
+    "added_lines": 1310,
+    "deleted_lines": 0,
+    "files": [
+      {
+        "path": ".agents/skills/balash-guide/SKILL.md",
+        "added": 165,
+        "deleted": 0
+      },
+      {
+        "path": ".agents/skills/balash-guide/assets/state-template.md",
+        "added": 56,
+        "deleted": 0
+      },
+      {
+        "path": ".agents/skills/balash-guide/references/discovery.md",
+        "added": 47,
+        "deleted": 0
+      },
+      {
+        "path": ".agents/skills/balash-guide/references/objective-selection.md",
+        "added": 63,
+        "deleted": 0
+      },
+      {
+        "path": ".agents/skills/balash-guide/references/review.md",
+        "added": 31,
+        "deleted": 0
+      },
+      {
+        "path": ".agents/skills/balash-guide/references/worker-handoff.md",
+        "added": 53,
+        "deleted": 0
+      },
+      {
+        "path": ".balash/state.md",
+        "added": 73,
+        "deleted": 0
+      },
+      {
+        "path": ".gitignore",
+        "added": 2,
+        "deleted": 0
+      },
+      {
+        "path": "AGENT_INSTRUCTIONS.md",
+        "added": 9,
+        "deleted": 0
+      },
+      {
+        "path": "CURRENT_STAGE",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "path": "USER_REQUEST.md",
+        "added": 11,
+        "deleted": 0
+      },
+      {
+        "path": "taskman/__init__.py",
+        "added": 17,
+        "deleted": 0
+      },
+      {
+        "path": "taskman/__main__.py",
+        "added": 3,
+        "deleted": 0
+      },
+      {
+        "path": "taskman/cli.py",
+        "added": 137,
+        "deleted": 0
+      },
+      {
+        "path": "taskman/domain.py",
+        "added": 88,
+        "deleted": 0
+      },
+      {
+        "path": "taskman/json_repository.py",
+        "added": 108,
+        "deleted": 0
+      },
+      {
+        "path": "taskman/repository.py",
+        "added": 28,
+        "deleted": 0
+      },
+      {
+        "path": "taskman/service.py",
+        "added": 66,
+        "deleted": 0
+      },
+      {
+        "path": "tests/test_cli.py",
+        "added": 90,
+        "deleted": 0
+      },
+      {
+        "path": "tests/test_persistence.py",
+        "added": 106,
+        "deleted": 0
+      },
+      {
+        "path": "tests/test_service.py",
+        "added": 156,
+        "deleted": 0
+      }
+    ]
+  },
+  "unittest": {
+    "exit_code": 0,
+    "output_tail": "test_create_reports_the_new_id (test_cli.CliTests.test_create_reports_the_new_id) ... ok\ntest_invalid_status_is_rejected_by_the_parser (test_cli.CliTests.test_invalid_status_is_rejected_by_the_parser) ... ok\ntest_list_filters_by_status (test_cli.CliTests.test_list_filters_by_status) ... ok\ntest_list_is_friendly_when_empty (test_cli.CliTests.test_list_is_friendly_when_empty) ... ok\ntest_list_shows_id_status_assignee_and_title (test_cli.CliTests.test_list_shows_id_status_assignee_and_title) ... ok\ntest_show_includes_the_description (test_cli.CliTests.test_show_includes_the_description) ... ok\ntest_unassign_clears_the_assignee (test_cli.CliTests.test_unassign_clears_the_assignee) ... ok\ntest_unassigned_task_lists_a_placeholder_assignee (test_cli.CliTests.test_unassigned_task_lists_a_placeholder_assignee) ... ok\ntest_unknown_task_exits_non_zero_with_a_message (test_cli.CliTests.test_unknown_task_exits_non_zero_with_a_message) ... ok\ntest_all_tasks_are_listed_after_reload (test_persistence.FreshInstanceTests.test_all_tasks_are_listed_after_reload) ... ok\ntest_assignment_and_status_survive_a_fresh_repository_instance (test_persistence.FreshInstanceTests.test_assignment_and_status_survive_a_fresh_repository_instance) ... ok\ntest_missing_file_reads_as_empty_rather_than_failing (test_persistence.FreshInstanceTests.test_missing_file_reads_as_empty_rather_than_failing) ... ok\ntest_save_leaves_no_temporary_files_behind (test_persistence.FreshInstanceTests.test_save_leaves_no_temporary_files_behind) ... ok\ntest_stored_file_is_valid_json_with_a_schema_version (test_persistence.FreshInstanceTests.test_stored_file_is_valid_json_with_a_schema_version) ... ok\ntest_task_survives_a_fresh_repository_instance (test_persistence.FreshInstanceTests.test_task_survives_a_fresh_repository_instance) ... ok\ntest_data_written_by_one_process_is_read_by_a_later_process (test_persistence.SeparateProcessTests.test_data_written_by_one_process_is_read_by_a_later_process) ... ok\ntest_assign_records_member_id_and_display_name (test_service.AssignmentTests.test_assign_records_member_id_and_display_name) ... ok\ntest_assignee_may_be_cleared (test_service.AssignmentTests.test_assignee_may_be_cleared) ... ok\ntest_assigning_unknown_task_raises (test_service.AssignmentTests.test_assigning_unknown_task_raises) ... ok\ntest_display_name_defaults_to_member_id (test_service.AssignmentTests.test_display_name_defaults_to_member_id) ... ok\ntest_reassignment_replaces_previous_assignee (test_service.AssignmentTests.test_reassignment_replaces_previous_assignee) ... ok\ntest_created_task_has_id_title_description_and_starts_todo (test_service.CreateTaskTests.test_created_task_has_id_title_description_and_starts_todo) ... ok\ntest_empty_title_is_rejected (test_service.CreateTaskTests.test_empty_title_is_rejected) ... ok\ntest_ids_are_distinct (test_service.CreateTaskTests.test_ids_are_distinct) ... ok\ntest_list_can_filter_by_status (test_service.ListTests.test_list_can_filter_by_status) ... ok\ntest_list_is_empty_at_first (test_service.ListTests.test_list_is_empty_at_first) ... ok\ntest_list_returns_tasks_with_assignee_and_status (test_service.ListTests.test_list_returns_tasks_with_assignee_and_status) ... ok\ntest_domain_and_service_do_not_import_a_storage_format (test_service.SeamTests.test_domain_and_service_do_not_import_a_storage_format) ... ok\ntest_service_works_against_any_repository_implementation (test_service.SeamTests.test_service_works_against_any_repository_implementation) ... ok\ntest_full_todo_in_progress_done_cycle (test_service.StatusTests.test_full_todo_in_progress_done_cycle) ... ok\ntest_status_change_on_unknown_task_raises (test_service.StatusTests.test_status_change_on_unknown_task_raises) ... ok\ntest_status_parsing_is_forgiving_about_case_and_separators (test_service.StatusTests.test_status_parsing_is_forgiving_about_case_and_separators) ... ok\ntest_unknown_status_raises (test_service.StatusTests.test_unknown_status_raises) ... ok\n\n----------------------------------------------------------------------\nRan 33 tests in 0.311s\n\nOK"
+  }
+}

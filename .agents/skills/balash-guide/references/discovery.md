@@ -1,0 +1,84 @@
+# Discovery guidance
+
+Discovery exists to ground product behavior that changes engineering direction. It is not a requirements questionnaire, but implementation readiness is not permission to invent product behavior.
+
+## Mandatory discovery gate
+
+For a new product, obtain one concrete start-to-useful-result scenario before delegation unless the user already supplied one with comparable detail.
+
+For every request, sort unresolved choices into:
+
+1. **Grounded product facts** — supported by the request, repository behavior, or a recorded user answer.
+2. **Open product decisions** — affect observable behavior, persistent data, identity/ownership, lifecycle rules, failure handling, or scope.
+3. **Technical freedoms** — affect implementation only and can be chosen sensibly by the Worker.
+
+Do not delegate while a material open product decision is unresolved. Ask about it. Do not ask the user about technical freedoms.
+
+## Start from behavior
+
+Prefer:
+
+> Give me one concrete example of a user using this product from start to useful result.
+
+over:
+
+> What are all your functional requirements?
+
+Concrete scenarios expose responsibilities, ownership, state transitions, failure behavior, and likely boundaries more reliably than architecture vocabulary supplied by the user.
+
+After receiving the scenario, check only the dimensions the request actually touches:
+
+- Who acts, and how are relevant people or things identified?
+- What starts the flow, and what observable result ends it?
+- What data must survive, and what may be absent?
+- Which state changes are allowed or blocked, and what should the user see on failure?
+- Which stated constraints or exclusions bound the work?
+
+An unanswered item is not automatically a blocker. It is a blocker only when different answers would materially change current product behavior, persistent representation, an invariant, or the current objective.
+
+## Product-assumption test
+
+Before treating an unspecified choice as an assumption, ask:
+
+> If another reasonable answer were chosen, would a user observe different behavior, would stored data mean something different, or would an important rule move to a different owner?
+
+If yes, record an open product decision and ask. If no, record a technical freedom and let the Worker choose.
+
+For example, whether exporting a report overwrites the prior report or creates a new user-visible version is a product decision. Which library performs the write, how modules are named, and what internal interface connects them are technical freedoms when the user has expressed no relevant constraint.
+
+## Follow the forces
+
+When a scenario reveals a dimension that may evolve independently, test whether it is real.
+
+Useful questions include:
+- In the concrete scenario just described, which responsibilities or concepts have clearly different reasons to change?
+- Is a suspected variation part of the product the user actually expects, or merely something that can be imagined?
+- What behavior must remain true as the product evolves?
+- What current uncertainty would cause materially different engineering choices?
+- What should *not* be generalized yet?
+
+Do not present the user with a catalog of possible future extension points. Derive candidate forces from the product scenario and the user's answers.
+
+## Ask one question at a time
+
+Choose the highest-impact open product decision, ask one concrete question, record the answer, and re-evaluate. Stop only when no material open product decision blocks the next objective.
+
+Do not bundle a questionnaire. Do not volunteer a catalog of hypothetical future features. A short discovery may still contain several turns when each answer exposes the next material decision.
+
+## Record only actionable forces
+
+Translate useful answers into concise state entries:
+
+```text
+Core scenario: ...
+Grounded product fact: ... — source: request | repository | user answer
+Open product decision: ... — why it changes behavior/objective
+Technical freedom: ... — safe for Worker to choose
+Likely change axis: ... because ...
+Invariant: ...
+Constraint: ...
+Explicit non-goal: ...
+Unknown that still matters: ...
+```
+
+Do not turn vague possibilities into requirements. Do not record a guess as a durable decision.

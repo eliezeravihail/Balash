@@ -1,0 +1,98 @@
+{
+  "stage": 3,
+  "repository": "/tmp/claude-0/-home-user-Balash/10f7158b-a6b6-53e8-8416-b31f4ad9fdc5/scratchpad/experiment-run/direct-run",
+  "production_python_files": 7,
+  "test_python_files": 7,
+  "production_loc": 787,
+  "largest_production_files": [
+    [
+      "taskman/storage.py",
+      273
+    ],
+    [
+      "taskman/cli.py",
+      198
+    ],
+    [
+      "taskman/models.py",
+      123
+    ],
+    [
+      "taskman/service.py",
+      121
+    ],
+    [
+      "taskman/agents.py",
+      35
+    ],
+    [
+      "taskman/__init__.py",
+      34
+    ],
+    [
+      "taskman/__main__.py",
+      3
+    ]
+  ],
+  "module_fan_out": {},
+  "import_cycles": [],
+  "syntax_errors": [],
+  "stage_diff": {
+    "available": true,
+    "files_changed": 9,
+    "production_files_changed": 7,
+    "added_lines": 640,
+    "deleted_lines": 21,
+    "files": [
+      {
+        "path": ".gitignore",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "path": "CURRENT_STAGE",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "path": "USER_REQUEST.md",
+        "added": 6,
+        "deleted": 4
+      },
+      {
+        "path": "taskman/__init__.py",
+        "added": 14,
+        "deleted": 1
+      },
+      {
+        "path": "taskman/cli.py",
+        "added": 32,
+        "deleted": 8
+      },
+      {
+        "path": "taskman/service.py",
+        "added": 7,
+        "deleted": 5
+      },
+      {
+        "path": "taskman/storage.py",
+        "added": 205,
+        "deleted": 2
+      },
+      {
+        "path": "tests/test_backends.py",
+        "added": 264,
+        "deleted": 0
+      },
+      {
+        "path": "tests/test_sqlite_storage.py",
+        "added": 110,
+        "deleted": 0
+      }
+    ]
+  },
+  "unittest": {
+    "exit_code": 0,
+    "output_tail": "ok\ntest_corrupt_data_file_reports_an_error_on_either_backend (test_backends.CliBehaviourTests.test_corrupt_data_file_reports_an_error_on_either_backend) ... ok\ntest_data_survives_between_invocations_on_either_backend (test_backends.CliBehaviourTests.test_data_survives_between_invocations_on_either_backend) ... ok\ntest_transcript_contains_the_expected_output (test_backends.CliBehaviourTests.test_transcript_contains_the_expected_output) ... ok\ntest_transcripts_are_identical_on_both_backends (test_backends.CliBehaviourTests.test_transcripts_are_identical_on_both_backends) ... ok\ntest_both_backends_are_offered (test_backends.CreateStorageTests.test_both_backends_are_offered) ... ok\ntest_builds_the_requested_backend (test_backends.CreateStorageTests.test_builds_the_requested_backend) ... ok\ntest_each_backend_has_its_own_default_file_name (test_backends.CreateStorageTests.test_each_backend_has_its_own_default_file_name) ... ok\ntest_unknown_backend_is_rejected (test_backends.CreateStorageTests.test_unknown_backend_is_rejected) ... ok\ntest_ids_are_not_reused_after_a_restart_on_either_backend (test_backends.ServiceBehaviourTests.test_ids_are_not_reused_after_a_restart_on_either_backend) ... ok\ntest_missing_file_starts_empty_on_either_backend (test_backends.ServiceBehaviourTests.test_missing_file_starts_empty_on_either_backend) ... ok\ntest_workload_produces_identical_records_on_both_backends (test_backends.ServiceBehaviourTests.test_workload_produces_identical_records_on_both_backends) ... ok\ntest_assign_agent_reports_provider_and_model (test_cli.AgentCommandTests.test_assign_agent_reports_provider_and_model) ... ok\ntest_assigning_a_human_after_an_agent_still_works (test_cli.AgentCommandTests.test_assigning_a_human_after_an_agent_still_works) ... ok\ntest_execute_prints_and_stores_the_result (test_cli.AgentCommandTests.test_execute_prints_and_stores_the_result) ... ok\ntest_executing_a_human_assigned_task_reports_error (test_cli.AgentCommandTests.test_executing_a_human_assigned_task_reports_error) ... ok\ntest_list_shows_the_agent_as_assignee (test_cli.AgentCommandTests.test_list_shows_the_agent_as_assignee) ... ok\ntest_show_without_execution_has_no_result_section (test_cli.AgentCommandTests.test_show_without_execution_has_no_result_section) ... ok\ntest_add_reports_the_new_task_id (test_cli.CommandTests.test_add_reports_the_new_task_id) ... ok\ntest_list_shows_dash_for_unassigned_task (test_cli.CommandTests.test_list_shows_dash_for_unassigned_task) ... ok\ntest_list_shows_title_status_and_assignee (test_cli.CommandTests.test_list_shows_title_status_and_assignee) ... ok\ntest_list_with_no_tasks (test_cli.CommandTests.test_list_with_no_tasks) ... ok\ntest_show_displays_the_description (test_cli.CommandTests.test_show_displays_the_description) ... ok\ntest_status_accepts_each_status (test_cli.CommandTests.test_status_accepts_each_status) ... ok\ntest_corrupt_data_file_reports_error (test_cli.ErrorHandlingTests.test_corrupt_data_file_reports_error) ... ok\ntest_empty_title_reports_error (test_cli.ErrorHandlingTests.test_empty_title_reports_error) ... ok\ntest_invalid_status_reports_error (test_cli.ErrorHandlingTests.test_invalid_status_reports_error) ... ok\ntest_unknown_command_exits_with_usage_error (test_cli.ErrorHandlingTests.test_unknown_command_exits_with_usage_error) ... usage: taskman [-h] [--storage {json,sqlite}] [--file FILE]\n               {add,assign,assign-agent,execute,status,list,show} ...\ntaskman: error: argument command: invalid choice: 'frobnicate' (choose from 'add', 'assign', 'assign-agent', 'execute', 'status', 'list', 'show')\nok\ntest_unknown_task_reports_error (test_cli.ErrorHandlingTests.test_unknown_task_reports_error) ... ok\ntest_data_survives_between_invocations (test_cli.PersistenceTests.test_data_survives_between_invocations) ... ok\ntest_uses_env_var_when_no_file_given (test_cli.PersistenceTests.test_uses_env_var_when_no_file_given) ... ok\ntest_label_is_human_readable (test_models.StatusParseTests.test_label_is_human_readable) ... ok\ntest_parses_canonical_values (test_models.StatusParseTests.test_parses_canonical_values) ... ok\ntest_parses_friendly_spellings (test_models.StatusParseTests.test_parses_friendly_spellings) ... ok\ntest_rejects_unknown_status (test_models.StatusParseTests.test_rejects_unknown_status) ... ok\ntest_defaults (test_models.TaskSerialisationTests.test_defaults) ... ok\ntest_round_trips_through_dict (test_models.TaskSerialisationTests.test_round_trips_through_dict) ... ok\ntest_assigning_unknown_task_fails (test_service.AssignTests.test_assigning_unknown_task_fails) ... ok\ntest_assigns_task_to_team_member (test_service.AssignTests.test_assigns_task_to_team_member) ... ok\ntest_empty_assignee_is_rejected (test_service.AssignTests.test_empty_assignee_is_rejected) ... ok\ntest_reassigning_replaces_previous_assignee (test_service.AssignTests.test_reassigning_replaces_previous_assignee) ... ok\ntest_creates_task_with_title_and_description (test_service.CreateTaskTests.test_creates_task_with_title_and_description) ... ok\ntest_empty_title_is_rejected (test_service.CreateTaskTests.test_empty_title_is_rejected) ... ok\ntest_ids_are_not_reused_after_restart (test_service.CreateTaskTests.test_ids_are_not_reused_after_restart) ... ok\ntest_ids_are_unique_and_increasing (test_service.CreateTaskTests.test_ids_are_unique_and_increasing) ... ok\ntest_new_task_starts_in_todo_and_unassigned (test_service.CreateTaskTests.test_new_task_starts_in_todo_and_unassigned) ... ok\ntest_empty_when_nothing_created (test_service.ListTests.test_empty_when_nothing_created) ... ok\ntest_lists_tasks_in_creation_order_with_assignee_and_status (test_service.ListTests.test_lists_tasks_in_creation_order_with_assignee_and_status) ... ok\ntest_returned_list_does_not_alias_internal_state (test_service.ListTests.test_returned_list_does_not_alias_internal_state) ... ok\ntest_missing_file_starts_empty (test_service.PersistenceTests.test_missing_file_starts_empty) ... ok\ntest_tasks_survive_a_restart (test_service.PersistenceTests.test_tasks_survive_a_restart) ... ok\ntest_accepts_status_as_text (test_service.StatusTests.test_accepts_status_as_text) ... ok\ntest_moves_through_the_three_statuses (test_service.StatusTests.test_moves_through_the_three_statuses) ... ok\ntest_rejects_unknown_status (test_service.StatusTests.test_rejects_unknown_status) ... ok\ntest_unknown_task_fails (test_service.StatusTests.test_unknown_task_fails) ... ok\ntest_agent_and_result_round_trip (test_sqlite_storage.SqliteStorageTests.test_agent_and_result_round_trip) ... ok\ntest_corrupt_file_raises_storage_error (test_sqlite_storage.SqliteStorageTests.test_corrupt_file_raises_storage_error) ... ok\ntest_creates_parent_directory (test_sqlite_storage.SqliteStorageTests.test_creates_parent_directory) ... ok\ntest_empty_result_output_round_trips (test_sqlite_storage.SqliteStorageTests.test_empty_result_output_round_trips) ... ok\ntest_file_is_a_sqlite_database_with_one_row_per_task (test_sqlite_storage.SqliteStorageTests.test_file_is_a_sqlite_database_with_one_row_per_task) ... ok\ntest_missing_file_is_not_created_by_load (test_sqlite_storage.SqliteStorageTests.test_missing_file_is_not_created_by_load) ... ok\ntest_missing_file_loads_as_empty (test_sqlite_storage.SqliteStorageTests.test_missing_file_loads_as_empty) ... ok\ntest_save_leaves_no_temporary_files_behind (test_sqlite_storage.SqliteStorageTests.test_save_leaves_no_temporary_files_behind) ... ok\ntest_save_then_load_round_trip (test_sqlite_storage.SqliteStorageTests.test_save_then_load_round_trip) ... ok\ntest_saving_replaces_previous_content (test_sqlite_storage.SqliteStorageTests.test_saving_replaces_previous_content) ... ok\ntest_tasks_come_back_in_creation_order (test_sqlite_storage.SqliteStorageTests.test_tasks_come_back_in_creation_order) ... ok\ntest_corrupt_file_raises_storage_error (test_storage.StorageTests.test_corrupt_file_raises_storage_error) ... ok\ntest_creates_parent_directory (test_storage.StorageTests.test_creates_parent_directory) ... ok\ntest_file_is_readable_json (test_storage.StorageTests.test_file_is_readable_json) ... ok\ntest_missing_file_loads_as_empty (test_storage.StorageTests.test_missing_file_loads_as_empty) ... ok\ntest_save_leaves_no_temporary_files_behind (test_storage.StorageTests.test_save_leaves_no_temporary_files_behind) ... ok\ntest_save_then_load_round_trip (test_storage.StorageTests.test_save_then_load_round_trip) ... ok\n\n----------------------------------------------------------------------\nRan 102 tests in 0.264s\n\nOK"
+  }
+}
