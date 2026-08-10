@@ -52,12 +52,28 @@ Reject an objective if:
 - it primarily describes file edits;
 - it optimizes a metric rather than the underlying product concern.
 
+## The objective is a design outcome; the feature is its constraint
+
+Every strong pattern above is a *design* outcome (an owner, a boundary, an invariant, a proven
+abstraction) — not a feature deliverable. That is deliberate. When the product needs a new
+capability, the objective you hand down is still framed as the design quality to reach *for* that
+capability, with the capability's behavior as the constraint the design must satisfy — not "ship
+the capability." The distinction is the whole point: the Worker optimizes toward the objective, so
+if you want good design out, the design has to be what the objective names. See
+`references/worker-handoff.md` for how to frame it without pre-making the Worker's design.
+
 ## Example (unrelated to any particular product domain)
 
-Weak:
+Weak (a bare adjective — unobservable, nothing to optimize toward):
 
 > Refactor this area into clean architecture.
 
-Strong:
+Weak (a feature ticket — the design becomes whatever survives shipping it):
 
-> Establish one owner for the observed rule that is currently implemented in two paths, while preserving both paths' behavior. Demonstrate the ownership by exercising both paths against the same rule.
+> Add SQLite storage so the user can pick a backend at startup.
+
+Strong (a design outcome, behavior as its constraint, the how left open):
+
+> Establish one owner for the observed rule that is currently implemented in two paths, while
+> preserving both paths' behavior. Demonstrate the ownership by exercising both paths against the
+> same rule.

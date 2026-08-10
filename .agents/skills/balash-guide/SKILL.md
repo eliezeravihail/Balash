@@ -119,16 +119,25 @@ Read `references/worker-handoff.md` and create a bounded handoff.
 
 Give the Worker enough context to solve the objective, but do not dump the entire history into the handoff.
 
-The Worker must receive:
-- current objective;
-- why it matters now;
-- exit criteria;
-- relevant product forces/decisions;
-- constraints to preserve;
-- explicit non-goals;
-- requested evidence in its return report.
+Frame the Worker's objective as a **design/quality goal**, with the product behavior as the
+constraint that design must satisfy — never as a feature ticket. The Worker optimizes toward
+whatever goal you give it; if you hand it "build feature X," design quality becomes whatever
+survives shipping X. So the objective names the design outcome to reach; the behavior is the
+constraint. The Worker is a senior peer as capable as you — do not pre-make its design (which
+classes, interfaces, or modules exist, or how they lay out). Naming the boundaries and traps for it
+turns a peer into an operator and means you are evaluating your own design, not eliciting theirs.
 
-The handoff must distinguish grounded product facts from technical freedoms. It must not contain unverified product assumptions. Point the Worker at `references/design-principles.md` — comprehension-based design questions (grounded in established software-design literature, not code-measurable thresholds) it should check its own work against before returning.
+The Worker must receive:
+- the design/quality objective (an outcome, the how left open);
+- the behavior it must satisfy, and why it matters now;
+- what "good" aims at: `references/design-principles.md` as the target, not a checklist;
+- relevant product forces/decisions, constraints to preserve, explicit non-goals;
+- a request to return its design reasoning, so you can evaluate the design, not just whether it runs.
+
+The handoff must distinguish grounded product facts from technical freedoms. It must not contain
+unverified product assumptions. A good check on your handoff: two strong engineers given it should
+be free to reach genuinely different, equally good designs — if it only permits the one design you
+already pictured, pull back to the quality goal.
 
 The Worker may discover that the objective is based on a false assumption. In that case it should stop expanding the implementation and return the conflicting evidence to the Guide.
 
