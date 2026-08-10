@@ -50,11 +50,22 @@ This file stores durable engineering direction. Keep it short. Do not use it as 
 
 - [ ]
 
+## Mode
+
+<!-- auto | stepped. `auto` = the loop runs end to end, pausing only for open product decisions and the
+     next product change. `stepped` = stop at every phase boundary (plan / build / review) and advance
+     only on an explicit command; a returning Worker parks at executed:awaiting-review, it does NOT
+     auto-advance. See references/modes.md. Default when unset: auto. -->
+
+auto
+
 ## Loop cursor
 
-<!-- Where the loop is parked right now, so any turn (a returning Worker, or a "balash next" from the
-     human) can resume from exactly here. One line, kept current:
-     awaiting-worker <objective> | awaiting-human <named open decision> | ready-to-choose-next -->
+<!-- Where the loop is parked right now, so any turn (a returning Worker, or a "balash next" / phase
+     command from the human) can resume from exactly here. One line, kept current:
+     needs-plan | planned:awaiting-build <objective> | awaiting-worker <objective> |
+     executed:awaiting-review <objective> | reviewed:awaiting-decision <verdict> <objective> |
+     ready-to-choose-next | awaiting-human <named open decision> -->
 
 ## Current objective
 

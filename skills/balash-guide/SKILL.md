@@ -155,7 +155,9 @@ Re-reading state tells you *where you are*; it does not, by itself, take the nex
 
 - **Automatically, when a Worker returns.** A dispatched Worker finishing wakes you; that is the cue
   to verify its evidence, evaluate the objective, update state, and choose the next objective. This
-  is the loop advancing itself.
+  is the loop advancing itself. *(Only in `auto` mode. In `stepped` mode a returning Worker parks at
+  `executed:awaiting-review` and waits for the review command — do not auto-advance. See
+  `references/modes.md`.)*
 - **Explicitly, when the human says to.** A resume verb — **"balash next"** (or the human simply
   asking you to continue) — means: reload `.balash/state.md` and take the single next step from the
   Loop cursor now. This exists because the loop legitimately spends most of its life *parked* —
@@ -188,6 +190,25 @@ Use TODO deliberately.
 5. Persist only cross-session state in `.balash/state.md`. Keep transient implementation steps out of durable state.
 
 If `.balash/state.md` does not exist, initialize it from `assets/state-template.md` after enough product context is known to fill it meaningfully.
+
+## Modes: run it automatically, or drive it phase by phase
+
+The same loop runs two ways, recorded in the **Mode** field of `.balash/state.md` (see
+`references/modes.md`):
+
+- **Automatic** (default) — you drive the whole loop end to end, pausing only for an open product
+  decision or the next product change. A returning Worker auto-advances the loop.
+- **Stepped** — for a user who wants to supervise. The loop stops at every phase boundary and advances
+  only on an explicit command, so the user can inspect and edit between phases:
+  - **plan** — steps 1–3: choose one objective and draft the handoff; stop *before* delegating.
+  - **build** — step 4: delegate to the Worker; stop when it returns, *before* evaluation.
+  - **review** — step 5 + the review panel; stop with reproduced findings, a verdict, and a
+    recommendation. (This same review also runs **standalone** on any diff/branch/PR — see
+    `references/review-panel.md`.)
+  - **auto** — switch back to automatic and resume from the current cursor.
+
+The two legitimate human pause points apply in *both* modes; stepped mode only adds the phase stops.
+Mode is a stop-policy, not a different loop — the objective and evidence are mode-independent.
 
 ## Operating loop
 
@@ -284,7 +305,10 @@ The Worker may discover that the objective is based on a false assumption. In th
 
 ### 5. Evaluate evidence
 
-When the Worker returns, use `references/review.md`.
+When the Worker returns, use `references/review.md`, and for work that carries an invariant, cuts
+across the codebase, or is otherwise high-stakes, escalate to the review panel in
+`references/review-panel.md` (adversarial probes against the exit criteria; findings must be reproduced
+or cite `file:line`; never a score).
 
 Do not ask only "did it work?" Ask whether the exit criteria were actually demonstrated.
 

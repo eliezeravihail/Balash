@@ -107,6 +107,12 @@ def _cursor(sections: dict[str, list[str]]) -> str:
     return _first_real(sections.get("loop cursor", []))
 
 
+def _mode(sections: dict[str, list[str]]) -> str:
+    # auto | stepped. Absent/unrecognized reads as auto (the default).
+    value = _first_real(sections.get("mode", [])).lower()
+    return "stepped" if value.startswith("stepped") else "auto"
+
+
 def _emit(context: str) -> None:
     print(json.dumps({
         "hookSpecificOutput": {
@@ -131,6 +137,7 @@ def main() -> int:
     sections = _sections(text)
     objective = _objective(sections)
     cursor = _cursor(sections)
+    mode = _mode(sections)
 
     if objective:
         lines = [
@@ -141,6 +148,12 @@ def main() -> int:
         ]
         if cursor:
             lines.append(f"Loop cursor: {cursor}")
+        if mode == "stepped":
+            lines.append(
+                "Mode: stepped — advance only on an explicit balash phase command (plan / build / "
+                "review); do NOT auto-advance the loop, and a returning Worker parks at "
+                "executed:awaiting-review rather than being evaluated automatically."
+            )
         lines.append(
             "Before any code work this turn, reconcile with .balash/state.md and keep this "
             "objective in view even if the request is unrelated; do not let it drop. When a "

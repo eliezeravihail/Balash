@@ -28,6 +28,28 @@ So the objective lives in `.balash/state.md`, not the chat; the skill supplies t
 keeps the goal present. Advancement is triggered either automatically (a Worker subagent returning)
 or explicitly (`balash next`).
 
+## Two ways to run it: automatic, or phase by phase
+
+The same loop runs two ways, recorded in the `Mode` field of `.balash/state.md`
+([`skills/balash-guide/references/modes.md`](skills/balash-guide/references/modes.md)):
+
+- **Automatic** (default) — the Guide drives the whole loop end to end and pauses only for an *open
+  product decision* it must not guess or for *receiving the next product change*. `/balash-auto`.
+- **Stepped** — for when you want to supervise. The loop stops at every phase boundary and advances
+  only on an explicit command, so you can inspect and edit between phases:
+  - `/balash-plan` — choose one design objective and draft the Worker handoff; **stops before writing
+    any code**, so you can approve or edit the objective first.
+  - `/balash-build` — delegate the planned objective to a Worker; stops when it returns.
+  - `/balash-review` — evaluate the result with the **review panel** and stop with reproduced findings,
+    a verdict, and a recommendation.
+
+The review panel ([`references/review-panel.md`](skills/balash-guide/references/review-panel.md)) is
+scrutiny, not scoring: adversarial probes against the objective's exit criteria, where **every finding
+carries a reproduction (a failing probe / concrete input→wrong output) or a `file:line` citation — never
+a score**. `/balash-review` also runs **standalone on any diff, branch, or PR** that Balash did not
+build, as a general review tool. (In pilot #4 this panel is exactly what caught the shipped bugs a
+design-only judgment missed — see [`experiments/RESULTS.md`](experiments/RESULTS.md).)
+
 ## Layout
 
 - [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json) — the plugin manifest.
@@ -35,7 +57,9 @@ or explicitly (`balash next`).
   (discovery, objective selection, reviewing Worker evidence, the Worker handoff shape), and the
   `.balash/state.md` template it maintains per project.
 - [`hooks/`](hooks) — `hooks.json` and the `UserPromptSubmit` script that re-injects the current
-  objective every turn.
+  objective (and, in stepped mode, the stop-policy) every turn.
+- [`commands/`](commands) — the phase commands for stepped mode: `/balash-plan`, `/balash-build`,
+  `/balash-review` (also a standalone reviewer for any diff/PR), and `/balash-auto`.
 - [`experiments/guide-vs-direct/`](experiments/guide-vs-direct) — the pilot protocol and evidence
   comparing Guide-led development against a coding agent that receives requirements directly, plus
   a controlled test of what it takes to *review* the result honestly (a blind judge needs
