@@ -1,0 +1,76 @@
+/* Print styles — page breaks and card sizing for physical printing live HERE,
+   not in the renderer (D7). One card per printed area, big and clean. */
+
+@page {
+  margin: 12mm;
+}
+
+/* Hide everything but the cards. */
+.controls {
+  display: none !important;
+}
+
+.page {
+  display: block !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.preview,
+.output {
+  display: block !important;
+}
+
+.bingo-sheet {
+  display: block !important;
+}
+
+/* One card fills its own printed page. */
+.bingo-card {
+  box-shadow: none !important;
+  border-width: 3px !important;
+  border-radius: 0 !important;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  break-inside: avoid;
+  page-break-inside: avoid;
+  break-after: page;
+  page-break-after: always;
+}
+
+.bingo-card:last-child {
+  break-after: auto;
+  page-break-after: auto;
+}
+
+.bingo-card__header {
+  margin-bottom: 10mm;
+}
+
+.bingo-card__title {
+  font-size: 32pt;
+}
+
+.bingo-grid {
+  gap: 0;
+}
+
+.bingo-cell {
+  border: 1.5pt solid #000 !important;
+  border-radius: 0 !important;
+  /* Slightly overlap borders so adjacent cells share a single line. */
+  margin: -0.75pt 0 0 -0.75pt;
+}
+
+.bingo-cell span {
+  font-size: 16pt;
+}
+
+/* Force backgrounds/borders to actually print. */
+* {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}

@@ -59,9 +59,21 @@ or explicitly (`balash next`).
 
 ## Status
 
-One completed pilot under the current thesis. In `experiments/design-first-vs-direct/`, both arms
-were built through four stages and judged blind by two reviewers with **opposite** dispositions
-(pure-OO-quality and pro-simplicity/YAGNI); **both chose the Balash arm as better designed** (~70–75%
-and ~60% confidence), and all the judge's load-bearing claims verified against source. It is still
-**N = 1** — a robust signal, not a validated result. It earns a second pilot on a different product,
-ideally with the two arms run by different operators.
+**Two completed pilots** under the current thesis, on two different domains — and both point the same
+way:
+
+- [`experiments/design-first-vs-direct/`](experiments/design-first-vs-direct) — pilot #1, a Python task
+  CLI evolved through four stages.
+- [`experiments/pilot2-bingo-web/`](experiments/pilot2-bingo-web) — pilot #2, a static-web printable
+  bingo-card generator (the Balash arm shipped as a draft PR to its own product repo).
+
+In **both**, the two final codebases were judged blind by two reviewers with **opposite** dispositions
+(pure-OO-quality and pro-simplicity/YAGNI), and in both, **both reviewers chose the Balash arm as
+better designed** (pilot #1: ~70–75% / ~60%; pilot #2: ~80% / ~65%), with every load-bearing judge
+claim verified against source. The consistent mechanism: design-first won by right-sizing the one
+subtle, product-consequential design decision the feature framing glosses over — writing *less* where
+a guard was dead (pilot #1's cycle detection) and *more* where a real guarantee was needed (pilot #2's
+card distinctness) — while paying an edge tax of speculative ceremony each time.
+
+Still **N = 2, one operator** — a meaningfully stronger signal than one, but not a validated result.
+The strongest next step is independent operators per arm. Full caveats in each pilot's `FINDINGS.md`.

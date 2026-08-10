@@ -1,0 +1,10 @@
+{
+  "name": "bingo-card-generator",
+  "version": "1.0.0",
+  "description": "Deterministic, printable bingo-card generator (static site, no deps).",
+  "private": true,
+  "scripts": {
+    "test": "node test/bingo.test.js",
+    "serve": "python3 -m http.server 8000"
+  }
+}

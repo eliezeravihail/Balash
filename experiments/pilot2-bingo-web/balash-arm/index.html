@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bingo Card Generator</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/print.css" media="print" />
+  </head>
+  <body>
+    <div class="page">
+      <aside class="controls" aria-label="Controls">
+        <h1>Bingo Card Generator</h1>
+        <p class="tagline">
+          Paste words, get printable cards. Same words + settings + seed →
+          identical cards, every time.
+        </p>
+
+        <label class="field">
+          <span>Words (one per line)</span>
+          <textarea
+            id="words"
+            rows="12"
+            placeholder="apple&#10;banana&#10;cherry&#10;… at least 9 words"
+            spellcheck="false"
+          ></textarea>
+        </label>
+
+        <div class="row">
+          <label class="field field--sm">
+            <span>Cards</span>
+            <input id="cardCount" type="number" min="1" max="30" value="8" />
+          </label>
+          <label class="field field--grow">
+            <span>Seed (blank = random)</span>
+            <span class="seed-row">
+              <input id="seed" type="text" placeholder="auto" autocomplete="off" />
+              <button id="copySeed" type="button" class="btn btn--ghost" title="Copy seed">
+                Copy
+              </button>
+            </span>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button id="generate" type="button" class="btn btn--primary">Generate</button>
+          <button id="print" type="button" class="btn" disabled>Print</button>
+          <button id="share" type="button" class="btn" disabled>Share link</button>
+        </div>
+
+        <div id="notices" class="notices" role="status" aria-live="polite"></div>
+
+        <footer class="foot">
+          9–15 words → 3×3 · 16–24 → 4×4 · 25+ → 5×5. No free space; every cell is
+          a word. Cards in a batch are never identical, but may share words.
+        </footer>
+      </aside>
+
+      <main class="preview" aria-label="Cards">
+        <div id="output" class="output"></div>
+      </main>
+    </div>
+
+    <script type="module" src="src/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bingo Card Generator</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Controls: hidden when printing -->
+    <header class="controls no-print">
+      <h1>Bingo Card Generator</h1>
+      <p class="tagline">
+        Paste your words, generate a batch of printable cards, then use your
+        browser's Print command. Cards are reproducible from their seed.
+      </p>
+
+      <form id="generator-form">
+        <div class="field field--words">
+          <label for="words">Words / items (one per line)</label>
+          <textarea
+            id="words"
+            rows="10"
+            placeholder="apple&#10;banana&#10;cherry&#10;..."
+          ></textarea>
+          <div class="word-count" id="word-count">0 distinct words</div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="grid-size">Grid size</label>
+            <select id="grid-size">
+              <option value="auto" selected>Auto (fit to words)</option>
+              <option value="3">3 x 3</option>
+              <option value="4">4 x 4</option>
+              <option value="5">5 x 5</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="card-count">Number of cards</label>
+            <input id="card-count" type="number" min="1" max="200" value="6" />
+          </div>
+
+          <div class="field field--checkbox">
+            <label for="free-space">
+              <input id="free-space" type="checkbox" />
+              Free center space (odd grids)
+            </label>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field field--seed">
+            <label for="seed">Seed</label>
+            <input id="seed" type="text" spellcheck="false" />
+          </div>
+          <div class="field field--seed-actions">
+            <button type="button" id="new-seed">New seed</button>
+          </div>
+        </div>
+
+        <div class="field field--title">
+          <label for="card-title">Card heading (optional)</label>
+          <input id="card-title" type="text" placeholder="BINGO" value="BINGO" />
+        </div>
+
+        <div class="actions">
+          <button type="submit" id="generate">Generate cards</button>
+          <button type="button" id="print" disabled>Print</button>
+        </div>
+
+        <p class="error" id="error" role="alert"></p>
+      </form>
+
+      <div class="meta no-print" id="meta"></div>
+    </header>
+
+    <!-- Rendered cards; the only thing that prints -->
+    <main id="cards" class="cards" aria-live="polite"></main>
+
+    <script src="bingo.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
