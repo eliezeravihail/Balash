@@ -95,21 +95,61 @@ product facts and 29 tool calls of manual verification — is still an LLM, and 
 agents' own blind spots for certain classes of mechanically-checkable defects (cyclomatic
 complexity chief among them in this run). "No code smell, proper encapsulation and abstraction" —
 the actual target of this whole line of work — was never directly measured by any review in this
-experiment until a real linter was pointed at the code. The skill's discovery gate fixes what the
-*builder* doesn't know to ask; a real static-analysis pass is still needed to catch what the
-*reviewer* doesn't know to look for, independent of how good the reviewing model is.
+experiment until a real linter was pointed at the code.
 
-## Open items for the next iteration (v3.1)
+**Revision, after review:** the natural next step this section originally proposed — require the
+judge to run and cite a linter's diagnostic counts — was reconsidered before being built. Across
+this entire line of experiments, deterministic tooling's actual yield was thin: zero cases from
+Balash's own engine, one legitimate (if minor) complexity finding and one false positive from
+`ruff --select ALL`, against dozens of substantive findings from grounded semantic review (missing
+identity models, unrecorded execution outcomes, bypassable invariants, real data-loss bugs, dead
+code). Treating "fewer linter diagnostics" as a target risks exactly the failure this whole project
+exists to avoid — a coding agent optimizing a proxy metric instead of the underlying design
+question. Section 4 below describes what replaced this plan: a non-numeric, literature-grounded
+comprehension checklist, and a direct test of whether it adds signal beyond fidelity/behavior/
+invariants review.
 
-1. Tune `.agents/skills/balash-guide/references/discovery.md` per GPT's own v3 report: one
-   concrete scenario + up to 3 highest-value questions per change; a "provisional product default"
-   bucket for reversible unknowns that does not require a question; an explicit stop-rule
-   ("would a different answer change the objective/exit-criteria *now*? If not, don't ask").
+## 4. A design-principles checklist adds real signal on roughly a third of its items — and is not sufficient alone
+
+A twelve-item checklist was built from established software-design literature (Tell-Don't-Ask and
+the Law of Demeter, "program to an interface, not an implementation" together with the test of
+whether an interface is genuinely generic or a costume around one concrete type, Interface
+Segregation, Primitive Obsession, the Anemic Domain Model, Feature Envy and Shotgun Surgery, Joel
+Spolsky's Law of Leaky Abstractions, Single Responsibility, and Sandi Metz's rules including her
+own "Rule 0"). Each item requires a Correct/Incorrect/Hybrid-violation verdict per repository, a
+citation, and an explicit sentence ruling out the other pole — not a score. It was wired into the
+skill itself (`references/design-principles.md`), referenced from both `worker-handoff.md` (the
+Worker checks its own design before returning) and `review.md` (the Guide checks it when
+evaluating), so it functions as a build-time target, not only a post-hoc rubric.
+
+It was tested two ways at once: as a build-time standard on a fresh pilot
+(`experiments/discovery-tuning-v3-vs-v3.1/`), and as a review-time addition to the blind judge,
+which was explicitly asked to report whether the checklist told it anything its
+fidelity/behavior/invariants review hadn't already found. Its own accounting: of 12 items, 4 added
+real, previously-missed signal (a domain-model-ownership defect neither prose review had named),
+3 confirmed an existing finding in sharper language, and 5 were mechanical — same verdict either
+way. Critically, the two facts that most affected the "which would you extend" verdict — a latent
+id-reuse bug and a provider-registry fidelity restriction — were caught by grounded fidelity
+reading and manual CLI probing, not by any of the twelve principles. See
+`experiments/discovery-tuning-v3-vs-v3.1/README.md` for the full result, including the discovery-
+budget tuning (v3 vs v3.1) this same pilot tested simultaneously.
+
+## Open items for the next iteration
+
+1. ~~Tune `references/discovery.md` with a soft budget, a stop-rule, and a provisional-default
+   bucket.~~ Done and tested — see `experiments/discovery-tuning-v3-vs-v3.1/`. Cutting discovery
+   from 17 to 10 questions across four stages cost nothing either the fidelity review or the
+   design-principles review could find.
 2. Any comparative "Guide vs Direct" review going forward should give the blind judge the true
    product facts (or an equivalent ground truth) explicitly, labelled as such, with a rubric
    section that forces it to separate "correct but unstated" from "speculative." Section 2 above
    is the direct evidence for why this is not optional.
-3. Any comparative review should also run real static analysis (cyclomatic complexity at minimum,
+3. Use the design-principles checklist as a complement to grounded fidelity/behavior review, not a
+   replacement for it — Section 4's own accounting is the evidence. A future iteration might narrow
+   the checklist to the ~4-7 items that have actually earned their place across two runs (Tell-
+   Don't-Ask/domain-model ownership, interface segregation vs. a merged god-object, shotgun
+   surgery) rather than running all 12 by default.
+4. Any comparative review should also run real static analysis (cyclomatic complexity at minimum,
    plus whatever linter is appropriate to the language) as a fourth, deterministic input alongside
    behavior/fidelity/locality — not as a replacement for the LLM review, but because the LLM review
    demonstrably misses things a two-second tool run catches exhaustively.
