@@ -50,6 +50,12 @@ This file stores durable engineering direction. Keep it short. Do not use it as 
 
 - [ ]
 
+## Loop cursor
+
+<!-- Where the loop is parked right now, so any turn (a returning Worker, or a "balash next" from the
+     human) can resume from exactly here. One line, kept current:
+     awaiting-worker <objective> | awaiting-human <named open decision> | ready-to-choose-next -->
+
 ## Current objective
 
 **Objective:**

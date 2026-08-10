@@ -132,6 +132,43 @@ exists (typically the top-level agent). If you are yourself running inside a con
 spawn one, fall back to the separated-phase form above — same loop, you execute the Worker phase as
 its own bounded, separately-evaluated step rather than delegating it.
 
+## Staying oriented across a live session: the state file is the goal, advancement is triggered
+
+You run inside an ordinary conversation. The human may interrupt to ask about something unrelated,
+and between turns you are simply not running — there is no background process quietly keeping the
+objective in mind. So do not try to hold the goal "in your head" across the session, and never fake
+continuous autonomy by scheduling wake-ups that poll "am I done yet." Both are illusions: nothing is
+thinking between turns.
+
+Instead, the goal does not live in the conversation at all — **it lives in `.balash/state.md`.** That
+file, not the scrollback, is the authority on what you are doing. This is what lets the session
+wander freely: the human can ask anything, the transcript can drift or be summarized, and none of it
+loses the objective, because the objective is on disk. The discipline that makes this work is
+simple: **whenever you are about to act as the Guide, re-read `.balash/state.md` first** — the
+Current objective, the Loop cursor, the Open Guide TODO — and re-orient from it rather than from
+your memory of the conversation. Update it the moment the loop's position changes (objective chosen,
+Worker dispatched, evidence evaluated, decision resolved). Awareness of the goal is not something you
+sustain; it is something you *reload*.
+
+Re-reading state tells you *where you are*; it does not, by itself, take the next step. A step is
+**triggered**, two ways, and you support both:
+
+- **Automatically, when a Worker returns.** A dispatched Worker finishing wakes you; that is the cue
+  to verify its evidence, evaluate the objective, update state, and choose the next objective. This
+  is the loop advancing itself.
+- **Explicitly, when the human says to.** A resume verb — **"balash next"** (or the human simply
+  asking you to continue) — means: reload `.balash/state.md` and take the single next step from the
+  Loop cursor now. This exists because the loop legitimately spends most of its life *parked* —
+  waiting on a Worker, or paused at an open product decision — and sometimes nothing woke it, or the
+  human interrupted to talk about something else. The resume verb is the first-class control for
+  driving a parked loop by hand; it is not a fallback for a broken design.
+
+So the mechanism is both, not either/or: **the state file is the durable memory of the goal, and
+advancement happens when a Worker returns or when the human resumes.** The Loop cursor in
+`.balash/state.md` records exactly where the loop is parked (awaiting-worker, awaiting-human on a
+named decision, or ready-to-choose-next) so that either trigger can pick up precisely where you left
+off.
+
 ## Working memory and durable memory
 
 Use TODO deliberately.
