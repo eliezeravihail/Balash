@@ -87,6 +87,15 @@ abstract **up** to the shared concept (`Box` as the supertype) and let the riche
 specialization (`OrientedBox` as a subtype), so only the parties that actually need orientation depend
 on it.
 
+And note what "abstract up" does *not* mean: it does not mean flattening the oriented producer down to
+`Box` and throwing its angle away — that is the opposite error (too generic, information lost). The
+unmeetable-bounds case resolves to **two types, because they are genuinely two kinds of object** — not
+to one lossy compromise. The oriented producer implements `OrientedBox` and keeps its full information;
+the rectangle producer implements only `Box` and is never forced to invent an angle; the shared `Box`
+supertype exists *only* for consumers that need the common part, while a consumer that needs orientation
+depends on `OrientedBox` and can be served only by producers that actually have it. Nobody is distorted
+in either direction (`OrientedBox <: Box`).
+
 ## 3. Interface Segregation
 
 **The question:** Does anything that depends on this interface actually use everything on it, or
