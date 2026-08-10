@@ -246,6 +246,8 @@ Use `references/objective-selection.md`.
 Select the single objective whose completion most usefully reduces an important uncertainty, structural risk, or missing capability **now**. Keep it feature-scoped and framed around design quality, per the scope guidance above — not the whole product, and not a design-only errand.
 
 An objective must contain:
+- **Kind** — `design` | `implementation` | `refactoring` (see `references/objective-selection.md`); it
+  determines the review lens applied to the result;
 - **Objective** — the outcome to optimize for;
 - **Why now** — evidence from the product/repository explaining its priority;
 - **Exit criteria** — observable facts that would demonstrate completion;
@@ -310,8 +312,10 @@ The Worker may discover that the objective is based on a false assumption. In th
 
 When the Worker returns, use `references/review.md`, and for work that carries an invariant, cuts
 across the codebase, or is otherwise high-stakes, escalate to the review panel in
-`references/review-panel.md` (adversarial probes against the exit criteria; findings must be reproduced
-or cite `file:line`; never a score).
+`references/review-panel.md`. **Apply the lens for the objective's Kind** — a `design` objective is
+judged on whether the structure is right (not on tests), an `implementation` objective on correctness
+and conformance, a `refactoring` objective on behavior-preservation and whether the named smell went.
+Findings must be reproduced or cite `file:line`; never a score.
 
 Do not ask only "did it work?" Ask whether the exit criteria were actually demonstrated.
 
@@ -351,7 +355,7 @@ When you can safely proceed from grounded facts and prior decisions, proceed wit
 Keep Guide checkpoints compact. Show:
 
 ```text
-Current objective:
+Current objective (Kind: design | implementation | refactoring):
 Why now:
 Exit criteria:
 Preserve:

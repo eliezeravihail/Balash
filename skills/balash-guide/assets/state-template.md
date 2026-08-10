@@ -69,6 +69,8 @@ auto
 
 ## Current objective
 
+**Kind:** <!-- design | implementation | refactoring — sets the review lens. -->
+
 **Objective:**
 
 **Why now:**

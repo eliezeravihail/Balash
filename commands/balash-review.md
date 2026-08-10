@@ -4,7 +4,11 @@ argument-hint: "[optional target: a diff / branch / path / PR to review standalo
 ---
 
 Enter the `balash-guide` skill and run the **REVIEW phase**, following `references/review.md` and
-`references/review-panel.md`. Two uses, decided by whether a target is given:
+`references/review-panel.md`. **First read the objective's Kind** (`design` | `implementation` |
+`refactoring`) and apply that kind's lens per `review-panel.md` — a `design` review judges whether the
+*structure* is right (not tests), `implementation` judges correctness and conformance, `refactoring`
+judges behavior-preservation and whether the named smell went. If the declared kind and the actual
+deliverable disagree, that mismatch is the first finding. Two uses, decided by whether a target is given:
 
 **In-loop review (no target given).** Reload `.balash/state.md`; require the Loop cursor at
 `executed:awaiting-review`. Evaluate the Worker's evidence against the objective's **exit criteria**,
@@ -15,7 +19,9 @@ verdict (met | partially_met | invalidated | blocked), and a recommendation (acc
 repair everything reported — decide what matters to the product now.
 
 **Standalone review (a target is given in the arguments).** Review the target change without requiring
-a `.balash/state.md`. Establish the ground truth to probe against — the change's stated intent /
+a `.balash/state.md`. First determine the review **kind** — `design`, `implementation`, or
+`refactoring` — from the target and the user's stated intent (ask if it is unclear and material), and
+apply that kind's lens. Establish the ground truth to probe against — the change's stated intent /
 acceptance criteria; if it is unstated and material, ask the user one concrete question rather than
 inventing criteria. Run the same panel roles, scaled to the change.
 

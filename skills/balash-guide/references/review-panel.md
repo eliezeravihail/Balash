@@ -7,6 +7,47 @@ judge drifts to vague praise and invented grades. What made the experiment judge
 their authority — it was **an adversarial contrast plus reproduction of every decisive claim.** This
 panel rebuilds both without a second arm.
 
+## A task declares its kind; the review matches it
+
+Every objective declares a **Kind — `design` | `implementation` | `refactoring`** (see
+`references/objective-selection.md`), and the review applies the lens for that kind. This matters
+because *what "good" means and what evidence proves it differ by kind* — and applying the wrong lens is
+exactly how a review slides into proxy-checking: grading links, parsing, and file layout when the task
+was an **architecture**. (That is the failure this whole project exists to prevent; a typed review has
+nowhere to hide from the architecture question when the kind is `design`.)
+
+### design — *is this the right structure?*
+- **Deliverable:** an architecture/shape for the capability — often with no working feature yet.
+- **Ask:** does each truth live in exactly one place; is each invariant owned once; are boundaries drawn
+  on the real change axes; has any structural assumption already been *falsified* by the product; is
+  anything built for a future with no present force?
+- **Evidence:** design reasoning and fit-to-forces — **not** tests (a design objective may have no
+  runnable code). Source-verify that the design's *claims* match what exists, but judge the shape.
+- **Hunt:** absent or split ownership, over- and under-abstraction, an unfalsified or now-false
+  assumption, speculative generality. *(This is the blind design-judge lens from the pilots.)*
+
+### implementation — *does it correctly realize the agreed design?*
+- **Deliverable:** working code conforming to a design already agreed.
+- **Ask:** does it satisfy the behavior **and** conform to the design; does every exit criterion actually
+  hold on the paths the tests don't exercise?
+- **Evidence:** adversarial probes against the exit criteria (the bug-catching role) + conformance to the
+  design (fidelity) + the subtractive pass.
+- **Hunt:** correctness bugs, non-conformance, dead abstractions, missing affordances. *(The pilot-#4
+  lens — the one that catches "win design, lose product.")*
+
+### refactoring — *did structure improve with behavior preserved?*
+- **Deliverable:** a structural change; observable behavior unchanged.
+- **Ask:** is observable behavior provably identical, **and** did the named smell actually go, with no
+  new coupling or duplication introduced?
+- **Evidence:** the pre-existing / characterization tests pass **unchanged** (not edited to pass); the
+  diff is structure-only; the target smell is demonstrably gone.
+- **Hunt:** behavior drift (the cardinal sin), a half-removed smell, new coupling, and tests weakened to
+  make the refactor "pass."
+
+If a task's declared kind and its actual deliverable disagree — a "refactoring" that changed behavior, a
+"design" objective that quietly shipped a feature — **that mismatch is itself the first finding.** The
+roles below serve whichever lens the kind selects.
+
 ## The one rule that makes it real: a finding must be reproduced or cited
 
 A review output is not an opinion and never a number. **Every finding carries either:**

@@ -136,11 +136,16 @@ criteria*, in place of a second implementation) plus reproduction of every claim
 > precise `file:line` citation. No scores, no percentages.** A finding that can't be reproduced or
 > cited does not exist.
 
-Escalating roles, spawned to fit the task: a **verification reviewer** that writes adversarial probes
-against the exit criteria (the role that catches real bugs), a **fidelity reviewer** (claims/comments vs
-code), a **subtractive reviewer** (the pass above), and an **opposite-disposition second reviewer** for
-genuine taste calls. The reviewer is *scrutinized, not trusted* — before acting on a decisive finding,
-the Guide reproduces it itself.
+Every task declares a **Kind — `design`, `implementation`, or `refactoring`** — and the review applies
+the matching lens, because what "good" means and what proves it differ by kind: a *design* review judges
+whether the structure is right (not tests), an *implementation* review judges correctness and
+conformance to the agreed design, a *refactoring* review judges behavior-preservation and whether the
+named smell actually went. Typing the review is what stops it sliding into proxy-checking (grading links
+and layout when the task was an architecture). Escalating roles then serve that lens: a **verification
+reviewer** that writes adversarial probes against the exit criteria (the role that catches real bugs), a
+**fidelity reviewer** (claims/comments vs code), a **subtractive reviewer** (the pass above), and an
+**opposite-disposition second reviewer** for genuine taste calls. The reviewer is *scrutinized, not
+trusted* — before acting on a decisive finding, the Guide reproduces it itself.
 
 ---
 
