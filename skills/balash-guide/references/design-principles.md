@@ -55,6 +55,29 @@ is decorative. **Operational test — would the type in your public signature su
 implementation?** `np.ndarray` survives a Keras→PyTorch swap; `keras.Model` does not — so a
 `keras.Model` in a public signature *is* your implementation leaking through the interface.
 
+**Choosing the level of generality — pinned from both sides.** "Your domain type" is a type *you*
+define (so it drags in no chosen dependency), that names the concept and carries exactly the
+information the consumer needs. How generic should it be? Take the **most generic type that is still
+complete** — and that level is pinned by two independent bounds:
+
+- **The consumer's need is the floor — do not lose information.** The type must carry everything the
+  consumer legitimately needs. Go more generic than that — `object`, a bare `dict`, `tuple[float, ...]`
+  — and the consumer has to reach *outside* the interface to make sense of the value: the abstraction
+  is breached from above.
+- **The producers' common capability is the ceiling — do not demand what some implementation cannot
+  supply.** The type may commit to nothing that an intended implementation can't produce. An
+  `OrientedBox` (a box *with an angle*) is the right abstraction **only for models that produce
+  oriented boxes**; the moment you must also unify a model that emits an axis-aligned rectangle,
+  `OrientedBox` is *too specific for it* — it has no angle to give and would have to fabricate one, so
+  the shared type must drop to what *all* the unified implementations can actually supply (here, a
+  plain `Box`).
+
+So the right generality is the **common vocabulary of the implementations you intend to unify, still
+rich enough for the consumer** — set by both ends at once, not by either alone. When the two bounds
+cannot both be met (the consumer needs orientation but one producer cannot supply it), that is a real
+design signal — that producer genuinely cannot serve that need behind a single type — not something to
+paper over with a fabricated field.
+
 ## 3. Interface Segregation
 
 **The question:** Does anything that depends on this interface actually use everything on it, or
