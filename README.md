@@ -43,9 +43,22 @@ or explicitly (`balash next`).
   then it still misses defects that a real static-analysis pass catches in seconds). Start at
   [`experiments/guide-vs-direct/FINDINGS.md`](experiments/guide-vs-direct/FINDINGS.md).
 
+## Experiments
+
+- [`experiments/design-first-vs-direct/`](experiments/design-first-vs-direct) — the **current**
+  experiment for the post-pivot thesis (design as the goal). Its [`CHARTER.md`](experiments/design-first-vs-direct/CHARTER.md)
+  fixes, in advance, what is being tested and how — including how the quality judge is scrutinized
+  rather than trusted. The Balash arm is built and self-verified through stage 3; the plain-session
+  arm and the blind judge pass are still to come, so **no comparison result exists yet** for this
+  framing.
+- [`experiments/guide-vs-direct/`](experiments/guide-vs-direct) and
+  [`experiments/discovery-tuning-v3-vs-v3.1/`](experiments/discovery-tuning-v3-vs-v3.1) — earlier,
+  differently-framed pilots. Their main lesson (a blind LLM judge cannot tell "correct but unstated"
+  from "over-engineered" without ground-truth product facts) directly shaped the judging method in
+  the current charter.
+
 ## Status
 
-One pilot per condition, run twice by two independent operators. That is a minimum useful signal,
-not a validated result — see the "Minimum bar for trusting a result" note in
-`experiments/guide-vs-direct/README.md`. The next iteration on the skill itself (a tighter
-discovery gate, referred to as v3.1 in `FINDINGS.md`) has not yet been built or tested.
+No validated result yet. What exists is one clean arm of the current experiment plus earlier
+signal-not-proof pilots. The honest open question — whether design-first genuinely beats a plain
+session on design quality — is what `experiments/design-first-vs-direct/` is being run to answer.
