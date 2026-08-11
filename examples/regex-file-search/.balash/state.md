@@ -9,10 +9,10 @@ auto
 
 ## Loop cursor
 
-planned:awaiting-build
+ready-to-choose-next
 
 ## Active objective
 
-.balash/objectives/0001-match-ownership-boundary.md
-
 ## Last review
+
+met — .balash/objectives/0002-implement-cli.md

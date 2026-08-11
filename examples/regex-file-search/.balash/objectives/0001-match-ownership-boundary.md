@@ -2,7 +2,7 @@
 
 **Kind:** design
 
-**Status:** planned
+**Status:** reviewed
 
 **Objective:** Establish one clear owner for "does this file match" (the filename-or-content
 predicate), kept independent of how the tree is walked and how results are reported — so matching
@@ -88,4 +88,62 @@ RETURN TO GUIDE
 
 ## Result
 
+Worker self-reported **met**. Design document: `DESIGN.md` (repo root of this example). Three
+packages — `match` (owns the filename-or-content decision, short-circuit inside `Matcher.Match`),
+`walk` (owns traversal: symlink skip, per-entry error tolerance via `Result.Err`, consumer-defined
+`FileMatcher` interface for testability without importing `match`), `main` (CLI/output, touches only
+`match.New`/`walk.Walk`/`walk.Result`). New facts surfaced: `filepath.WalkDir` needs `io/fs` in
+addition to the five packages the handoff named (still stdlib); `regexp.MatchReader` was rejected in
+favor of line-oriented `bufio.Scanner` + byte-exact `regexp.Match` for UTF-8 safety, with the
+disclosed tradeoff that a pattern spanning a line break won't content-match (grep-like, not
+whole-file, semantics) — flagged for 0002/docs, not a blocker.
+
 ## Review
+
+**Not just read — reproduced.** Pasted the design's sketched `match`/`walk`/`main` code verbatim into
+a throwaway Go module and ran it for real, rather than accepting the Worker's self-report:
+
+- `go build ./...` and `go vet ./...` — clean. The design is not just plausible prose; it compiles as
+  given (one addition needed: a trivial `parseArgs` stub, which the objective never asked the design
+  to specify — arg parsing is 0002's job).
+- Fixture probe, `needle` pattern: `other.log` (content match) reported; `blob.dat` — a file
+  containing the literal string "needle" but starting with a NUL byte — **not** reported. Confirms the
+  binary heuristic and that content-matching is genuinely skipped for it, not just documented as such.
+- Fixture probe, `plain` pattern: `plain.txt` reported by filename. Code-level confirmation the
+  short-circuit branch (`filepath.Base` check before any `os.Open`) is the one that fires — no content
+  I/O is reachable before it returns.
+- Fixture probe, `hello` pattern, with `link.txt` a symlink to `plain.txt` (whose content matches
+  "hello"): only `plain.txt` reported, **not** `link.txt`. This is the sharpest probe — it proves
+  `d.Type()&fs.ModeSymlink` skip actually prevents the walk from ever calling `Match` on the symlink,
+  not merely that the design document claims it does.
+- Permission-error tolerance (exit code 1, `walk` continuing past a bad entry) was verified by code
+  reading only — `filepath.WalkDir`'s documented contract (`err != nil` on the callback → returning
+  `nil` continues the walk; `d` may be unpopulated) — not by a live reproduction, because this sandbox
+  runs as `root`, where `chmod 000` does not actually deny access. Not a defect in the design; a
+  sandbox limitation. 0002 should still carry a unit test for this path using a `walk.FileMatcher` test
+  double that returns an error, which doesn't need real permission denial to exercise.
+
+**Exit criteria — measured, not self-reported:**
+- [x] One clear owner for the match rule, independent of traversal/CLI — confirmed by import graph
+      (`match` imports neither `walk` nor is imported for logic by `main` beyond `New`/`Match`) and by
+      the binary-exclusion probe above (the rule only ever executes inside `Matcher`).
+- [x] Short-circuit: filename match skips content read — confirmed structurally (single `if` before
+      any `os.Open`) and did not need a probe beyond the code path being unreachable otherwise.
+- [x] Traversal (symlink skip, per-entry error tolerance) owned separately from matching — confirmed
+      by the symlink probe (proves behavior, not just placement) and by code reading for error
+      tolerance.
+- [x] CLI/output touches the boundary only — confirmed: `main.go`'s only imports are `match`, `walk`,
+      stdlib `bufio`/`fmt`/`os`; no `regexp`, no `os.Open`/`os.ReadDir`.
+- [x] Concrete enough to implement without the Guide prescribing names — the sketch already compiles;
+      0002 has an unambiguous shape to fill in (arg parsing, tests, packaging) rather than a redesign.
+
+**Subtractive pass (independent of the Worker's own, which reached the same conclusions on
+`FileMatcher`, `Result`, and the deliberately-not-introduced `Matcher` interface):** agreed with all
+three calls. Nothing in the design reads as ceremony for this scale — no interface exists without a
+present, named consumer; the one struct (`Result`) is a flat boundary-transfer type, not a
+faux-domain object.
+
+**Reading: met.** All five exit criteria hold under reproduction, not just under the Worker's
+narrative. Proceeding to objective 0002 (implementation) with this design as the agreed shape; the
+line-oriented content-match limitation is carried forward as a documented, accepted tradeoff rather
+than reopened.

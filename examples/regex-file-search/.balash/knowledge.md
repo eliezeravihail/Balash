@@ -89,7 +89,22 @@ clarification.
 - Root path defaults to cwd; symlinks not followed; binary files skipped for content matching. — reason:
   safe, unsurprising defaults for a demo tool the user did not further specify. — objective: (day-zero,
   before 0001).
+- Match ownership: a `match` package owns the filename-OR-content decision (short-circuit on filename
+  match, so a matching filename never triggers a content read); a `walk` package owns traversal
+  (symlink skip, per-entry error tolerance) via a narrow, walk-defined `FileMatcher` interface; `main`
+  touches only that boundary. — reason: keeps the one match rule from being duplicated or drifting
+  across traversal/CLI code. — objective: 0001, reviewed met (reproduced, not just read).
+- Content matching is **line-oriented** (`bufio.Scanner` + byte-exact `regexp.Match` per line), not
+  whole-file: a pattern spanning a line break will not content-match. Accepted tradeoff over a
+  UTF-8-rune-based whole-file `MatchReader` (which would mishandle non-UTF-8 files) or reading whole
+  files into memory (unbounded per-file memory, contrary to the no-performance-tuning non-goal). —
+  reason: byte-correctness across encodings > multi-line pattern support, given neither was asked for.
+  — objective: 0001.
 
 ## Open Guide TODO
 
-- [ ]
+- [x] Build a working compiled CLI satisfying the core scenario — done via 0001 (design, reviewed
+      met) → 0002 (implementation, reviewed met). No further objective is queued; the product as
+      scoped (name-or-content regex search, no further flags/features per the stated non-goals) is
+      complete. A real next objective would only open if the product changes — e.g. a genuinely new
+      requirement — not speculatively.
