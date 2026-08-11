@@ -109,6 +109,32 @@ picks. Record the outcome in `BASE-DEPENDENCIES.md`
 foundational set, plus the framework's own domain types, are the only types permitted to cross a public
 seam (`design-principles.md` §7).
 
+## Load-bearing assumptions — prove the uncertain ones before designing on them
+
+A product decision gets surfaced to the user; a load-bearing **feasibility assumption** gets *proven*,
+not assumed. The trap is designing an elegant boundary on top of a premise that may simply be false — a
+beautiful design over a false premise is wasted work, and when the premise is the product's core, a false
+premise means a *different product* entirely (the excluded official API, a different channel).
+
+Calibrate — this is not a licence to spike everything:
+
+- **Feasibility already known to hold → design straight away.** Most products stand on proven ground: a
+  CRUD app, a Monday/Trello-style tool, a second implementation of a capability that already works. There
+  is no real doubt that it can be built; the value is entirely in *how well* it is designed. Proceed to
+  the design objective — do not manufacture a feasibility question that isn't there.
+- **A new product resting on a genuinely uncertain load-bearing assumption → prove it first.** Typically a
+  brittle or unofficial external integration whose viability in the *target environment* is unproven (does
+  a headless browser session survive on a cloud host past a restart without being blocked? does the
+  undocumented endpoint behave as assumed?). Here the doubt itself is the **first-order objective**:
+  record it, and make the first objective a **minimal build (an MVP / spike) that proves the assumption is
+  plausible** — the smallest thing that exercises the risky premise end to end on the real target — before
+  any design is built on top of it. Only once it holds do you invest in the ownership/boundary design that
+  assumes it.
+
+The test: *if this assumption turned out false, would the product have to become something else?* If yes,
+and it is not yet proven, proving it is objective number one. If the assumption is obviously safe, don't
+slow down — design.
+
 ## Ask one question at a time
 
 Choose the highest-impact open product decision, ask one concrete question, record the answer, and re-evaluate. Stop only when no material open product decision blocks the next objective.

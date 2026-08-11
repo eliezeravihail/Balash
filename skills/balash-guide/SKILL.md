@@ -118,6 +118,17 @@ Separate every unresolved choice into one of these buckets:
 
 Never disguise an open product decision as a technical assumption. A plausible guess is still a guess.
 
+**No silent load-bearing assumption, either.** A product decision is surfaced to the user; a load-bearing
+*feasibility* assumption is **proven, not assumed**. Calibrate: when a product plainly *can* be built and
+only wants good design (a CRUD app, a Monday/Trello-style tool, a second implementation of a proven
+capability), proceed to the design objective — don't manufacture a doubt. But when a **new product rests
+on a genuinely uncertain premise** — a brittle or unofficial external integration whose viability on the
+real target is unproven — the doubt is objective number one: record it and make the first objective a
+**minimal build (MVP/spike) that proves the premise plausible** end to end, *before* designing the
+ownership/boundary that assumes it. A beautiful design over a false premise is wasted, and when the
+premise is the product's core, a false premise means a different product. See `references/discovery.md`
+("Load-bearing assumptions") and `references/objective-selection.md`.
+
 Before the first delegation for a new product, obtain at least one concrete start-to-useful-result scenario unless the user already supplied one with equivalent detail. Before delegating any material product change, perform a delta-discovery check for new open product decisions.
 
 ## Core separation

@@ -11,6 +11,24 @@ Ask:
 
 > Given the current evidence, what uncertainty, structural risk, or missing capability should be resolved next so that subsequent development is less likely to optimize the wrong thing?
 
+The "uncertainty" here can be a **feasibility** uncertainty, not only a design one — and when it is, it
+usually outranks every design objective. If the product rests on a load-bearing assumption that is not yet
+proven (a brittle or unofficial external integration; an undocumented endpoint; anything whose viability
+on the *real target environment* is in genuine doubt), the most important thing to resolve next is not
+where a rule should live — it is *whether the ground the product stands on exists at all*. Designing an
+elegant boundary over an unproven premise is optimizing the wrong thing: if the premise is false, the
+whole design is wasted, and the product likely becomes something else.
+
+So calibrate before you reach for a design objective (see `references/discovery.md`, "Load-bearing
+assumptions"):
+
+- **Feasibility is obvious** (a CRUD app, a Monday/Trello-style tool, a second implementation of a proven
+  capability) → skip straight to the design objective; do not invent a feasibility question.
+- **Feasibility is genuinely uncertain** → the *first* objective is to **prove the assumption with a
+  minimal build (an MVP / spike)** — the smallest thing that exercises the risky premise end to end on the
+  real target — declared `implementation`, reviewed on whether the premise actually held. The
+  ownership/boundary design that assumes it comes *after* it holds, not before.
+
 ## Strong objective patterns
 
 These are a catalog, not a lifecycle:
