@@ -247,6 +247,27 @@ second, drifting source of truth:
 Create and maintain these as the product takes shape; a design objective's result is recorded in them,
 not narrated into the conversation and lost.
 
+### The plan report — the round's reasoning, surfaced for review
+
+At the end of every plan phase — after the objective and Worker handoff are drafted, before anything is
+built — write **`.balash/plan-report.md`** from `assets/plan-report-template.md`: a concise executive
+summary for a technical manager covering the objective and why now, the requirements it rests on, the
+**dependencies**, the **deliberations** (the real dilemmas — what was asked, what was weighed, and *why
+this over that*), the **decisions**, the **chosen architecture**, and the exit criteria the build will be
+held to. Its purpose is to let a human see, in one read, what this round decided and why — and to comment
+before the build begins.
+
+It is deliberately *not* a fourth design doc. The three docs above stay clean facts with no history; the
+plan report is the opposite on purpose — the **one place the round's deliberations are surfaced**,
+because that is what a reviewer needs to catch a decision they disagree with *before* it is built. It is
+**regenerated each plan round** (the current round only); past rounds are preserved in git history,
+committed beside the code they planned. Keep it tight — substance, not a form to fill in.
+
+Write it on **every** plan phase (it is the round's evidence that the objective was reasoned, not
+guessed). In **stepped/manual** `plan`, after writing it, **present it to the user** — show it (or its
+path) and invite comments before they run `build`. In **automatic** mode, write it silently and keep
+going; it is there for later inspection, not a pause point.
+
 ## Modes: run it automatically, or drive it phase by phase
 
 The same loop runs two ways, recorded in the **Mode** field of `.balash/state.md` (see
@@ -376,6 +397,10 @@ Before delegation:
 - defer unrelated items explicitly rather than silently forgetting them.
 
 A TODO item represents an intended outcome or unresolved concern, not merely an editing action.
+
+This is the end of the plan phase: with the objective and handoff drafted, write the round's
+**`.balash/plan-report.md`** (see "The plan report" above) — always. In stepped/manual `plan`, present
+it to the user for comment before `build`; in automatic mode, write it and continue.
 
 Good Guide TODO:
 - Prove that a product rule is enforced through every relevant entry path.

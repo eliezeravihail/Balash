@@ -43,7 +43,7 @@ watching.
 
 | Command (names are configurable) | Runs loop steps | Produces | Then parks at |
 |---|---|---|---|
-| **plan** | 1–3: establish state, choose one objective, protect intent, draft the Worker handoff | the Current objective + a bounded handoff, written to `state.md` | `planned:awaiting-build` |
+| **plan** | 1–3: establish state, choose one objective, protect intent, draft the Worker handoff | the Current objective + a bounded handoff (in `state.md`) + the round's `.balash/plan-report.md` | `planned:awaiting-build` |
 | **build** (execute) | 4: delegate to a Worker (or run the handoff as a separated phase) | the Worker's result + evidence pointer | `executed:awaiting-review` |
 | **review** | 5: measure evidence against exit criteria, run the review panel | reproduced readings + which criteria are met/unmet + implication for direction | `reviewed:awaiting-decision` |
 | **auto** | switches Mode to `auto` and runs to the next legitimate pause | — | wherever the loop next legitimately parks |
@@ -55,7 +55,9 @@ the human triggers it; in auto mode the loop does it itself.
 
 - **plan** stops *before* any delegation, so the human can read and edit the objective and handoff
   before a line of code is written. Open product decisions are still asked here — planning is where
-  questions live. Do not delegate from `plan`.
+  questions live. Write the round's `.balash/plan-report.md` and **present it** so the human reviews the
+  dependencies, deliberations, decisions, and chosen architecture before `build`. Do not delegate from
+  `plan`.
 - **build** requires the cursor at `planned:awaiting-build` (or a reopened objective). If there is no
   current objective, say so and point to `plan`. Stop when the Worker returns; do **not** measure or
   decide direction — that is review's job.
