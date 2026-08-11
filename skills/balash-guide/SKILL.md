@@ -53,8 +53,8 @@ reached, feeding the next direction. So "check the Worker's evidence" never mean
 means *measure the outcome yourself instead of trusting a self-report.* And the fact that Balash steers a
 model with prose rather than enforceable mechanism is **the intent, not a limitation** — direction and
 measurement are all the method needs; the only thing that must be robust is that the goal keeps reaching
-the Worker (the state file and hook), because a broken direction channel, not an unenforced rule, is the
-real failure.
+the Worker (the state file, reloaded at the start of every balash command), because a broken direction
+channel, not an unenforced rule, is the real failure.
 
 ## Sequence goals agile-style: a design goal, then implementation that conforms to it
 
@@ -185,13 +185,13 @@ advancement happens when a Worker returns or when the human resumes.** The Loop 
 named decision, or ready-to-choose-next) so that either trigger can pick up precisely where you left
 off.
 
-When Balash runs as its installed plugin, a `UserPromptSubmit` hook reads `.balash/state.md` on
-every turn and re-injects the Current objective and Loop cursor into context — so even on a turn
-where this skill body is not loaded, the goal is still put in front of you. That mechanism is only
-as good as the file: **update `.balash/state.md` the moment the loop's position changes** (objective
-chosen, Worker dispatched, evidence evaluated, decision resolved). Stale state means the hook
-faithfully re-injects the wrong objective. Keeping it current is not bookkeeping — it is what makes
-your own continuity work.
+Balash is engaged **explicitly**, through its commands (`/balash-plan`, `/balash-build`,
+`/balash-review`, `/balash-plan-and-build`) — nothing runs in the background to put the goal in front
+of you on unrelated turns. That makes the re-read discipline the entire mechanism: **at the start of
+every balash command, reload `.balash/state.md`** and re-orient from it. And **update it the moment the
+loop's position changes** (objective chosen, Worker dispatched, evidence evaluated, decision resolved),
+because the next command begins by reloading it — stale state resumes the wrong objective. Keeping it
+current is not bookkeeping; it is what makes your own continuity work.
 
 ## Working memory and durable memory
 
@@ -208,9 +208,9 @@ Two different memories, kept apart on purpose — conflating them is what rots a
 second, drifting source of truth:
 
 - **`.balash/state.md` — loop status only.** Mode, Loop cursor, the in-flight Current objective, the
-  Open Guide TODO, the Last result. These are *flags* that drive the loop and survive compaction, and
-  the hook injects them every turn. state.md is **not** the design record and must not accumulate
-  design facts. Initialize it from `assets/state-template.md` once there is enough context to fill it
+  Open Guide TODO, the Last result. These are *flags* that drive the loop and survive compaction; every
+  balash command reloads them to re-orient — there is no background hook, Balash is engaged only through
+  its commands. state.md is **not** the design record and must not accumulate design facts. Initialize it from `assets/state-template.md` once there is enough context to fill it
   meaningfully.
 
 - **The product's own design docs — the durable design record.** Three formal files that live *with

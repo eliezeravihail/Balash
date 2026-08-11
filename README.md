@@ -1,304 +1,127 @@
 # Balash
 
-**Balash is a Claude Code plugin that makes *design* the goal a coding agent is given — not a review
-applied after the code is written.** It keeps agent work pointed at the most valuable engineering
-objective as a product evolves, by separating *what to optimize now* (a **Guide**) from *how to build
-it* (a **Worker**), and by refusing to let unresolved product decisions get silently guessed.
+*(עברית: [README.he.md](README.he.md))*
 
-> This is a pivot. An earlier deterministic static-analysis CLI also lived under this name; it is no
-> longer the subject of this repository and is not carried forward here.
+## What this is
 
----
+Balash is a Claude Code plugin that makes **design** itself the goal handed to a coding agent —
+instead of a review applied after the code is already written.
 
-## 1. The problem, and the one idea
+The plugin splits the work into two roles:
 
-An implementing agent optimizes toward whatever goal you hand it. Give it a feature ticket and it
-optimizes for **the feature landing**; design quality becomes whatever happens to survive that. The
-code works, the tests pass, and the structure quietly rots — an invariant enforced in three places, a
-rule owned by nobody, an abstraction built for a future that never comes.
+- **The Guide** — holds the product vision and decides, one at a time, what design/quality outcome
+  the codebase most needs right now. It never writes implementation code itself. Its deliverable is
+  the design quality of the codebase across the product's whole evolution — not features shipped or
+  lines written.
+- **The Worker** — a senior engineer, as capable as the Guide — receives that outcome as its
+  objective, with the requested feature behavior attached as a **constraint** the design must
+  satisfy, and builds accordingly. The Guide then evaluates what came back and sets the next
+  objective.
 
-The idea behind Balash is a single move: **if you want good design out, design has to be the goal you
-put in.** So Balash reframes each unit of work from *"build feature X"* into *"reach this design
-outcome, with feature X as a constraint the design must satisfy."* Same code gets written — but the
-agent is now spending its cognition on *"where should this truth live?"* instead of only *"how do I make
-the feature pass?"*
+This separation is enforced: the Guide does not become the Worker just because it *can* edit code.
+It inspects code to understand state or judge evidence, but the substantial implementation work is
+the Worker's.
 
-Everything below is machinery in service of that one reframing.
+## How to work with it
 
----
+**Install** as a Claude Code plugin, then engage it **explicitly** through its commands — nothing runs
+in the background and nothing auto-activates on unrelated turns:
 
-## 2. The method
+- `/balash-plan` — choose one design objective and draft the handoff to the Worker; **stops before any
+  code is written**.
+- `/balash-build` — execute the planned objective; stop when done.
+- `/balash-review` — measure the result against the exit criteria; stop with grounded findings and a
+  direction for what's next (it reports, it does not gate). Also runs **standalone** on any diff,
+  branch, or PR that Balash didn't build.
+- `/balash-plan-and-build` — the same loop run end to end: choose an objective, delegate, measure, and
+  continue until the change is delivered, pausing only for an open product decision.
 
-### 2.1 Two roles: Guide and Worker
+**The durable target lives in files, not the conversation.** A conversation drifts, gets interrupted,
+gets summarized — so Balash keeps its memory on disk, and each command reloads it when it runs:
 
-- **The Guide** holds the product vision and decides, **one at a time**, what *design/quality outcome*
-  the codebase most needs next for the change in front of it. It never writes implementation code. Its
-  deliverable is the design quality of the codebase across the product's whole evolution — not features
-  shipped or lines written.
-- **The Worker** — a senior engineer as capable as the Guide — receives that outcome as its objective,
-  with the feature behavior attached as a *constraint the design must satisfy*, and designs and builds
-  it. The Guide then evaluates the design it returns and chooses the next objective.
+- **`.balash/state.md`** — loop status only: the active objective, the loop cursor, the mode. Every
+  command re-reads it to re-orient.
+- **The product's own design docs** — the durable design record, living *with the product's code*:
+  `GOALS.md` (goal, scenarios, non-goals), `BASE-DEPENDENCIES.md` (the foundational substrate only),
+  and `ARCHITECTURE.md` (seams, structural decisions, invariants). Facts kept next to the code they
+  govern — not session-recovery logs.
 
-The separation is hard: the Guide does not become the Worker just because it *can* edit code. It
-inspects code to understand state or judge evidence, but the substantial implementation is the Worker's.
+**No product decision gets made silently.** Every unclear point is sorted into one of three buckets: a
+grounded product fact (stated, observed in the code's behavior, or settled earlier), an open product
+decision (changes observable behavior, persistent data, ownership/identity, lifecycle, or failure
+handling — **ask the user, never guess**), or a technical freedom (an implementation detail with no
+product impact — the Worker just picks something reasonable).
 
-### 2.2 Design objectives and implementation objectives — the rhythm
+**Project layout:**
 
-The Guide feeds the Worker a *sequence* of objectives, agile-style, each scoped to a capability. Two
-kinds, and **both are first-class goals**:
+- [`skills/balash-guide/`](skills/balash-guide) — the method: `SKILL.md`, its references (objective
+  selection, worker handoff, design principles, run modes, review panel), and the doc templates.
+- [`commands/`](commands) — the commands that engage the method.
+- [`experiments/`](experiments) — the evidence (see [Does it work?](#does-it-work) below and
+  [`experiments/RESULTS.md`](experiments/RESULTS.md)).
 
-- **A design objective.** The deliverable *is* the design — the boundaries, interfaces, and domain
-  shape for the capability, with reasoning, concrete enough to build against. A good design is a real
-  goal on its own; it need not come bundled with working feature code. The first objective of any new
-  product is a design objective.
-- **An implementation objective.** *"Implement this capability, conforming to the design we already
-  agreed."* Because a sound design was reached and judged as its own earlier goal, implementation fills
-  in an already-sound shape instead of sliding into spaghetti.
+## The principles
 
-So the rhythm is **design → implement → (next capability) design → implement**. The Guide does **not**
-plan the whole sequence up front — that would be waterfall in an agile costume. Each next objective is
-chosen by *evaluating the result of the previous one*. The one rule across the sequence: it must
-actually progress to working, tested software — a run of nothing but design objectives that never ships
-is as wrong as bundling everything into one "build the feature" goal.
+The method rests on two principles. They combine: the first sets *what* goal you give the agent;
+the second sets *the form* it must take for that goal to actually steer it.
 
-### 2.3 No silent product decisions
+### 1. The agent aims at the goal it was shown — not at what you quietly wanted
 
-Every unresolved choice is sorted into exactly one bucket:
+An implementing agent optimizes toward whatever goal is placed in front of it, not toward anything
+left unsaid. Hand it a feature ticket ("implement X") and it optimizes for *the feature landing* —
+tests pass, behavior works — and design quality becomes whatever happens to survive along the way:
+an invariant enforced in three different places instead of one, a rule owned by nobody, an
+abstraction built for a future that never arrives. This isn't because the agent doesn't know how to
+design well — it's because the goal it was given never asked for that.
 
-- **Grounded product fact** — stated by the user, shown by repository behavior, or recorded from an
-  earlier answer.
-- **Open product decision** — anything that changes observable behavior, persistent data,
-  identity/ownership, lifecycle, failure handling, or scope. **Ask the user; never guess.**
-- **Technical freedom** — an implementation detail with no material product effect. The Worker just
-  picks something sensible.
+The practical consequence: **if you want quality design out, design itself has to be the goal you
+put in** — not a side effect you hope emerges on its own. So every unit of work in Balash is
+reframed: not "build feature X" but "reach this design outcome, with feature X as a constraint the
+design must satisfy." The same code gets written in the end — but the agent's cognition is now
+pointed at "where should this fact live in the system?" instead of only "how do I get the feature
+through?". This is why the Guide in Balash explicitly picks a separate *design* objective (e.g.:
+establish ownership, prove out an abstraction, establish an invariant) before asking for the
+matching implementation — instead of trusting that good design will just "happen" while the feature
+gets built.
 
-The cardinal sin is disguising an open product decision as a technical assumption. A plausible guess is
-still a guess. Before the first delegation the Guide gets at least one concrete usage scenario; before
-any material change it re-checks for newly opened product decisions.
+### 2. An understood goal means concrete usage scenarios and explanations — not general hand-waving
 
-### 2.4 The operating loop
+Not every "design objective" phrasing works. A general goal like "write quality code" sounds right,
+and the knowledge of how to do that is already embedded in the agent — but in practice, a phrasing
+like that **escapes to shallow performance metrics**: test-coverage percentages, line counts, file
+layout, generic scores — because without concretization the agent has nothing real to ground a
+judgment call in, so it falls back to the easiest thing to measure. Knowledge the agent already has
+isn't enough if the goal it's given doesn't activate that knowledge against the specific case in
+front of it.
 
-Not mandatory phases — a control loop for deciding what to do next:
+So every handoff in Balash must include not just the name of the desired outcome, but also:
+**concrete usage scenarios** (how the system will actually be called/used), an explanation of *why*
+this outcome matters right now (not just *what* it is), and a checkable exit criterion (not a
+score — a question with a testable yes/no answer). The practical test: a good handoff is one two
+strong engineers could satisfy with two different, equally good designs — if it only allows the one
+design you'd already pictured, it's over-specified; if it's as vague as "write good code," it will
+escape to metrics. For exactly the same reason, *checking* the result in Balash was built against
+the same trap: every review finding must carry a concrete reproduction (an input that produces the
+wrong output, a failing test) or a precise `file:line` citation — not a general verdict on "is this
+good?". An abstract judgment, even when it happens to be correct, doesn't count as a measurement.
 
-1. **Establish state** — read `.balash/state.md` and just enough of the repo; classify the request's
-   implied choices into the three buckets above; resolve open product decisions with the user.
-2. **Choose one objective** — the single objective that most reduces an important uncertainty or
-   structural risk *now*, framed around design quality, with: *Objective, Why now, Exit criteria,
-   Preserve, Do not optimize for.*
-3. **Protect intent** — make sure no open product decision is being silently assumed, and unrelated
-   concerns are parked explicitly rather than forgotten.
-4. **Delegate** — a bounded Worker handoff framed as a design outcome (never a feature ticket), giving
-   the behavior as a constraint and the design principles as the target. A good handoff is one two strong
-   engineers could satisfy with *genuinely different, equally good* designs — if it only permits the one
-   design you already pictured, it's over-specified.
-5. **Measure the outcome** — measure whether the exit criteria were actually demonstrated (run the
-   tests, read the code) instead of trusting the Worker's "done"; the reading feeds the next direction,
-   it is not a gate. For high-stakes work, escalate to the **review panel** (§2.7). Reading: met /
-   partially_met / invalidated / blocked.
-6. **Choose again** — from the updated state; re-evaluate from evidence, no fixed phase order.
+## Does it work?
 
-### 2.5 The durable goal: state file + hook
+Balash is a claim — *making design the goal produces better-designed software* — so it was tested, not
+just asserted. Each pilot builds the **same product two ways** (Balash vs. a plain session handed the
+product goal directly), with **product information held constant**, so any difference is attributable
+to process, not knowledge. The two codebases are judged **blind**, by reviewers told to judge design
+like Martin/Fowler/Metz; then the judge is **scrutinized, not trusted** — every load-bearing claim is
+verified against the source, and a second reviewer with the **opposite** disposition (pro-simplicity /
+YAGNI) re-judges, to catch a verdict that is only a matter of taste.
 
-The loop runs inside an ordinary conversation, which drifts, gets interrupted, and is summarized. So
-**the goal does not live in the chat — it lives in `.balash/state.md`.** That file is the authority on
-what's being built. Two mechanisms keep it working:
+- **Pilots #1–#3** (a task-manager CLI, a printable bingo generator, a printable Sudoku generator):
+  both opposite-disposition judges preferred the **Balash** arm in every one.
+- **Pilot #4** — isolated operators, an evolving product, and *separate* design and product verdicts —
+  is the honest one, and it **split**: the two judges chose Balash for **design** (clear), while a
+  blind product assessor chose the direct arm for **product** (clear). Design-first produced the deeper
+  design *and*, by the same minimalist discipline, shipped two real bugs. That "win the design, lose
+  the product" outcome is real — now demonstrated rather than hypothesized, which is exactly why the
+  two verdicts are never merged into one score.
 
-- **The `balash-guide` skill is model-invoked** — Claude enters it on its own whenever you build or
-  materially evolve software (no slash command needed), the way a UI-design skill triggers on a UI
-  request.
-- **A `UserPromptSubmit` hook** (`hooks/inject-goal.py`) fires every turn, reads `.balash/state.md`, and
-  re-injects the current objective (and, in stepped mode, the stop-policy) — so the goal survives
-  side-conversations and context compaction even on a turn where the skill body isn't loaded. On any
-  project without a `.balash/state.md`, the hook is silent.
-
-The discipline that makes this work: **whenever about to act as the Guide, re-read `state.md` first**,
-and update it the moment the loop's position changes. Awareness of the goal isn't sustained in the
-model's head — it is *reloaded* from disk.
-
-### 2.6 What "good" aims at — and the subtractive pass
-
-The target is the standard in [`references/design-principles.md`](skills/balash-guide/references/design-principles.md)
-(ownership, boundaries, invariants, "duplication is cheaper than the wrong abstraction") — used as a
-direction, not a checklist. The experiments surfaced a specific, recurring failure of a design objective:
-it reliably produces a domain that is **sound at the core and over-built at the seams** (a value object
-that owns no rule, a guard against callers that can't exist, a method nothing calls). So the review step
-now runs a **mandatory subtractive pass**: for every type/guard/wrapper/abstraction, name the *present
-product force* that requires it, and delete the ones whose removal wouldn't damage a current
-rule/invariant/boundary. It's counter-architecture critique, not a line-count rule.
-
-### 2.7 Reviewing: measurement, not gating
-
-Balash **directs and measures; it does not coerce.** A review is not a gate or a verdict against the
-Worker — it is honest *measurement of the outcome against the objective*, and what it shows feeds the
-next direction (the Guide/human decides). A plain "is this good?" LLM judgment is a weak measurement —
-with nothing to contrast against, it drifts to vague praise and invented grades. The **review panel**
-([`references/review-panel.md`](skills/balash-guide/references/review-panel.md)) rebuilds what made the
-experiment judges a trustworthy measurement: an adversarial contrast (against the *exit criteria*, in
-place of a second implementation) plus reproduction of every reading. Its core rule:
-
-> **Every reading carries a reproduction (a failing probe / a concrete input → wrong output) or a
-> precise `file:line` citation. No scores, no percentages.** A reading that can't be reproduced or
-> cited is not a measurement.
-
-Every task declares a **Kind — `design`, `implementation`, or `refactoring`** — and the review applies
-the matching lens, because what "good" means and what proves it differ by kind: a *design* review judges
-whether the structure is right (not tests), an *implementation* review judges correctness and
-conformance to the agreed design, a *refactoring* review judges behavior-preservation and whether the
-named smell actually went. Typing the review is what stops it sliding into proxy-checking (grading links
-and layout when the task was an architecture). Escalating roles then serve that lens: a **probe
-reviewer** that writes adversarial probes against the exit criteria (the role that surfaces real
-defects), a **fidelity reviewer** (claims/comments vs code), a **subtractive reviewer** (the pass above),
-and an **opposite-disposition second reviewer** for genuine taste calls. The reviewer's readings are
-*measured, not trusted* — before a decisive reading informs direction, the Guide reproduces it itself.
-
----
-
-## 3. Running it: automatic, or phase by phase
-
-The same loop runs two ways, recorded in the `Mode` field of `.balash/state.md`
-([`references/modes.md`](skills/balash-guide/references/modes.md)):
-
-- **Automatic** (default) — the Guide drives the whole loop end to end, pausing only at the two
-  legitimate human moments: an *open product decision* it must not guess, and *receiving the next product
-  change*. A returning Worker auto-advances the loop. Command: **`/balash-auto`**.
-- **Stepped** — for hands-on supervision. The loop stops at **every** phase boundary and advances only
-  on an explicit command, so you can inspect and edit between phases:
-  - **`/balash-plan`** — choose one design objective and draft the Worker handoff; **stops before any
-    code is written**, so you can approve or edit the objective first.
-  - **`/balash-build`** — execute the planned objective; stops when done.
-  - **`/balash-review`** — measure the result with the review panel; stops with reproduced readings and
-    what they imply for the next direction (it reports, it does not gate).
-
-  In stepped mode a returning Worker **parks** at `executed:awaiting-review` instead of auto-advancing.
-
-**Explicit phase commands run inline in your session, on the model you selected — no subagent.** You
-chose that model and you're watching the phase, so the work stays visible and runs on your model rather
-than being delegated behind an agent boundary. (Only automatic mode delegates to Worker subagents, where
-autonomous delegation and context isolation are the point.) The Guide/Worker separation is preserved
-because the design objective was produced first, as its own `plan` step — `build` *conforms to* it.
-
-**`/balash-review` also runs standalone** on any diff, branch, or PR that Balash didn't build — the same
-roles, the same reproduce-or-cite rule — as a general review tool. (In pilot #4, this panel is exactly
-what caught the shipped bugs a design-only judgment missed.)
-
----
-
-## 4. Install & layout
-
-Install as a Claude Code plugin (it self-activates on software work via the model-invoked skill; the
-hook and commands come with it).
-
-- [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json) — the plugin manifest.
-- [`skills/balash-guide/`](skills/balash-guide) — the method: `SKILL.md`, its `references/` (discovery,
-  objective selection, worker handoff, reviewing evidence, design principles, **modes**, **review
-  panel**), and the `.balash/state.md` template it maintains per project.
-- [`hooks/`](hooks) — `hooks.json` and the `UserPromptSubmit` script that re-injects the objective (and
-  stepped-mode stop-policy) each turn.
-- [`commands/`](commands) — the stepped-mode phase commands: `/balash-plan`, `/balash-build`,
-  `/balash-review` (also the standalone reviewer), `/balash-auto`.
-- [`experiments/`](experiments) — the evidence (see below).
-
----
-
-## 5. The experiments
-
-**The question:** does *making design the goal* — a Guide that hands a capable Worker a design/quality
-objective (feature as constraint), then measures and iterates — produce better-designed software than a
-plain session handed the product goal directly?
-
-### 5.1 How a pilot is run
-
-Two arms build the **same** product: the **Balash** arm (Guide + Worker) and a **Direct** arm (a
-competent session handed the feature directly — not a strawman). Then:
-
-- **Blind judging.** The two final codebases are judged anonymized by a reviewer told to judge *design*
-  (Martin/Fowler/Metz), not to hunt bugs.
-- **Opposite dispositions.** A second reviewer with the **opposite** bias (pro-simplicity/YAGNI vs
-  pure-OO) re-judges, to test whether a verdict is an artifact of taste — the failure mode we most
-  worried about.
-- **The judge is scrutinized, not trusted.** Every load-bearing claim is verified against the source;
-  LLM judges demonstrably miss defects and can't tell "correct-but-unstated" from "over-engineered"
-  without ground-truth product facts.
-- **Separate verdicts (from pilot #4 on).** Design quality and *product* quality are judged separately
-  and never merged into one score — because they can disagree.
-
-### 5.2 The four pilots
-
-| Pilot | Product (domain) | Executor | Result |
-|---|---|---|---|
-| **#1** | Task-manager CLI, 4 evolving stages (Python) | strong | **Balash** (both dispositions) |
-| **#2** | Printable bingo-card generator (static web) | strong | **Balash** (both dispositions) |
-| **#3** | Printable Sudoku generator (static web) | **Sonnet Worker** | **Balash** (both dispositions) |
-| **#4** | RoomBook booking core, 4 evolving stages, **isolated operators** | strong | **split — design → Balash, product → Direct** |
-
-Read pilots #1–#3 as **three experimental units with robustness-checked verdicts**, not six independent
-wins: the two opposite-disposition judges in a pilot read the *same* two codebases, so they test taste,
-not replication. The honest strength is less the tally than **the sequence** — three different faces of
-one mechanism:
-
-- **#1 — needed *less* mechanism.** The Direct arm built a cycle-detector; Balash reasoned cycles were
-  impossible and enforced one existence rule instead. Balash *removed* machinery.
-  ([`design-first-vs-direct/`](experiments/design-first-vs-direct))
-- **#2 — needed *more* guarantee.** The Direct arm generated batch cards that could silently collide;
-  Balash made within-batch distinctness an enforced guarantee. Balash *added* a guarantee. (Honest
-  caveat: the Balash handoff *asked* "what uniqueness do you guarantee?", so part of the win is
-  design-level discovery, not "same info, better design.") ([`pilot2-bingo-web/`](experiments/pilot2-bingo-web))
-- **#3 — same guarantee, *better owner*.** Both arms enforced the one-solution invariant; Balash made it
-  true *by construction* (`Puzzle.tryCreate`) where the Direct arm held it by convention. It also showed
-  a **Sonnet Worker is good enough** to realize a strong design objective — with one verified conformance
-  failure (a dead `isSatisfiedBy`) that a follow-up **strong-model fidelity review** then caught and
-  fixed at review cost (validating the *mixed-tier* policy: cheap Worker + strong review).
-  ([`pilot3-sudoku-sonnet/`](experiments/pilot3-sudoku-sonnet))
-- **#4 — the split.** Under **isolated operators**, an **evolving product**, and **separate verdicts**:
-  design-first produced the deepest design of the set (it saw a Stage-4 cross-room person-rule *falsify*
-  the "rooms are independent" assumption, fused two conflict rules into one owned predicate, and
-  **deleted** the now-false partition) — and *both* opposite-disposition judges scored its design a clear
-  win. **But** a separate product assessor scored the **Direct** arm the better product: the same
-  minimalism cut a waitlist-inspection affordance and shipped two real bugs (a cross-room promotion that
-  never fires; a series that books backwards on a negative stride). ([`pilot4-roombook-evolving/`](experiments/pilot4-roombook-evolving))
-
-### 5.3 What the pilots establish
-
-- **The core effect held under the harder conditions.** With isolated operators and product evolution,
-  design-as-goal still produced the deeper design — to the point of deleting a structural assumption a
-  new invariant had outgrown.
-- **"Win design, lose product" is real — demonstrated, not hypothesized (pilot #4).** The very discipline
-  that wins design can cut an affordance and leave behavioral bugs. This is *why* the design and product
-  verdicts must be scored separately.
-- **A cheap executor can realize a strong design, and a strong review closes the gap (pilot #3).** The
-  mixed-tier policy — cheap Worker + strong fidelity review — caught and fixed the exact conformance slip
-  a weaker executor left.
-- **The subtractive pass may be working (pilot #4).** It was the first run after the pass was added, and
-  the edge-over-engineering that recurred in #1–#3 *reversed*: the blind auditor found the Direct arm
-  carried the ceremony this time and Balash was leaner (n=1, suggestive).
-
-### 5.4 Honest limits
-
-- **Small N.** Four pilots; two of them (#1, #4) exercise an *evolving* product, which is Balash's real
-  claim ("preserves quality as the product changes").
-- **Operator confound: reduced, not removed.** Pilots #1–#3 had one operator run both arms. Pilot #4 ran
-  the arms as isolated agent contexts, but one orchestrator still authored both arms' prompts from
-  identical spec text. Genuinely independent operators remain the stronger control.
-- **Role separation not enacted in #4.** One agent played both Guide and Worker there.
-- **Balash is not strictly better.** It over-built at the seams in #1–#3 and lost on readability/size,
-  and lost *product* in #4. Design quality ≠ product quality.
-- **The judges are LLMs**, trusted only because their specific claims were source-verified each time.
-
-### 5.5 Read more
-
-**[`experiments/RESULTS.md`](experiments/RESULTS.md)** is the at-a-glance summary of all pilots. Each
-pilot folder has a `FINDINGS.md` with the full evidence and caveats. Two earlier, differently-framed
-pilots ([`guide-vs-direct/`](experiments/guide-vs-direct), [`discovery-tuning-v3-vs-v3.1/`](experiments/discovery-tuning-v3-vs-v3.1))
-produced the lesson — *a blind LLM judge can't tell "correct-but-unstated" from "over-engineered"
-without ground-truth product facts* — that shaped the judging method used throughout.
-
----
-
-## 6. Status
-
-A meaningfully stronger signal than a single result, **not** a validated one. The core reframing holds
-across four pilots and survives isolation and evolution; pilot #4 also drew the honest boundary of the
-method (it can win design and lose product) and hinted that the subtractive pass addresses the one
-recurring weakness. Next: genuinely independent operators, restoring the Guide→Worker delegation inside
-the Balash arm, confirming the subtractive-pass reversal on more than one run, and a cost comparison of
-`strong-direct` vs `strong-Guide + cheap-Worker + strong review`.
+Full method, scoreboard, and per-pilot findings: **[`experiments/RESULTS.md`](experiments/RESULTS.md)**.

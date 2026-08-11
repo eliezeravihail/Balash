@@ -5,12 +5,11 @@ the design record. The durable engineering design lives in the product's own `GO
 `BASE-DEPENDENCIES.md`, and `ARCHITECTURE.md` (facts, kept next to the code). Keep this short; do not
 use it as a transcript or a worker task log.
 
-<!-- SCHEMA CONTRACT (this template owns it): the injection hook (hooks/inject-goal.py) reads the goal
-     by heading and marker. The load-bearing anchors are the headings `## Current objective` (with its
-     `**Objective:**` and `**Kind:**` markers), `## Mode`, and `## Loop cursor`, and those marker
-     formats. Renaming or reformatting them stops the goal from being injected. If you must change the
-     shape, change it here AND in the hook together — they are two sides of one contract. (The hook now
-     says so loudly if a filled state file lacks `## Current objective`, rather than failing silent.) -->
+<!-- SCHEMA CONTRACT (this template owns it): the balash commands read the goal from this file by
+     heading and marker when they run. The load-bearing anchors are the headings `## Current objective`
+     (with its `**Objective:**` and `**Kind:**` markers), `## Mode`, and `## Loop cursor`. Keep those
+     headings and marker formats intact — a resuming command re-orients from them; rename one and the
+     command reads the wrong thing (or nothing). -->
 
 ## Mode
 
