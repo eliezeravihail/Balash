@@ -201,9 +201,37 @@ Use TODO deliberately.
 2. The Guide owns project-level unresolved goals and concerns.
 3. A Worker may maintain its own execution TODO for the current objective.
 4. Never mark a Guide TODO complete only because the Worker says it is complete. Require the stated evidence.
-5. Persist only cross-session state in `.balash/state.md`. Keep transient implementation steps out of durable state.
 
-If `.balash/state.md` does not exist, initialize it from `assets/state-template.md` after enough product context is known to fill it meaningfully.
+### Where things live: loop status vs the design record
+
+Two different memories, kept apart on purpose — conflating them is what rots a state file into a
+second, drifting source of truth:
+
+- **`.balash/state.md` — loop status only.** Mode, Loop cursor, the in-flight Current objective, the
+  Open Guide TODO, the Last result. These are *flags* that drive the loop and survive compaction, and
+  the hook injects them every turn. state.md is **not** the design record and must not accumulate
+  design facts. Initialize it from `assets/state-template.md` once there is enough context to fill it
+  meaningfully.
+
+- **The product's own design docs — the durable design record.** Three formal files that live *with
+  the product's code* (repo root), not inside Balash, and stand on their own merit like any project's
+  docs — read on demand, never injected, and explicitly **not** session-recovery logs:
+  - **`GOALS.md`** — primary goal, use scenarios, non-goals, goal-level decisions (`assets/goals-template.md`).
+  - **`BASE-DEPENDENCIES.md`** — the foundational substrate *only* (the §7 cross-seam base),
+    language-agnostic and standalone; not the manifest, not the confined deps
+    (`assets/base-dependencies-template.md`).
+  - **`ARCHITECTURE.md`** — boundaries/seams, structural decisions, invariants, change axes, confined
+    deps (`assets/architecture-template.md`).
+
+  Three rules govern all three: **(1) facts + rationale, never a write-up of the discussion or its
+  history; (2) insights integrated where they belong, not in a separate "insights" section; (3) where
+  a fact is enforced in code, point to it — do not restate it, or the doc drifts and lies.** Keep them
+  true: a fact that changed is edited or removed. A resolved open decision, and the lasting design
+  output of a completed objective, migrates into the right one of these — it does not settle in
+  state.md.
+
+Create and maintain these as the product takes shape; a design objective's result is recorded in them,
+not narrated into the conversation and lost.
 
 ## Modes: run it automatically, or drive it phase by phase
 
@@ -263,8 +291,9 @@ permitted to cross a public seam (`references/design-principles.md` §7). This i
 decision you must **not** leave to accrete through the Worker's incidental choices — left unset, the
 whole codebase silently couples to whatever got picked. It is a *user* decision only when it materially
 changes product-visible coupling or replaceability; otherwise you, the Guide, decide it — but either
-way decide it up front and record it. This sets a *constraint* (the substrate, and what may cross a
-boundary), not an architecture: do not, under this heading, pick the heavy replaceable libraries or the
+way decide it up front and record it in `BASE-DEPENDENCIES.md` (the foundational substrate *only* —
+not the manifest, not the confined libraries). This sets a *constraint* (the substrate, and what may
+cross a boundary), not an architecture: do not, under this heading, pick the heavy replaceable libraries or the
 layering.
 
 Do not ask the user to choose architecture, patterns, interfaces, database abstractions, or other technical freedoms. Do not propose architecture while the product forces that would justify it are still unclear.

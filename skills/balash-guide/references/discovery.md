@@ -72,8 +72,9 @@ Decide this up front, keep it minimal, and extend it only rarely and deliberatel
 necessary infrastructure. Unlike other technical freedoms, this one is **not** deferred to the Worker:
 left to accrete, the whole codebase silently couples to whatever was picked. Ask the user only if the
 choice materially changes product-visible coupling or replaceability; otherwise the Guide decides it —
-but always up front and recorded. The foundational set, plus the framework's own domain types, are the
-only types permitted to cross a public seam (`design-principles.md` §7).
+but always up front and recorded in `BASE-DEPENDENCIES.md` (the foundational substrate *only* — never
+the full manifest, never the confined libraries). The foundational set, plus the framework's own domain
+types, are the only types permitted to cross a public seam (`design-principles.md` §7).
 
 ## Ask one question at a time
 
@@ -83,19 +84,20 @@ Do not bundle a questionnaire. Do not volunteer a catalog of hypothetical future
 
 ## Record only actionable forces
 
-Translate useful answers into concise state entries:
+Translate useful answers into concise **facts in the product's design docs** — not into
+`.balash/state.md`, which carries only loop status. Each kind of fact has a home; record it there as a
+fact + reason, never as a write-up of the discussion, and where the code already enforces it, point to
+the code instead of restating it:
 
-```text
-Core scenario: ...
-Grounded product fact: ... — source: request | repository | user answer
-Open product decision: ... — why it changes behavior/objective
-Technical freedom: ... — safe for Worker to choose
-Likely change axis: ... because ...
-Invariant: ...
-Constraint: ...
-Foundational dependency: ... — day-zero substrate; boundary-crossing allowed
-Explicit non-goal: ...
-Unknown that still matters: ...
-```
+- **`GOALS.md`** — the primary goal, core use scenarios, explicit non-goals, and goal-level product
+  decisions or product-rule invariants (a rule the product must always honor).
+- **`BASE-DEPENDENCIES.md`** — a foundational dependency (day-zero substrate, boundary-crossing
+  allowed). Foundational *only*.
+- **`ARCHITECTURE.md`** — a likely change axis (with its reason), a structural invariant, a real
+  constraint, a confined dependency, a boundary decision.
+
+An *open* product decision is not yet a fact: it stays a live question (Loop cursor `awaiting-human`,
+or the Guide TODO) until answered, then it is recorded in the doc it belongs to. A *technical freedom*
+is not durable design — it rides in the Worker handoff for the objective that needs it.
 
 Do not turn vague possibilities into requirements. Do not record a guess as a durable decision.
