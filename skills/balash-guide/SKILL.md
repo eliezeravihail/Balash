@@ -326,9 +326,20 @@ An objective must contain:
   determines the review lens applied to the result;
 - **Objective** — the outcome to optimize for;
 - **Why now** — evidence from the product/repository explaining its priority;
-- **Exit criteria** — observable facts that would demonstrate completion;
+- **Exit criteria** — observable facts that would demonstrate completion, derived *adversarially* the
+  way you would hunt bugs: from the real behavior, name the concrete edge and break cases (empty / one /
+  many, negative / zero / overflow, cross-boundary, duplicate, the absent-optional, ordering / time) and
+  the invariants a new interaction could violate — each as its own checkable criterion, so a minimalist
+  implementer cannot satisfy the objective on paper while silently dropping them. Generic or purely
+  structural criteria a buggy build could still pass ("one owner exists", "docs populated") are not
+  enough; keep each criterion surgical rather than bundling many into one catch-all;
 - **Preserve** — behavior, decisions, or constraints that must not be damaged;
 - **Do not optimize for** — tempting but irrelevant local goals.
+
+Put the **hard decision** at the objective's core — the judgment a naive "build feature X" framing would
+let evaporate (where a rule should live now that it crosses a boundary; which invariant a new
+interaction threatens; who owns a transition reached from several paths). If the best the objective can
+say is "design it well", it is not yet an objective.
 
 Do not choose an objective merely because it is the next feature on a list.
 
