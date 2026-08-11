@@ -59,6 +59,29 @@ Useful questions include:
 
 Do not present the user with a catalog of possible future extension points. Derive candidate forces from the product scenario and the user's answers.
 
+## Entering an existing codebase — learn it before you redesign it
+
+When the task changes code that **already exists** (a redesign, an extraction, a second implementation,
+a refactor), the codebase is ground truth — and most of a design's claims are *claims about that code*,
+which are checkable. Do not jump to a targeted fix, and do not sketch an abstraction over what you
+*assume* is there. Learn it first, in order:
+
+1. **Map the substrate and dependencies as they actually are** — the language(s), framework, and
+   foundational deps the code truly stands on, read rather than assumed. For a redesign the substrate is
+   *discovered* (already chosen), not asked; surface it and flag any conflict (e.g. one module in
+   Python, its sibling in JS).
+2. **Read the real seams and interfaces** — the actual module boundaries and public interfaces, and how
+   the parts talk: the architecture in the code, not the one you would imagine.
+3. **Read the actual implementation of every case your change claims to touch or unify.** If the design
+   says an abstraction covers cases A, B, C, D, you must have *read* A, B, C, and D. Reading two and
+   assuming the rest fit is the classic failure — a real case often has a different shape than your model
+   (an *authored editor* with no seed, where you assumed a *seeded generator*).
+4. **Surface the existing problems and debt from the code** — the duplication, coupling, and pain that
+   actually justify the change — observed, not guessed.
+5. **Only then design** — and every statement the design makes about the existing code ships with its
+   evidence (the read from step 3) or is labelled **unverified**. An abstraction or boundary may not
+   claim to cover a case it has not read.
+
 ## Foundational substrate (day zero) — ask, don't guess
 
 Establish the **foundational substrate** at the start: the very-infrastructural base everything will be

@@ -279,7 +279,7 @@ Read `.balash/state.md` when present, plus only the repository material needed t
 
 Use `references/discovery.md` and classify the request's implied choices as grounded product facts, open product decisions, or technical freedoms.
 
-For a new product, do not infer that the request is sufficiently specified merely because code can be written. Obtain a concrete usage scenario first. For a later change, inspect how the new behavior meets existing scenarios and identify any new observable choice.
+For a new product, do not infer that the request is sufficiently specified merely because code can be written. Obtain a concrete usage scenario first. For a change to an existing codebase, the code is ground truth: first learn it per `references/discovery.md` ("Entering an existing codebase") — the real substrate, the seams, and the implementation of **every case your change claims to touch or unify** — before designing, and identify any new observable choice.
 
 Ask the user one concrete question at a time for open product decisions whose answers could materially change:
 - the product's core behavior;
@@ -396,6 +396,14 @@ with no stack or skeleton is principles, not a plan, and is **not** met. An `imp
 is judged on correctness and conformance, a `refactoring` objective on behavior-preservation and
 whether the named smell went.
 Findings must be reproduced or cite `file:line`; never a score.
+
+The same evidence bar applies to the design's **own claims about existing code** — that an abstraction
+covers cases A–D, that a boundary holds, that the existing modules all fit the seam: a claim counts only
+if each case was actually read and can be cited; a claim asserted without the read is **unverified** and
+is treated as a finding, not a fact. Asking yourself "am I sure?" is not a check — a self-report cannot
+be trusted, whether the model is mistaken about its own state or lying; the citation, present in the
+artifact, is the check. A design that claims to cover N existing cases must show it read all N, or label
+the unread ones unverified — never assert coverage it did not measure.
 
 Do not ask only "did it work?" Ask whether the exit criteria were actually demonstrated.
 
