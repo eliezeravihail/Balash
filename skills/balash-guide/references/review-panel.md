@@ -105,14 +105,30 @@ confirmed. A reading that cannot be reproduced on demand is set aside, not acted
 
 ## Standalone use (measure any change, no Balash loop required)
 
-`review <target>` where target is a diff, branch, path, or PR:
+`review <target>` where target is a diff, branch, path, or PR. Unlike an in-loop review, **nothing has
+told you what kind of review this is or what to measure against** — an in-loop review reads the Kind and
+exit criteria from `.balash/state.md`, but here there is no state. So the first move is not to review;
+it is to *classify*. Applying the wrong lens (or measuring against invented criteria) makes the whole
+review measure the wrong thing.
 
-1. Determine the kind (`design` | `implementation` | `refactoring`) from the target and the stated
-   intent, and take that lens.
-2. Establish the ground truth to measure against — the change's stated intent / acceptance criteria. If
-   it is unstated and material, ask the user one concrete question rather than inventing criteria.
-3. Run the roles, scaled to the change.
-4. Report **what you measured, not a grade.**
+**Step 0 — classify before you review (a required gate, not a formality).** Before producing a single
+reading, commit *in writing* to two things, as the first output of the review:
+
+1. **The kind** — `design` | `implementation` | `refactoring` — inferred from the target and its stated
+   intent. A change is not always one kind: if the diff genuinely spans kinds (a refactor that also adds
+   behavior), name the **dominant** one and apply the extra lens where it applies, rather than forcing
+   one. If the kind is unclear *and* which kind you pick would change what you measure, **ask the user
+   one concrete question** before going on — do not guess the lens.
+2. **The ground truth to measure against** — the change's stated intent / acceptance criteria. If it is
+   unstated and material, **ask the user one concrete question** rather than inventing criteria; a review
+   against invented criteria measures nothing.
+
+Why a gate and not a subagent: the classification needs exactly the context the review itself needs (the
+diff, the intent), and standalone review runs inline on the user's chosen model — a separate classifier
+subagent would only re-load that same context and split one judgment across two. Keep it one inline gate.
+
+**Then review.** Take the kind's lens (above), run the roles scaled to the change, and report **what you
+measured, not a grade.**
 
 ## Output shape
 

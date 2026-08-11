@@ -22,11 +22,15 @@ not accept or reject the Worker. Do not silently repair everything reported — 
 what matters to the product now.
 
 **Standalone review (a target is given in the arguments).** Review the target change without requiring
-a `.balash/state.md`. First determine the review **kind** — `design`, `implementation`, or
-`refactoring` — from the target and the user's stated intent (ask if it is unclear and material), and
-apply that kind's lens. Establish the ground truth to probe against — the change's stated intent /
-acceptance criteria; if it is unstated and material, ask the user one concrete question rather than
-inventing criteria. Run the same panel roles, scaled to the change.
+a `.balash/state.md`. Here nothing has told you the kind or the criteria (an in-loop review reads them
+from state; a standalone one has no state), so **classify first — a required gate, not a formality**
+(see `references/review-panel.md`, "Standalone use"). Before any reading, commit in writing to: (1) the
+review **kind** — `design`, `implementation`, or `refactoring` — from the target and stated intent; if
+the change spans kinds, name the dominant one and add the other lens where it applies; if the kind is
+unclear *and* would change what you measure, ask one concrete question first; and (2) the ground truth
+to measure against — the change's stated intent / acceptance criteria, asking one concrete question if
+it is unstated and material rather than inventing it. Only then take that lens and run the panel roles,
+scaled to the change.
 
 Run the panel **inline, in this session, on the currently selected model — do NOT spawn subagents**
 (this is an explicit command; the user picked this model and is supervising). Adopt each reviewer lens
