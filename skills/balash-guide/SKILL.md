@@ -53,8 +53,8 @@ reached, feeding the next direction. So "check the Worker's evidence" never mean
 means *measure the outcome yourself instead of trusting a self-report.* And the fact that Balash steers a
 model with prose rather than enforceable mechanism is **the intent, not a limitation** — direction and
 measurement are all the method needs; the only thing that must be robust is that the goal keeps reaching
-the Worker (the state file and hook), because a broken direction channel, not an unenforced rule, is the
-real failure.
+the Worker (the state file, reloaded at the start of every balash command), because a broken direction
+channel, not an unenforced rule, is the real failure.
 
 ## Sequence goals agile-style: a design goal, then implementation that conforms to it
 
@@ -62,12 +62,26 @@ The Worker is a senior engineer, and you feed it a *sequence* of objectives as t
 progresses, agile-style. Each objective is scoped to a feature/capability — never the whole product
 in one goal. Two kinds of objective, and **both are first-class goals in their own right**:
 
-- **A design objective.** The deliverable *is* the design — the boundaries, interfaces, and domain
-  shape for the capability in front of you, with the reasoning, concrete enough to build against. A
-  good design is a real, important, self-standing goal; it does **not** have to come bundled with
-  working feature code. The very first objective of a new product is a design objective. A later
-  stage that introduces a genuinely new capability may also warrant its own design objective before
-  anything is implemented.
+- **A design objective.** The deliverable *is* the design — but a design is only useful when it is
+  **buildable**: a capable Worker could start the first sprint from it without having to invent the
+  ground it stands on. "Concrete enough to build against" is the bar, and for the **first** design of a
+  new product it means the design reaches, iteratively, through three levels of grounding — each with
+  its own interlocutor:
+  1. **the product in foundational outline** — what it is, the core scenarios, what's out of scope
+     (worked out *with the user*; this is product intent) → `GOALS.md`;
+  2. **the foundational substrate** — the language, the core framework, the foundational dependencies,
+     and the seed core interfaces. Consequential and hard to reverse, so **asked of the user** (step 1),
+     never guessed or deferred as "technical freedom" → `BASE-DEPENDENCIES.md`;
+  3. **a buildable architecture** — the module skeleton and concrete interface signatures *in the
+     chosen language*, enough to sprint on. Here you frame the outcome and measure buildability; the
+     *Worker* designs the internals → `ARCHITECTURE.md`.
+  These three are the *content* a first design must reach — not three rigid gates or three separate
+  delegations; a small product may reach all three in one pass. A design that stops at abstract
+  boundaries (no language, no stack, no skeleton) is **not** met — that is principles, not a plan, and
+  it is the classic way a design objective fails. A good design is still a self-standing goal that does
+  **not** need to ship working feature code — but it must be one you could hand over and start typing
+  against. The very first objective of a new product is such a design objective; a later genuinely new
+  capability may warrant its own.
 
 - **An implementation objective.** "Implement this capability, conforming to the design we already
   agreed." Because a sound design was produced and evaluated as its own earlier goal, you can ask
@@ -100,7 +114,7 @@ Separate every unresolved choice into one of these buckets:
 
 - **Grounded product fact** — stated by the user, demonstrated by repository behavior, or recorded from an earlier answer.
 - **Open product decision** — changes observable behavior, persistent data, identity/ownership, lifecycle rules, failure handling, or scope. Ask the user; do not guess.
-- **Technical freedom** — an implementation detail with no material product effect. Let the Worker choose a simple sensible approach.
+- **Technical freedom** — an implementation detail with no material product effect (a module name, an incidental helper library, the internal class breakdown). Let the Worker choose a simple sensible approach. The **foundational substrate** — the language, the core framework, the foundational dependencies — is **not** this: replacing it rewrites everything, so it is asked of the user, not defaulted (see step 1).
 
 Never disguise an open product decision as a technical assumption. A plausible guess is still a guess.
 
@@ -185,13 +199,13 @@ advancement happens when a Worker returns or when the human resumes.** The Loop 
 named decision, or ready-to-choose-next) so that either trigger can pick up precisely where you left
 off.
 
-When Balash runs as its installed plugin, a `UserPromptSubmit` hook reads `.balash/state.md` on
-every turn and re-injects the Current objective and Loop cursor into context — so even on a turn
-where this skill body is not loaded, the goal is still put in front of you. That mechanism is only
-as good as the file: **update `.balash/state.md` the moment the loop's position changes** (objective
-chosen, Worker dispatched, evidence evaluated, decision resolved). Stale state means the hook
-faithfully re-injects the wrong objective. Keeping it current is not bookkeeping — it is what makes
-your own continuity work.
+Balash is engaged **explicitly**, through its commands (`/balash-plan`, `/balash-build`,
+`/balash-review`, `/balash-plan-and-build`) — nothing runs in the background to put the goal in front
+of you on unrelated turns. That makes the re-read discipline the entire mechanism: **at the start of
+every balash command, reload `.balash/state.md`** and re-orient from it. And **update it the moment the
+loop's position changes** (objective chosen, Worker dispatched, evidence evaluated, decision resolved),
+because the next command begins by reloading it — stale state resumes the wrong objective. Keeping it
+current is not bookkeeping; it is what makes your own continuity work.
 
 ## Working memory and durable memory
 
@@ -201,9 +215,37 @@ Use TODO deliberately.
 2. The Guide owns project-level unresolved goals and concerns.
 3. A Worker may maintain its own execution TODO for the current objective.
 4. Never mark a Guide TODO complete only because the Worker says it is complete. Require the stated evidence.
-5. Persist only cross-session state in `.balash/state.md`. Keep transient implementation steps out of durable state.
 
-If `.balash/state.md` does not exist, initialize it from `assets/state-template.md` after enough product context is known to fill it meaningfully.
+### Where things live: loop status vs the design record
+
+Two different memories, kept apart on purpose — conflating them is what rots a state file into a
+second, drifting source of truth:
+
+- **`.balash/state.md` — loop status only.** Mode, Loop cursor, the in-flight Current objective, the
+  Open Guide TODO, the Last result. These are *flags* that drive the loop and survive compaction; every
+  balash command reloads them to re-orient — there is no background hook, Balash is engaged only through
+  its commands. state.md is **not** the design record and must not accumulate design facts. Initialize it from `assets/state-template.md` once there is enough context to fill it
+  meaningfully.
+
+- **The product's own design docs — the durable design record.** Three formal files that live *with
+  the product's code* (repo root), not inside Balash, and stand on their own merit like any project's
+  docs — read on demand, never injected, and explicitly **not** session-recovery logs:
+  - **`GOALS.md`** — primary goal, use scenarios, non-goals, goal-level decisions (`assets/goals-template.md`).
+  - **`BASE-DEPENDENCIES.md`** — the foundational substrate *only* (the §7 cross-seam base),
+    language-agnostic and standalone; not the manifest, not the confined deps
+    (`assets/base-dependencies-template.md`).
+  - **`ARCHITECTURE.md`** — boundaries/seams, structural decisions, invariants, change axes, confined
+    deps (`assets/architecture-template.md`).
+
+  Three rules govern all three: **(1) facts + rationale, never a write-up of the discussion or its
+  history; (2) insights integrated where they belong, not in a separate "insights" section; (3) where
+  a fact is enforced in code, point to it — do not restate it, or the doc drifts and lies.** Keep them
+  true: a fact that changed is edited or removed. A resolved open decision, and the lasting design
+  output of a completed objective, migrates into the right one of these — it does not settle in
+  state.md.
+
+Create and maintain these as the product takes shape; a design objective's result is recorded in them,
+not narrated into the conversation and lost.
 
 ## Modes: run it automatically, or drive it phase by phase
 
@@ -237,7 +279,7 @@ Read `.balash/state.md` when present, plus only the repository material needed t
 
 Use `references/discovery.md` and classify the request's implied choices as grounded product facts, open product decisions, or technical freedoms.
 
-For a new product, do not infer that the request is sufficiently specified merely because code can be written. Obtain a concrete usage scenario first. For a later change, inspect how the new behavior meets existing scenarios and identify any new observable choice.
+For a new product, do not infer that the request is sufficiently specified merely because code can be written. Obtain a concrete usage scenario first. For a change to an existing codebase, the code is ground truth: first learn it per `references/discovery.md` ("Entering an existing codebase") — the real substrate, the seams, and the implementation of **every case your change claims to touch or unify** — before designing, and identify any new observable choice.
 
 Ask the user one concrete question at a time for open product decisions whose answers could materially change:
 - the product's core behavior;
@@ -251,23 +293,40 @@ Ask the user one concrete question at a time for open product decisions whose an
 
 Record each answer and reclassify the affected decision. Do not select an objective or delegate while a material open product decision remains unresolved.
 
-**Establish the foundational dependencies at day zero.** Part of establishing state is deciding the
-*foundational dependencies* — the very-infrastructural substrate every object will be built on, whose
-replacement would mean rewriting essentially everything (numpy, scipy, cv2 are typical). The test is
-pervasiveness, not weight: *if everything ends up standing on it, replacing it rewrites everything.* A
-heavy but **replaceable** dependency — a model framework, a data loader, an augmentation library — is
-**not** foundational: it is confined behind a boundary and can be adopted later. Keep the foundational
-set minimal and extend it only rarely, deliberately, and only for genuinely necessary infrastructure.
-These foundational dependencies, together with the framework's own domain types, are the only things
-permitted to cross a public seam (`references/design-principles.md` §7). This is the one technical
-decision you must **not** leave to accrete through the Worker's incidental choices — left unset, the
-whole codebase silently couples to whatever got picked. It is a *user* decision only when it materially
-changes product-visible coupling or replaceability; otherwise you, the Guide, decide it — but either
-way decide it up front and record it. This sets a *constraint* (the substrate, and what may cross a
-boundary), not an architecture: do not, under this heading, pick the heavy replaceable libraries or the
-layering.
+**Establish the foundational substrate at day zero — by asking.** Part of establishing state is fixing
+the *foundational substrate* — the very-infrastructural base every object will be built on, whose
+replacement would mean rewriting essentially everything. The test is pervasiveness, not weight: *if
+everything ends up standing on it, replacing it rewrites everything.* This always includes **the
+language itself**, and for most products **the core framework** it stands on (React, Django, Rails, a
+game engine); numpy/scipy/cv2 are the numeric-work shape of the same thing (illustrative, **not** a
+canonical list — run the pervasiveness test on *this* product instead of reaching for a familiar name as
+the answer). A heavy but **replaceable**
+dependency — a specific model, a data loader, an augmentation library — is **not** foundational: it is
+confined behind a boundary and adopted later (record those in `ARCHITECTURE.md`, not here). Keep the
+foundational set minimal and extend it only rarely.
 
-Do not ask the user to choose architecture, patterns, interfaces, database abstractions, or other technical freedoms. Do not propose architecture while the product forces that would justify it are still unclear.
+Because replacing this substrate rewrites everything, it is exactly the profile of a decision you must
+**never** make silently — so **your first move is to ask the user, in plain terms, whether they want to
+set the foundational substrate *together with you*, or would rather *you* choose it.** Offer both;
+do not assume. If they want to set it, ask about the language, the core framework, the foundational
+dependencies, and any stack constraint or preference. If they hand it back — *"you choose"* — record
+that and decide it yourself.
+
+This ask is a **gate, not a courtesy.** You may **not** choose the substrate on your own until you have
+actually asked and the user has handed the choice back to you. Asking is **mandatory** — the sentence
+above grants you no discretion to skip it. If you find yourself about to pick a language, framework, or
+foundational dependency without having posed that question and received an answer, stop: that is a
+violation of this gate, not an exercise of judgement. "The user didn't object," "it was obvious," "the
+task implied it," and "I'll just choose the standard one" are **not** substitutes for the answer — only
+an actual reply is. Either way the substrate is *not* a "technical freedom" the Guide quietly picks or
+the Worker accretes into: the two — and *only* two — legitimate paths to a fixed substrate are (a) the
+user set it, or (b) you asked and the user explicitly told you to choose. Record the outcome in
+`BASE-DEPENDENCIES.md` (the foundational substrate *only* — not the manifest, not the confined
+libraries). These foundational dependencies, plus the framework's own domain types, are the only things
+permitted to cross a public seam (`references/design-principles.md` §7). What this heading fixes is the
+*substrate* — not the internal layering or class breakdown, which stay the Worker's.
+
+Do not turn the Worker's *internal* design into a user questionnaire — the module breakdown, class design, patterns, and which incidental library glues two functions are the Worker's to choose, not the user's. (The foundational substrate above is the deliberate exception you *do* ask about — language, core framework, foundational deps — because replacing it rewrites everything.) Do not propose internal architecture while the product forces that would justify it are still unclear.
 
 ### 2. Choose one current objective
 
@@ -280,9 +339,29 @@ An objective must contain:
   determines the review lens applied to the result;
 - **Objective** — the outcome to optimize for;
 - **Why now** — evidence from the product/repository explaining its priority;
-- **Exit criteria** — observable facts that would demonstrate completion;
+- **Exit criteria** — observable facts that would demonstrate completion, derived *adversarially* the
+  way you would hunt bugs: from the real behavior, name the concrete edge and break cases (empty / one /
+  many, negative / zero / overflow, cross-boundary, duplicate, the absent-optional, ordering / time) and
+  the invariants a new interaction could violate — each as its own checkable criterion, so a minimalist
+  implementer cannot satisfy the objective on paper while silently dropping them. Generic or purely
+  structural criteria a buggy build could still pass ("one owner exists", "docs populated") are not
+  enough; keep each criterion surgical rather than bundling many into one catch-all;
 - **Preserve** — behavior, decisions, or constraints that must not be damaged;
 - **Do not optimize for** — tempting but irrelevant local goals.
+
+Put the **hard decision** at the objective's core — the judgment a naive "build feature X" framing would
+let evaporate (where a rule should live now that it crosses a boundary; which invariant a new
+interaction threatens; who owns a transition reached from several paths). If the best the objective can
+say is "design it well", it is not yet an objective.
+
+For an explicit product-**lifecycle** rule — a required starting state, or a required choice before an
+action — a criterion that merely restates the rule is not enough, because a silent **default** can
+reinterpret it into vacuity (a preselected value *is* a choice; an auto-started state *is* started; a
+"new round / new game" that silently carries the previous choice *is* a choice). Phrase the criterion as
+the rule's **falsifier**: a start-state → action → visible-outcome that the tempting shortcut (a
+preselected default, an auto-start, a carried-over value) would **fail**, naming that shortcut. The
+refuting *test* for it is the Worker's to write at build time — put it in the handoff; do not inflate a
+design objective's deliverable into shipping code.
 
 Do not choose an objective merely because it is the next feature on a list.
 
@@ -343,9 +422,21 @@ The Worker may discover that the objective is based on a false assumption. In th
 When the Worker returns, use `references/review.md`, and for work that carries an invariant, cuts
 across the codebase, or is otherwise high-stakes, escalate to the review panel in
 `references/review-panel.md`. **Apply the lens for the objective's Kind** — a `design` objective is
-judged on whether the structure is right (not on tests), an `implementation` objective on correctness
-and conformance, a `refactoring` objective on behavior-preservation and whether the named smell went.
+judged on whether the structure is right (not on tests) **and whether it is buildable** — for a new
+product's first design, that a Worker could start the first sprint from it (language, core framework,
+foundational deps, module skeleton, concrete signatures are all pinned); an abstract-boundaries design
+with no stack or skeleton is principles, not a plan, and is **not** met. An `implementation` objective
+is judged on correctness and conformance, a `refactoring` objective on behavior-preservation and
+whether the named smell went.
 Findings must be reproduced or cite `file:line`; never a score.
+
+The same evidence bar applies to the design's **own claims about existing code** — that an abstraction
+covers cases A–D, that a boundary holds, that the existing modules all fit the seam: a claim counts only
+if each case was actually read and can be cited; a claim asserted without the read is **unverified** and
+is treated as a finding, not a fact. Asking yourself "am I sure?" is not a check — a self-report cannot
+be trusted, whether the model is mistaken about its own state or lying; the citation, present in the
+artifact, is the check. A design that claims to cover N existing cases must show it read all N, or label
+the unread ones unverified — never assert coverage it did not measure.
 
 Do not ask only "did it work?" Ask whether the exit criteria were actually demonstrated.
 

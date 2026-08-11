@@ -44,7 +44,7 @@ Before treating an unspecified choice as an assumption, ask:
 
 If yes, record an open product decision and ask. If no, record a technical freedom and let the Worker choose.
 
-For example, whether exporting a report overwrites the prior report or creates a new user-visible version is a product decision. Which library performs the write, how modules are named, and what internal interface connects them are technical freedoms when the user has expressed no relevant constraint.
+For example, whether exporting a report overwrites the prior report or creates a new user-visible version is a product decision. Within an **established** stack, which incidental library performs the write, how modules are named, and what internal interface connects them are technical freedoms when the user has expressed no relevant constraint. But for the **first** design of a new product the language, the core framework, and the foundational dependencies are not free — they are the foundational substrate, and you ask about them (see below).
 
 ## Follow the forces
 
@@ -59,21 +59,55 @@ Useful questions include:
 
 Do not present the user with a catalog of possible future extension points. Derive candidate forces from the product scenario and the user's answers.
 
-## Foundational dependencies (day zero)
+## Entering an existing codebase — learn it before you redesign it
 
-Separately from product decisions, establish the **foundational dependencies** at the start: the
-very-infrastructural substrate everything will be built on, whose replacement would mean rewriting
-essentially everything (e.g. numpy, scipy, cv2). The test is pervasiveness, not weight — *if every
-object ends up standing on it, replacing it rewrites everything.* A heavy but replaceable dependency (a
-model framework, a data loader, an augmentation library) is confined behind a boundary and is **not**
-foundational; it can be adopted later.
+When the task changes code that **already exists** (a redesign, an extraction, a second implementation,
+a refactor), the codebase is ground truth — and most of a design's claims are *claims about that code*,
+which are checkable. Do not jump to a targeted fix, and do not sketch an abstraction over what you
+*assume* is there. Learn it first, in order:
 
-Decide this up front, keep it minimal, and extend it only rarely and deliberately — only genuinely
-necessary infrastructure. Unlike other technical freedoms, this one is **not** deferred to the Worker:
-left to accrete, the whole codebase silently couples to whatever was picked. Ask the user only if the
-choice materially changes product-visible coupling or replaceability; otherwise the Guide decides it —
-but always up front and recorded. The foundational set, plus the framework's own domain types, are the
-only types permitted to cross a public seam (`design-principles.md` §7).
+1. **Map the substrate and dependencies as they actually are** — the language(s), framework, and
+   foundational deps the code truly stands on, read rather than assumed. For a redesign the substrate is
+   *discovered* (already chosen), not asked; surface it and flag any conflict (e.g. one module in
+   Python, its sibling in JS).
+2. **Read the real seams and interfaces** — the actual module boundaries and public interfaces, and how
+   the parts talk: the architecture in the code, not the one you would imagine.
+3. **Read the actual implementation of every case your change claims to touch or unify.** If the design
+   says an abstraction covers cases A, B, C, D, you must have *read* A, B, C, and D. Reading two and
+   assuming the rest fit is the classic failure — a real case often has a different shape than your model
+   (an *authored editor* with no seed, where you assumed a *seeded generator*).
+4. **Surface the existing problems and debt from the code** — the duplication, coupling, and pain that
+   actually justify the change — observed, not guessed.
+5. **Only then design** — and every statement the design makes about the existing code ships with its
+   evidence (the read from step 3) or is labelled **unverified**. An abstraction or boundary may not
+   claim to cover a case it has not read.
+
+## Foundational substrate (day zero) — ask, don't guess
+
+Establish the **foundational substrate** at the start: the very-infrastructural base everything will be
+built on, whose replacement would mean rewriting essentially everything. The test is pervasiveness, not
+weight — *if every object ends up standing on it, replacing it rewrites everything.* This always
+includes **the language**, and for most products **the core framework** (React, Django, Rails, a game
+engine); numpy/scipy/cv2 are the numeric-work version (illustrative, **not** a canonical list — run the
+pervasiveness test on *this* product; do not reach for a familiar name as the answer). A heavy but
+replaceable dependency (a specific
+model, a data loader, an augmentation library) is confined behind a boundary and is **not**
+foundational; it is adopted later.
+
+Because replacing the substrate rewrites everything, it is never guessed or deferred: **first ask the
+user whether they want to set the foundational substrate *with you* or have *you* choose it** — offer
+both. If they want to set it, ask about the language, the core framework, the foundational dependencies,
+any stack constraint or preference. If they hand it back (*"you choose"*), record that and decide.
+
+This is a **gate, not a courtesy**: asking is mandatory and you have no discretion to skip it. You may
+not choose the substrate on your own until you have actually asked and the user has handed the choice
+back. The two — and only two — legitimate paths to a fixed substrate are (a) the user set it, or (b) you
+asked and the user told you to choose. "It was obvious," "the task implied it," or "I'll just pick the
+standard one" are not substitutes for the answer. It is *not* a technical freedom the Guide quietly
+picks. Record the outcome in `BASE-DEPENDENCIES.md`
+(the foundational substrate *only* — never the full manifest, never the confined libraries). The
+foundational set, plus the framework's own domain types, are the only types permitted to cross a public
+seam (`design-principles.md` §7).
 
 ## Ask one question at a time
 
@@ -83,19 +117,20 @@ Do not bundle a questionnaire. Do not volunteer a catalog of hypothetical future
 
 ## Record only actionable forces
 
-Translate useful answers into concise state entries:
+Translate useful answers into concise **facts in the product's design docs** — not into
+`.balash/state.md`, which carries only loop status. Each kind of fact has a home; record it there as a
+fact + reason, never as a write-up of the discussion, and where the code already enforces it, point to
+the code instead of restating it:
 
-```text
-Core scenario: ...
-Grounded product fact: ... — source: request | repository | user answer
-Open product decision: ... — why it changes behavior/objective
-Technical freedom: ... — safe for Worker to choose
-Likely change axis: ... because ...
-Invariant: ...
-Constraint: ...
-Foundational dependency: ... — day-zero substrate; boundary-crossing allowed
-Explicit non-goal: ...
-Unknown that still matters: ...
-```
+- **`GOALS.md`** — the primary goal, core use scenarios, explicit non-goals, and goal-level product
+  decisions or product-rule invariants (a rule the product must always honor).
+- **`BASE-DEPENDENCIES.md`** — a foundational dependency (day-zero substrate, boundary-crossing
+  allowed). Foundational *only*.
+- **`ARCHITECTURE.md`** — a likely change axis (with its reason), a structural invariant, a real
+  constraint, a confined dependency, a boundary decision.
+
+An *open* product decision is not yet a fact: it stays a live question (Loop cursor `awaiting-human`,
+or the Guide TODO) until answered, then it is recorded in the doc it belongs to. A *technical freedom*
+is not durable design — it rides in the Worker handoff for the objective that needs it.
 
 Do not turn vague possibilities into requirements. Do not record a guess as a durable decision.

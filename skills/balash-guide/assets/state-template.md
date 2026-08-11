@@ -1,69 +1,15 @@
 # Balash Guide State
 
-This file stores durable engineering direction. Keep it short. Do not use it as a transcript or worker task log.
+Loop status only — the flags that drive the loop and let it survive compaction. This file is **not**
+the design record. The durable engineering design lives in the product's own `GOALS.md`,
+`BASE-DEPENDENCIES.md`, and `ARCHITECTURE.md` (facts, kept next to the code). Keep this short; do not
+use it as a transcript or a worker task log.
 
-<!-- SCHEMA CONTRACT (this template owns it): the injection hook (hooks/inject-goal.py) reads the goal
-     by heading and marker. The load-bearing anchors are the headings `## Current objective` (with its
-     `**Objective:**` and `**Kind:**` markers), `## Mode`, and `## Loop cursor`, and those marker
-     formats. Renaming or reformatting them stops the goal from being injected. If you must change the
-     shape, change it here AND in the hook together — they are two sides of one contract. (The hook now
-     says so loudly if a filled state file lacks `## Current objective`, rather than failing silent.) -->
-
-## Product purpose
-
-<!-- One or two sentences. -->
-
-## Core scenarios
-
-<!-- Only scenarios that materially shape engineering decisions. -->
-
-## Product knowledge
-
-### Grounded product facts
-
-<!-- Fact — source: request | repository | user answer. -->
-
-### Open product decisions
-
-<!-- Must be empty of material items before delegation. -->
-
-### Technical freedoms
-
-<!-- Choices the Worker may make without asking the user. -->
-
-## Product forces
-
-### Likely change axes
-
-<!-- Expected independent variation, with a reason/evidence. -->
-
-### Invariants
-
-<!-- Rules that must remain true across implementations. -->
-
-### Constraints
-
-<!-- Real constraints, not generic quality wishes. -->
-
-### Foundational dependencies (day-zero)
-
-<!-- The very-infrastructural substrate everything is built on (numpy, scipy, cv2 ...): replacing it
-     would rewrite everything. Decided up front (by the Guide unless it materially affects the product),
-     kept minimal, extended only rarely. These + the framework's own domain types are the ONLY things
-     allowed to cross a public seam (design-principles §7). Heavy but replaceable deps (model / data /
-     augmentation libraries) are NOT listed here — they are confined behind a boundary and chosen later. -->
-
-### Explicit non-goals
-
-<!-- Things we deliberately do not design for yet. -->
-
-## Durable decisions
-
-<!-- Decision — reason — evidence/trade-off. -->
-
-## Open Guide TODO
-
-- [ ]
+<!-- SCHEMA CONTRACT (this template owns it): the balash commands read the goal from this file by
+     heading and marker when they run. The load-bearing anchors are the headings `## Current objective`
+     (with its `**Objective:**` and `**Kind:**` markers), `## Mode`, and `## Loop cursor`. Keep those
+     headings and marker formats intact — a resuming command re-orients from them; rename one and the
+     command reads the wrong thing (or nothing). -->
 
 ## Mode
 
@@ -84,6 +30,10 @@ auto
 
 ## Current objective
 
+<!-- The single unit of work in flight. Transient loop state — it is replaced each objective, not a
+     durable design record. When it resolves, its lasting design output migrates into GOALS.md /
+     BASE-DEPENDENCIES.md / ARCHITECTURE.md; it does not accumulate here. -->
+
 **Kind:** <!-- design | implementation | refactoring — sets the review lens. -->
 
 **Objective:**
@@ -98,6 +48,13 @@ auto
 
 **Do not optimize for:**
 -
+
+## Open Guide TODO
+
+<!-- Unresolved loop concerns the Guide still owns — intended outcomes, not editing actions. Transient.
+     Prefer the host's native task tool when available. -->
+
+- [ ]
 
 ## Last evaluated result
 
