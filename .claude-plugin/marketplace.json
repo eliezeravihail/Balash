@@ -1,0 +1,14 @@
+{
+  "name": "balash",
+  "owner": {
+    "name": "Balash"
+  },
+  "description": "Marketplace for the Balash plugin — makes design the goal of coding-agent work.",
+  "plugins": [
+    {
+      "name": "balash",
+      "source": "./",
+      "description": "Makes design the goal of coding-agent work."
+    }
+  ]
+}
