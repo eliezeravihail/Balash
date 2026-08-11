@@ -1,89 +1,108 @@
 # Balash
 
-## מה זה
+*(עברית: [README.he.md](README.he.md))*
 
-Balash הוא פלאגין ל-Claude Code שהופך את **העיצוב (design)** עצמו למטרה שניתנת לסוכן קוד — ולא
-לבדיקה שמתבצעת אחרי שהקוד כבר נכתב.
+## What this is
 
-הפלאגין מפצל את העבודה לשני תפקידים:
+Balash is a Claude Code plugin that makes **design** itself the goal handed to a coding agent —
+instead of a review applied after the code is already written.
 
-- **ה-Guide** — מחזיק את חזון המוצר ובוחר, אחד בכל פעם, מהי תוצאת העיצוב/האיכות שהקוד הכי צריך
-  עכשיו. הוא לא כותב קוד implementation בעצמו. התפוקה שלו היא איכות העיצוב של הקוד לאורך כל
-  התפתחות המוצר — לא פיצ'רים שנשלחו או שורות שנכתבו.
-- **ה-Worker** — מהנדס בכיר, יכול בדיוק כמו ה-Guide — מקבל את התוצאה הזו כמטרה שלו, כשההתנהגות
-  הפונקציונלית המבוקשת (הפיצ'ר) צמודה אליה כ**אילוץ** שהעיצוב חייב לספק, ובונה בהתאם. ה-Guide
-  אז בודק את מה שחזר וקובע את המטרה הבאה.
+The plugin splits the work into two roles:
 
-ההפרדה הזו נאכפת: ה-Guide לא הופך ל-Worker רק כי הוא *יכול* לערוך קוד. הוא בודק קוד כדי להבין
-מצב או לשפוט ראיות, אבל את גוף העבודה בונה ה-Worker.
+- **The Guide** — holds the product vision and decides, one at a time, what design/quality outcome
+  the codebase most needs right now. It never writes implementation code itself. Its deliverable is
+  the design quality of the codebase across the product's whole evolution — not features shipped or
+  lines written.
+- **The Worker** — a senior engineer, as capable as the Guide — receives that outcome as its
+  objective, with the requested feature behavior attached as a **constraint** the design must
+  satisfy, and builds accordingly. The Guide then evaluates what came back and sets the next
+  objective.
 
-## איך עובדים עם זה
+This separation is enforced: the Guide does not become the Worker just because it *can* edit code.
+It inspects code to understand state or judge evidence, but the substantial implementation work is
+the Worker's.
 
-**התקנה:** מתקינים כפלאגין ל-Claude Code. הוא מפעיל את עצמו — סקילת `balash-guide` נכנסת
-אוטומטית לכל עבודה של בניה או שינוי מהותי של תוכנה, בלי צורך בפקודה מפורשת.
+## How to work with it
 
-**המטרה הנוכחית חיה בקובץ, לא בשיחה.** שיחה נודדת, נקטעת, מסוכמת. לכן היעד השמור הוא
-`.balash/state.md` — הקובץ שמחזיק את המטרה הפעילה. Hook מסוג `UserPromptSubmit`
-(`hooks/inject-goal.py`) רץ בכל תור שיחה, קורא את הקובץ, ומזריק מחדש את המטרה הנוכחית — כך שהיא
-שורדת גם שיחות צדדיות וגם דחיסת קונטקסט. בפרויקט בלי `.balash/state.md` ה-hook שקט.
+**Install:** install as a Claude Code plugin. It self-activates — the `balash-guide` skill enters
+automatically on any task that builds or materially changes software, no explicit command needed.
 
-**שתי דרכי הרצה**, נשמרות בשדה `Mode` באותו קובץ:
+**The current goal lives in a file, not in the conversation.** A conversation drifts, gets
+interrupted, gets summarized. So the durable target is `.balash/state.md` — the file holding the
+active objective. A `UserPromptSubmit` hook (`hooks/inject-goal.py`) runs on every turn, reads that
+file, and re-injects the current objective — so it survives side-conversations and context
+compaction. On a project without `.balash/state.md`, the hook is silent.
 
-- **אוטומטי (ברירת מחדל, `/balash-auto`)** — ה-Guide מריץ את כל הלולאה לבד, ועוצר רק בשתי נקודות
-  לגיטימיות: החלטת מוצר פתוחה שאסור לו לנחש, וקבלת שינוי המוצר הבא. Worker שחוזר ממשיך לבד
-  לשלב הבא.
-- **שלב-אחר-שלב** — לפיקוח צמוד. הלולאה עוצרת בכל גבול שלב ומתקדמת רק על פקודה מפורשת:
-  - `/balash-plan` — בוחר מטרת עיצוב אחת ומנסח את המסירה ל-Worker; **עוצר לפני שנכתבת שורת קוד**.
-  - `/balash-build` — מבצע את המטרה שתוכננה; עוצר כשסיים.
-  - `/balash-review` — בודק את התוצאה מול קריטריוני היציאה; עוצר עם ממצאים מבוססים ומסקנה
-    לכיוון הבא (הוא מדווח, לא שוער). רץ גם **עצמאית** על כל diff, branch או PR שבאלאש לא בנה.
+**Two ways to run it**, tracked in that file's `Mode` field:
 
-**שום החלטת מוצר לא מתקבלת בשתיקה.** כל דבר לא ברור מסווג לאחת משלוש קטגוריות: עובדה מוצרית
-מבוססת (נאמרה, נצפית בהתנהגות הקוד, או נקבעה קודם), החלטת מוצר פתוחה (משנה התנהגות נצפית, נתונים
-מתמשכים, בעלות/זהות, מחזור חיים, טיפול בכשלים, או היקף — **שואלים את המשתמש, לא מנחשים**), או
-חופש טכני (פרט implementation בלי השפעה מוצרית — ה-Worker פשוט בוחר משהו סביר).
+- **Automatic (default, `/balash-auto`)** — the Guide runs the whole loop by itself, stopping only
+  at two legitimate points: an open product decision it must not guess, and receiving the next
+  product change. A returning Worker auto-advances to the next step.
+- **Stepped** — for close supervision. The loop stops at every phase boundary and advances only on
+  an explicit command:
+  - `/balash-plan` — chooses one design objective and drafts the handoff to the Worker; **stops
+    before any code is written**.
+  - `/balash-build` — executes the planned objective; stops when done.
+  - `/balash-review` — checks the result against the exit criteria; stops with grounded findings and
+    a direction for what's next (it reports, it does not gate). Also runs **standalone** on any
+    diff, branch, or PR that Balash didn't build.
 
-**מבנה הפרויקט:**
+**No product decision gets made silently.** Every unclear point is sorted into one of three
+buckets: a grounded product fact (stated, observed in the code's behavior, or settled earlier), an
+open product decision (changes observable behavior, persistent data, ownership/identity,
+lifecycle, or failure handling — **ask the user, never guess**), or technical freedom (an
+implementation detail with no product impact — the Worker just picks something reasonable).
 
-- [`skills/balash-guide/`](skills/balash-guide) — השיטה: `SKILL.md` והפניות שלו (בחירת מטרה,
-  מסירה ל-Worker, עקרונות עיצוב, מצבי הרצה, פאנל ביקורת).
-- [`hooks/`](hooks) — ה-hook שמזריק את המטרה הנוכחית בכל תור.
-- [`commands/`](commands) — פקודות השלב-אחר-שלב.
-- [`experiments/`](experiments) — ראיות ניסוייות לשיטה (ראו `experiments/RESULTS.md`).
+**Project layout:**
 
-## העקרונות
+- [`skills/balash-guide/`](skills/balash-guide) — the method: `SKILL.md` and its references
+  (objective selection, worker handoff, design principles, run modes, review panel).
+- [`hooks/`](hooks) — the hook that re-injects the current goal on every turn.
+- [`commands/`](commands) — the stepped-mode commands.
+- [`experiments/`](experiments) — experimental evidence for the method (see
+  `experiments/RESULTS.md`).
 
-לשיטה שני עקרונות. שניהם משתלבים: העקרון הראשון קובע *מה* המטרה שנותנים לסוכן; השני קובע
-*באיזו צורה* חייבים לתת אותה כדי שהיא באמת תכוון אותו.
+## The principles
 
-### 1. הסוכן שואף למטרה שהוצגה לו — לא למה שהיה רוצים בשקט
+The method rests on two principles. They combine: the first sets *what* goal you give the agent;
+the second sets *the form* it must take for that goal to actually steer it.
 
-סוכן implementation ממטב כלפי כל מטרה שמונחת לפניו, ולא כלפי משהו שלא נאמר. אם נותנים לו כרטיס
-פיצ'ר ("תממש X"), הוא ממטב את *נחיתת הפיצ'ר* — הבדיקות עוברות, ההתנהגות עובדת — ואיכות העיצוב
-הופכת לכל מה ששרד בדרך אגב: אינווריאנט שנאכף בשלושה מקומות שונים במקום אחד, כלל בלי בעלים,
-הפשטה שנבנתה בשביל עתיד שלא מגיע. זה לא כי הסוכן לא יודע לתכנן טוב — זה כי המטרה שקיבל לא ביקשה
-את זה.
+### 1. The agent aims at the goal it was shown — not at what you quietly wanted
 
-המסקנה המעשית: **אם רוצים עיצוב איכותי בפלט, העיצוב עצמו חייב להיות המטרה שמוצגת בקלט** — לא
-תוצאה משנית שמקווים שתצוץ מעצמה. לכן כל יחידת עבודה בבאלאש מנוסחת מחדש: לא "תבנה פיצ'ר X" אלא
-"תגיע לתוצאת עיצוב כזו, כשפיצ'ר X הוא אילוץ שהעיצוב חייב לספק". אותו קוד נכתב בסוף — אבל הקוגניציה
-של הסוכן מופנית ל"איפה צריכה לגור העובדה הזו במערכת?" ולא רק ל"איך אני מעביר את הפיצ'ר?". זו הסיבה
-שה-Guide בבאלאש בוחר במפורש מטרת *עיצוב* נפרדת (למשל: לבסס בעלות, להוכיח הפשטה, לבסס אינווריאנט)
-לפני שהוא מבקש implementation שמתאים לה — ולא סומך על כך שעיצוב טוב "יקרה" תוך כדי בניית הפיצ'ר.
+An implementing agent optimizes toward whatever goal is placed in front of it, not toward anything
+left unsaid. Hand it a feature ticket ("implement X") and it optimizes for *the feature landing* —
+tests pass, behavior works — and design quality becomes whatever happens to survive along the way:
+an invariant enforced in three different places instead of one, a rule owned by nobody, an
+abstraction built for a future that never arrives. This isn't because the agent doesn't know how to
+design well — it's because the goal it was given never asked for that.
 
-### 2. מטרה מובנת = תרחישי שימוש והסברים קונקרטיים — לא נפנופי ידיים כלליים
+The practical consequence: **if you want quality design out, design itself has to be the goal you
+put in** — not a side effect you hope emerges on its own. So every unit of work in Balash is
+reframed: not "build feature X" but "reach this design outcome, with feature X as a constraint the
+design must satisfy." The same code gets written in the end — but the agent's cognition is now
+pointed at "where should this fact live in the system?" instead of only "how do I get the feature
+through?". This is why the Guide in Balash explicitly picks a separate *design* objective (e.g.:
+establish ownership, prove out an abstraction, establish an invariant) before asking for the
+matching implementation — instead of trusting that good design will just "happen" while the feature
+gets built.
 
-לא כל ניסוח של "מטרת עיצוב" עובד. מטרה כללית כמו "כתוב קוד איכותי" נשמעת נכונה, ואפילו הידע איך
-עושים את זה כבר מוטמע בסוכן — אבל בפועל, ניסוח כזה **בורח למדדי ביצוע שטחיים**: כיסוי בדיקות
-באחוזים, מספר שורות, פריסת קבצים, ציונים כלליים — כי בהיעדר קונקרטיזציה, אין לסוכן על מה לבסס
-שיפוט אמיתי, אז הוא נסוג לפרוקסי הכי קל למדוד. ידע שקיים בסוכן לא מספיק אם המטרה שניתנה לו לא
-מפעילה אותו נגד המקרה הספציפי שלפניו.
+### 2. An understood goal means concrete usage scenarios and explanations — not general hand-waving
 
-לכן כל מסירת עבודה בבאלאש חייבת לכלול לא רק את שם התוצאה הרצויה, אלא גם: **תרחישי שימוש קונקרטיים**
-(איך המערכת בפועל תיקרא/תשמש), הסבר על *למה* התוצאה הזו נחוצה עכשיו (לא רק *מה* היא), וקריטריון
-יציאה מוחשי שאפשר לבדוק מולו (לא ציון — שאלה שיש לה תשובת כן/לא נבדקת). המבחן המעשי: מסירה טובה
-היא כזו ששני מהנדסים טובים יכולים לספק אותה בשני עיצובים שונים אבל שווי-ערך — אם היא מתירה רק
-את העיצוב האחד שכבר דמיינתם, היא מוגדרת-יתר; ואם היא כללית מדי לכדי "תכתוב קוד טוב", היא תברח
-למדדים. מאותה סיבה בדיוק, גם *הבדיקה* של התוצאה בבאלאש נבנתה נגד אותה מלכודת: כל ממצא בביקורת
-חייב לשאת שחזור קונקרטי (קלט שמייצר פלט שגוי, בדיקה שנכשלת) או ציטוט מדויק של `file:line` — לא
-ציון כללי של "האם זה טוב". שיפוט מופשט, גם כשהוא נכון עקרונית, לא נספר כמדידה.
+Not every "design objective" phrasing works. A general goal like "write quality code" sounds right,
+and the knowledge of how to do that is already embedded in the agent — but in practice, a phrasing
+like that **escapes to shallow performance metrics**: test-coverage percentages, line counts, file
+layout, generic scores — because without concretization the agent has nothing real to ground a
+judgment call in, so it falls back to the easiest thing to measure. Knowledge the agent already has
+isn't enough if the goal it's given doesn't activate that knowledge against the specific case in
+front of it.
+
+So every handoff in Balash must include not just the name of the desired outcome, but also:
+**concrete usage scenarios** (how the system will actually be called/used), an explanation of *why*
+this outcome matters right now (not just *what* it is), and a checkable exit criterion (not a
+score — a question with a testable yes/no answer). The practical test: a good handoff is one two
+strong engineers could satisfy with two different, equally good designs — if it only allows the one
+design you'd already pictured, it's over-specified; if it's as vague as "write good code," it will
+escape to metrics. For exactly the same reason, *checking* the result in Balash was built against
+the same trap: every review finding must carry a concrete reproduction (an input that produces the
+wrong output, a failing test) or a precise `file:line` citation — not a general verdict on "is this
+good?". An abstract judgment, even when it happens to be correct, doesn't count as a measurement.
