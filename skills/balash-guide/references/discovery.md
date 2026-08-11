@@ -88,7 +88,9 @@ Establish the **foundational substrate** at the start: the very-infrastructural 
 built on, whose replacement would mean rewriting essentially everything. The test is pervasiveness, not
 weight — *if every object ends up standing on it, replacing it rewrites everything.* This always
 includes **the language**, and for most products **the core framework** (React, Django, Rails, a game
-engine); numpy/scipy/cv2 are the numeric-work version. A heavy but replaceable dependency (a specific
+engine); numpy/scipy/cv2 are the numeric-work version (illustrative, **not** a canonical list — run the
+pervasiveness test on *this* product; do not reach for a familiar name as the answer). A heavy but
+replaceable dependency (a specific
 model, a data loader, an augmentation library) is confined behind a boundary and is **not**
 foundational; it is adopted later.
 

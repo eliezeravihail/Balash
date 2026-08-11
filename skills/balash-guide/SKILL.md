@@ -298,7 +298,9 @@ the *foundational substrate* — the very-infrastructural base every object will
 replacement would mean rewriting essentially everything. The test is pervasiveness, not weight: *if
 everything ends up standing on it, replacing it rewrites everything.* This always includes **the
 language itself**, and for most products **the core framework** it stands on (React, Django, Rails, a
-game engine); numpy/scipy/cv2 are the numeric-work shape of the same thing. A heavy but **replaceable**
+game engine); numpy/scipy/cv2 are the numeric-work shape of the same thing (illustrative, **not** a
+canonical list — run the pervasiveness test on *this* product instead of reaching for a familiar name as
+the answer). A heavy but **replaceable**
 dependency — a specific model, a data loader, an augmentation library — is **not** foundational: it is
 confined behind a boundary and adopted later (record those in `ARCHITECTURE.md`, not here). Keep the
 foundational set minimal and extend it only rarely.

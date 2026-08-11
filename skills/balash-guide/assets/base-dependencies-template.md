@@ -4,7 +4,8 @@
      replacement would rewrite essentially everything. The test is pervasiveness, not weight: if
      everything ends up standing on it, replacing it rewrites everything. This ALWAYS includes the
      language itself, and for most products the core framework it stands on (React, Django, Rails, a
-     game engine); numpy/scipy/cv2 are the numeric-work shape of the same thing. These, together with
+     game engine); numpy/scipy/cv2 are illustrative, NOT a canonical list — run the pervasiveness test
+     on THIS product rather than reaching for a familiar name as the answer. These, together with
      the framework's own domain types, are the ONLY things
      permitted to cross a public seam (references/design-principles.md §7). Decided at day zero, kept
      minimal, extended only rarely and deliberately.
