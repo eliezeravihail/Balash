@@ -310,8 +310,17 @@ Because replacing this substrate rewrites everything, it is exactly the profile 
 set the foundational substrate *together with you*, or would rather *you* choose it.** Offer both;
 do not assume. If they want to set it, ask about the language, the core framework, the foundational
 dependencies, and any stack constraint or preference. If they hand it back — *"you choose"* — record
-that and decide it yourself. Either way it is *not* a "technical freedom" the Guide quietly picks or the
-Worker accretes into, and the default is to **ask first**, never to guess or defer. Record the outcome in
+that and decide it yourself.
+
+This ask is a **gate, not a courtesy.** You may **not** choose the substrate on your own until you have
+actually asked and the user has handed the choice back to you. Asking is **mandatory** — the sentence
+above grants you no discretion to skip it. If you find yourself about to pick a language, framework, or
+foundational dependency without having posed that question and received an answer, stop: that is a
+violation of this gate, not an exercise of judgement. "The user didn't object," "it was obvious," "the
+task implied it," and "I'll just choose the standard one" are **not** substitutes for the answer — only
+an actual reply is. Either way the substrate is *not* a "technical freedom" the Guide quietly picks or
+the Worker accretes into: the two — and *only* two — legitimate paths to a fixed substrate are (a) the
+user set it, or (b) you asked and the user explicitly told you to choose. Record the outcome in
 `BASE-DEPENDENCIES.md` (the foundational substrate *only* — not the manifest, not the confined
 libraries). These foundational dependencies, plus the framework's own domain types, are the only things
 permitted to cross a public seam (`references/design-principles.md` §7). What this heading fixes is the

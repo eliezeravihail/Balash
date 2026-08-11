@@ -97,8 +97,14 @@ foundational; it is adopted later.
 Because replacing the substrate rewrites everything, it is never guessed or deferred: **first ask the
 user whether they want to set the foundational substrate *with you* or have *you* choose it** — offer
 both. If they want to set it, ask about the language, the core framework, the foundational dependencies,
-any stack constraint or preference. If they hand it back (*"you choose"*), record that and decide. It is
-*not* a technical freedom the Guide quietly picks, and the default is to ask first. Record the outcome in `BASE-DEPENDENCIES.md`
+any stack constraint or preference. If they hand it back (*"you choose"*), record that and decide.
+
+This is a **gate, not a courtesy**: asking is mandatory and you have no discretion to skip it. You may
+not choose the substrate on your own until you have actually asked and the user has handed the choice
+back. The two — and only two — legitimate paths to a fixed substrate are (a) the user set it, or (b) you
+asked and the user told you to choose. "It was obvious," "the task implied it," or "I'll just pick the
+standard one" are not substitutes for the answer. It is *not* a technical freedom the Guide quietly
+picks. Record the outcome in `BASE-DEPENDENCIES.md`
 (the foundational substrate *only* — never the full manifest, never the confined libraries). The
 foundational set, plus the framework's own domain types, are the only types permitted to cross a public
 seam (`design-principles.md` §7).
