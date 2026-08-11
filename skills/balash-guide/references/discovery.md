@@ -94,10 +94,11 @@ replaceable dependency (a specific
 model, a data loader, an augmentation library) is confined behind a boundary and is **not**
 foundational; it is adopted later.
 
-Because replacing the substrate rewrites everything, it is never guessed or deferred: **ask the user**
-— the language, the core framework, the foundational dependencies, any stack constraint or preference.
-It is *not* a technical freedom the Guide quietly picks. The user may hand it back (*"you choose"*),
-which you record and decide; but the default is to ask. Record the outcome in `BASE-DEPENDENCIES.md`
+Because replacing the substrate rewrites everything, it is never guessed or deferred: **first ask the
+user whether they want to set the foundational substrate *with you* or have *you* choose it** — offer
+both. If they want to set it, ask about the language, the core framework, the foundational dependencies,
+any stack constraint or preference. If they hand it back (*"you choose"*), record that and decide. It is
+*not* a technical freedom the Guide quietly picks, and the default is to ask first. Record the outcome in `BASE-DEPENDENCIES.md`
 (the foundational substrate *only* — never the full manifest, never the confined libraries). The
 foundational set, plus the framework's own domain types, are the only types permitted to cross a public
 seam (`design-principles.md` §7).

@@ -306,10 +306,12 @@ confined behind a boundary and adopted later (record those in `ARCHITECTURE.md`,
 foundational set minimal and extend it only rarely.
 
 Because replacing this substrate rewrites everything, it is exactly the profile of a decision you must
-**never** make silently — so **ask the user about it**: the language, the core framework, the
-foundational dependencies, any stack constraint or preference. It is *not* a "technical freedom" the
-Guide quietly picks or the Worker accretes into. The user may hand it back — *"you choose"* — which you
-then record and decide; but the default is to ask, not to guess or defer. Record the outcome in
+**never** make silently — so **your first move is to ask the user, in plain terms, whether they want to
+set the foundational substrate *together with you*, or would rather *you* choose it.** Offer both;
+do not assume. If they want to set it, ask about the language, the core framework, the foundational
+dependencies, and any stack constraint or preference. If they hand it back — *"you choose"* — record
+that and decide it yourself. Either way it is *not* a "technical freedom" the Guide quietly picks or the
+Worker accretes into, and the default is to **ask first**, never to guess or defer. Record the outcome in
 `BASE-DEPENDENCIES.md` (the foundational substrate *only* — not the manifest, not the confined
 libraries). These foundational dependencies, plus the framework's own domain types, are the only things
 permitted to cross a public seam (`references/design-principles.md` §7). What this heading fixes is the
