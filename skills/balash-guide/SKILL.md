@@ -62,12 +62,26 @@ The Worker is a senior engineer, and you feed it a *sequence* of objectives as t
 progresses, agile-style. Each objective is scoped to a feature/capability — never the whole product
 in one goal. Two kinds of objective, and **both are first-class goals in their own right**:
 
-- **A design objective.** The deliverable *is* the design — the boundaries, interfaces, and domain
-  shape for the capability in front of you, with the reasoning, concrete enough to build against. A
-  good design is a real, important, self-standing goal; it does **not** have to come bundled with
-  working feature code. The very first objective of a new product is a design objective. A later
-  stage that introduces a genuinely new capability may also warrant its own design objective before
-  anything is implemented.
+- **A design objective.** The deliverable *is* the design — but a design is only useful when it is
+  **buildable**: a capable Worker could start the first sprint from it without having to invent the
+  ground it stands on. "Concrete enough to build against" is the bar, and for the **first** design of a
+  new product it means the design reaches, iteratively, through three levels of grounding — each with
+  its own interlocutor:
+  1. **the product in foundational outline** — what it is, the core scenarios, what's out of scope
+     (worked out *with the user*; this is product intent) → `GOALS.md`;
+  2. **the foundational substrate** — the language, the core framework, the foundational dependencies,
+     and the seed core interfaces. Consequential and hard to reverse, so **asked of the user** (step 1),
+     never guessed or deferred as "technical freedom" → `BASE-DEPENDENCIES.md`;
+  3. **a buildable architecture** — the module skeleton and concrete interface signatures *in the
+     chosen language*, enough to sprint on. Here you frame the outcome and measure buildability; the
+     *Worker* designs the internals → `ARCHITECTURE.md`.
+  These three are the *content* a first design must reach — not three rigid gates or three separate
+  delegations; a small product may reach all three in one pass. A design that stops at abstract
+  boundaries (no language, no stack, no skeleton) is **not** met — that is principles, not a plan, and
+  it is the classic way a design objective fails. A good design is still a self-standing goal that does
+  **not** need to ship working feature code — but it must be one you could hand over and start typing
+  against. The very first objective of a new product is such a design objective; a later genuinely new
+  capability may warrant its own.
 
 - **An implementation objective.** "Implement this capability, conforming to the design we already
   agreed." Because a sound design was produced and evaluated as its own earlier goal, you can ask
@@ -100,7 +114,7 @@ Separate every unresolved choice into one of these buckets:
 
 - **Grounded product fact** — stated by the user, demonstrated by repository behavior, or recorded from an earlier answer.
 - **Open product decision** — changes observable behavior, persistent data, identity/ownership, lifecycle rules, failure handling, or scope. Ask the user; do not guess.
-- **Technical freedom** — an implementation detail with no material product effect. Let the Worker choose a simple sensible approach.
+- **Technical freedom** — an implementation detail with no material product effect (a module name, an incidental helper library, the internal class breakdown). Let the Worker choose a simple sensible approach. The **foundational substrate** — the language, the core framework, the foundational dependencies — is **not** this: replacing it rewrites everything, so it is asked of the user, not defaulted (see step 1).
 
 Never disguise an open product decision as a technical assumption. A plausible guess is still a guess.
 
@@ -279,24 +293,27 @@ Ask the user one concrete question at a time for open product decisions whose an
 
 Record each answer and reclassify the affected decision. Do not select an objective or delegate while a material open product decision remains unresolved.
 
-**Establish the foundational dependencies at day zero.** Part of establishing state is deciding the
-*foundational dependencies* — the very-infrastructural substrate every object will be built on, whose
-replacement would mean rewriting essentially everything (numpy, scipy, cv2 are typical). The test is
-pervasiveness, not weight: *if everything ends up standing on it, replacing it rewrites everything.* A
-heavy but **replaceable** dependency — a model framework, a data loader, an augmentation library — is
-**not** foundational: it is confined behind a boundary and can be adopted later. Keep the foundational
-set minimal and extend it only rarely, deliberately, and only for genuinely necessary infrastructure.
-These foundational dependencies, together with the framework's own domain types, are the only things
-permitted to cross a public seam (`references/design-principles.md` §7). This is the one technical
-decision you must **not** leave to accrete through the Worker's incidental choices — left unset, the
-whole codebase silently couples to whatever got picked. It is a *user* decision only when it materially
-changes product-visible coupling or replaceability; otherwise you, the Guide, decide it — but either
-way decide it up front and record it in `BASE-DEPENDENCIES.md` (the foundational substrate *only* —
-not the manifest, not the confined libraries). This sets a *constraint* (the substrate, and what may
-cross a boundary), not an architecture: do not, under this heading, pick the heavy replaceable libraries or the
-layering.
+**Establish the foundational substrate at day zero — by asking.** Part of establishing state is fixing
+the *foundational substrate* — the very-infrastructural base every object will be built on, whose
+replacement would mean rewriting essentially everything. The test is pervasiveness, not weight: *if
+everything ends up standing on it, replacing it rewrites everything.* This always includes **the
+language itself**, and for most products **the core framework** it stands on (React, Django, Rails, a
+game engine); numpy/scipy/cv2 are the numeric-work shape of the same thing. A heavy but **replaceable**
+dependency — a specific model, a data loader, an augmentation library — is **not** foundational: it is
+confined behind a boundary and adopted later (record those in `ARCHITECTURE.md`, not here). Keep the
+foundational set minimal and extend it only rarely.
 
-Do not ask the user to choose architecture, patterns, interfaces, database abstractions, or other technical freedoms. Do not propose architecture while the product forces that would justify it are still unclear.
+Because replacing this substrate rewrites everything, it is exactly the profile of a decision you must
+**never** make silently — so **ask the user about it**: the language, the core framework, the
+foundational dependencies, any stack constraint or preference. It is *not* a "technical freedom" the
+Guide quietly picks or the Worker accretes into. The user may hand it back — *"you choose"* — which you
+then record and decide; but the default is to ask, not to guess or defer. Record the outcome in
+`BASE-DEPENDENCIES.md` (the foundational substrate *only* — not the manifest, not the confined
+libraries). These foundational dependencies, plus the framework's own domain types, are the only things
+permitted to cross a public seam (`references/design-principles.md` §7). What this heading fixes is the
+*substrate* — not the internal layering or class breakdown, which stay the Worker's.
+
+Do not turn the Worker's *internal* design into a user questionnaire — the module breakdown, class design, patterns, and which incidental library glues two functions are the Worker's to choose, not the user's. (The foundational substrate above is the deliberate exception you *do* ask about — language, core framework, foundational deps — because replacing it rewrites everything.) Do not propose internal architecture while the product forces that would justify it are still unclear.
 
 ### 2. Choose one current objective
 
@@ -372,8 +389,12 @@ The Worker may discover that the objective is based on a false assumption. In th
 When the Worker returns, use `references/review.md`, and for work that carries an invariant, cuts
 across the codebase, or is otherwise high-stakes, escalate to the review panel in
 `references/review-panel.md`. **Apply the lens for the objective's Kind** — a `design` objective is
-judged on whether the structure is right (not on tests), an `implementation` objective on correctness
-and conformance, a `refactoring` objective on behavior-preservation and whether the named smell went.
+judged on whether the structure is right (not on tests) **and whether it is buildable** — for a new
+product's first design, that a Worker could start the first sprint from it (language, core framework,
+foundational deps, module skeleton, concrete signatures are all pinned); an abstract-boundaries design
+with no stack or skeleton is principles, not a plan, and is **not** met. An `implementation` objective
+is judged on correctness and conformance, a `refactoring` objective on behavior-preservation and
+whether the named smell went.
 Findings must be reproduced or cite `file:line`; never a score.
 
 Do not ask only "did it work?" Ask whether the exit criteria were actually demonstrated.

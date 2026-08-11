@@ -44,7 +44,7 @@ Before treating an unspecified choice as an assumption, ask:
 
 If yes, record an open product decision and ask. If no, record a technical freedom and let the Worker choose.
 
-For example, whether exporting a report overwrites the prior report or creates a new user-visible version is a product decision. Which library performs the write, how modules are named, and what internal interface connects them are technical freedoms when the user has expressed no relevant constraint.
+For example, whether exporting a report overwrites the prior report or creates a new user-visible version is a product decision. Within an **established** stack, which incidental library performs the write, how modules are named, and what internal interface connects them are technical freedoms when the user has expressed no relevant constraint. But for the **first** design of a new product the language, the core framework, and the foundational dependencies are not free — they are the foundational substrate, and you ask about them (see below).
 
 ## Follow the forces
 
@@ -59,22 +59,23 @@ Useful questions include:
 
 Do not present the user with a catalog of possible future extension points. Derive candidate forces from the product scenario and the user's answers.
 
-## Foundational dependencies (day zero)
+## Foundational substrate (day zero) — ask, don't guess
 
-Separately from product decisions, establish the **foundational dependencies** at the start: the
-very-infrastructural substrate everything will be built on, whose replacement would mean rewriting
-essentially everything (e.g. numpy, scipy, cv2). The test is pervasiveness, not weight — *if every
-object ends up standing on it, replacing it rewrites everything.* A heavy but replaceable dependency (a
-model framework, a data loader, an augmentation library) is confined behind a boundary and is **not**
-foundational; it can be adopted later.
+Establish the **foundational substrate** at the start: the very-infrastructural base everything will be
+built on, whose replacement would mean rewriting essentially everything. The test is pervasiveness, not
+weight — *if every object ends up standing on it, replacing it rewrites everything.* This always
+includes **the language**, and for most products **the core framework** (React, Django, Rails, a game
+engine); numpy/scipy/cv2 are the numeric-work version. A heavy but replaceable dependency (a specific
+model, a data loader, an augmentation library) is confined behind a boundary and is **not**
+foundational; it is adopted later.
 
-Decide this up front, keep it minimal, and extend it only rarely and deliberately — only genuinely
-necessary infrastructure. Unlike other technical freedoms, this one is **not** deferred to the Worker:
-left to accrete, the whole codebase silently couples to whatever was picked. Ask the user only if the
-choice materially changes product-visible coupling or replaceability; otherwise the Guide decides it —
-but always up front and recorded in `BASE-DEPENDENCIES.md` (the foundational substrate *only* — never
-the full manifest, never the confined libraries). The foundational set, plus the framework's own domain
-types, are the only types permitted to cross a public seam (`design-principles.md` §7).
+Because replacing the substrate rewrites everything, it is never guessed or deferred: **ask the user**
+— the language, the core framework, the foundational dependencies, any stack constraint or preference.
+It is *not* a technical freedom the Guide quietly picks. The user may hand it back (*"you choose"*),
+which you record and decide; but the default is to ask. Record the outcome in `BASE-DEPENDENCIES.md`
+(the foundational substrate *only* — never the full manifest, never the confined libraries). The
+foundational set, plus the framework's own domain types, are the only types permitted to cross a public
+seam (`design-principles.md` §7).
 
 ## Ask one question at a time
 
