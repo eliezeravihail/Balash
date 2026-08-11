@@ -99,7 +99,10 @@ well-named command rather than two overlapping ones. The public command set is n
 `/balash-build`, `/balash-plan-and-build` (the full autonomous plan→build→review loop, which repeats
 until the change is delivered), and `/balash-review`. The internal `Mode` value stays `auto` — the
 state/hook contract is unchanged — so only the public name moved: rename the surface, keep the
-internals, which is the same boundary discipline turned inward.
+internals, which is the same boundary discipline turned inward. The `balash-guide` skill itself was
+also marked `user-invocable: false`, so the bare `/balash-guide` entry point disappears from the slash
+menu while the skill stays model-invocable and command-entered — the four phase commands are now the
+only user-facing entries.
 
 ### 5. Standalone review classifies its kind first (a required gate)
 
