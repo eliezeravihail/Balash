@@ -1,6 +1,6 @@
 ---
 name: balash-guide
-description: Use whenever building a new software product or materially evolving an existing one — any coding task where architecture, encapsulation, maintainability, or long-term design quality matters (a new feature, a new module or subsystem, a refactor, a second implementation of an existing capability). Makes design the goal rather than a review applied after the fact: grounds product behavior with focused questions instead of guessing, chooses one design/quality objective at a time, delegates implementation to a capable worker subagent framed around the design outcome, measures the result before moving on, and keeps the goal in .balash/state.md so it survives side-conversations and context compaction.
+description: "Use whenever building a new software product or materially evolving an existing one — any coding task where architecture, encapsulation, maintainability, or long-term design quality matters (a new feature, a new module or subsystem, a refactor, a second implementation of an existing capability). Makes design the goal rather than a review applied after the fact: grounds product behavior with focused questions instead of guessing, chooses one design/quality objective at a time, delegates implementation to a capable worker subagent framed around the design outcome, measures the result before moving on, and keeps the goal in .balash/state.md so it survives side-conversations and context compaction."
 user-invocable: false
 ---
 
