@@ -11,14 +11,14 @@ Enter the `balash-guide` skill and run **only the PLAN phase** (operating-loop s
 - Choose the single most valuable **design/quality objective** now, **declare its Kind** (`design` |
   `implementation` | `refactoring` — see `references/objective-selection.md`; it sets the review lens),
   and draft a bounded Worker handoff per `references/worker-handoff.md`. Write both into `state.md`; set
-  the Loop cursor to `planned:awaiting-build`.
-- **Write the plan report.** Produce `.balash/plan-report.md` from `assets/plan-report-template.md` — the
-  executive summary of this round: the dependencies, the deliberations (the real dilemmas and *why this
-  over that*), the decisions, the chosen architecture, and the exit criteria. This is the whole point of
-  the manual mode — the user reads it and comments before anything is built.
-- **Stop here. Do not delegate and do not write implementation code.** Show the compact Guide
-  checkpoint (Objective / Why now / Exit criteria / Preserve / Do not optimize for) **and present the
-  plan report** (`.balash/plan-report.md`) so the user can read the full reasoning, inspect or edit the
-  objective, and comment before anything is built. Tell them to run the build command when ready.
+  the Loop cursor to `planned:awaiting-build`. Record the round's decisions and their rationale in the
+  design docs (`GOALS.md` / `BASE-DEPENDENCIES.md` / `ARCHITECTURE.md`), where the *why this over that*
+  lives in proximity to the fact it explains.
+- **Stop here. Do not delegate and do not write implementation code.** **Present a plan report** — an
+  executive summary compiled from the objective and the design docs (dependencies, decisions and their
+  rationale, chosen architecture, exit criteria) — so the user can read the round's reasoning, inspect
+  or edit the objective, and comment before anything is built. It is a presentation, not a new stored
+  file: the substance already lives in the design docs. Then tell them to run the build command when
+  ready.
 
 $ARGUMENTS

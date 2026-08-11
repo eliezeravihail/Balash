@@ -245,28 +245,22 @@ second, drifting source of truth:
   state.md.
 
 Create and maintain these as the product takes shape; a design objective's result is recorded in them,
-not narrated into the conversation and lost.
+not narrated into the conversation and lost. The **rationale** for each decision — the *why this over
+that*, the road not taken — is recorded **in proximity**, beside the fact it explains (rule 1), not
+gathered into a separate "deliberations" store. That is what makes a plan report cheap: it is *derived*
+from what you already documented, never a second place you maintain.
 
-### The plan report — the round's reasoning, surfaced for review
+### Presenting the plan report (manual plan)
 
-At the end of every plan phase — after the objective and Worker handoff are drafted, before anything is
-built — write **`.balash/plan-report.md`** from `assets/plan-report-template.md`: a concise executive
-summary for a technical manager covering the objective and why now, the requirements it rests on, the
-**dependencies**, the **deliberations** (the real dilemmas — what was asked, what was weighed, and *why
-this over that*), the **decisions**, the **chosen architecture**, and the exit criteria the build will be
-held to. Its purpose is to let a human see, in one read, what this round decided and why — and to comment
-before the build begins.
-
-It is deliberately *not* a fourth design doc. The three docs above stay clean facts with no history; the
-plan report is the opposite on purpose — the **one place the round's deliberations are surfaced**,
-because that is what a reviewer needs to catch a decision they disagree with *before* it is built. It is
-**regenerated each plan round** (the current round only); past rounds are preserved in git history,
-committed beside the code they planned. Keep it tight — substance, not a form to fill in.
-
-Write it on **every** plan phase (it is the round's evidence that the objective was reasoned, not
-guessed). In **stepped/manual** `plan`, after writing it, **present it to the user** — show it (or its
-path) and invite comments before they run `build`. In **automatic** mode, write it silently and keep
-going; it is there for later inspection, not a pause point.
+When the user drives planning by hand (`plan`), don't just print the terse checkpoint — **present a
+short plan report**, compiled from what this round already produced: the objective and why now, the
+dependencies it rests on (from `BASE-DEPENDENCIES.md`), the decisions and their rationale (from
+`GOALS.md` / `ARCHITECTURE.md`, where the *why this over that* already lives in proximity), the chosen
+architecture, and the exit criteria the build will be held to. It is an *executive summary for a
+technical manager* — assembled from the design docs and the objective, so the user can read the round's
+reasoning and comment before anything is built. It is a **presentation, not a new file**: there is
+nothing extra to store, because the substance is already in the design docs. In automatic mode there is
+no separate report — the design docs are the record.
 
 ## Modes: run it automatically, or drive it phase by phase
 
@@ -398,9 +392,9 @@ Before delegation:
 
 A TODO item represents an intended outcome or unresolved concern, not merely an editing action.
 
-This is the end of the plan phase: with the objective and handoff drafted, write the round's
-**`.balash/plan-report.md`** (see "The plan report" above) — always. In stepped/manual `plan`, present
-it to the user for comment before `build`; in automatic mode, write it and continue.
+This is the end of the plan phase. In stepped/manual `plan`, present the compiled plan report (see
+"Presenting the plan report" above) so the user can review the round's reasoning and comment before
+`build`.
 
 Good Guide TODO:
 - Prove that a product rule is enforced through every relevant entry path.

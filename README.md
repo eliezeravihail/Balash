@@ -28,8 +28,8 @@ the Worker's.
 in the background and nothing auto-activates on unrelated turns:
 
 - `/balash-plan` — choose one design objective and draft the handoff to the Worker; **stops before any
-  code is written** and hands you a **plan report** (`.balash/plan-report.md`) — an executive summary of
-  the round's dependencies, deliberations, decisions, and chosen architecture — to read and comment on
+  code is written** and presents a **plan report** — an executive summary of the round's dependencies,
+  decisions, and chosen architecture, compiled from the design docs — for you to read and comment on
   before you build.
 - `/balash-build` — execute the planned objective; stop when done.
 - `/balash-review` — measure the result against the exit criteria; stop with grounded findings and a
@@ -45,12 +45,9 @@ gets summarized — so Balash keeps its memory on disk, and each command reloads
   command re-reads it to re-orient.
 - **The product's own design docs** — the durable design record, living *with the product's code*:
   `GOALS.md` (goal, scenarios, non-goals), `BASE-DEPENDENCIES.md` (the foundational substrate only),
-  and `ARCHITECTURE.md` (seams, structural decisions, invariants). Facts kept next to the code they
-  govern — not session-recovery logs.
-- **`.balash/plan-report.md`** — the plan round's report, written at the end of every plan phase and
-  presented for review in manual `/balash-plan`. Unlike the three clean design docs, it is the one place
-  the round's *deliberations* are surfaced — regenerated each round, with past rounds preserved in git
-  history.
+  and `ARCHITECTURE.md` (seams, structural decisions, invariants) — each fact recorded *with its
+  rationale in proximity*. Facts kept next to the code they govern — not session-recovery logs. The plan
+  report `/balash-plan` shows you is compiled from these, not a separate file.
 
 **No product decision gets made silently.** Every unclear point is sorted into one of three buckets: a
 grounded product fact (stated, observed in the code's behavior, or settled earlier), an open product

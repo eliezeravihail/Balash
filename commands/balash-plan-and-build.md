@@ -13,9 +13,6 @@ use `/balash-plan`, `/balash-build`, or `/balash-review` instead.)
 - Drive the full operating loop yourself, **repeating** in the design → implement rhythm: choose one
   objective → delegate to a Worker subagent → measure the evidence yourself → choose the next objective
   → and so on. A returning Worker **auto-advances** the loop; you do not stop after one objective.
-- Still write the round's **`.balash/plan-report.md`** (from `assets/plan-report-template.md`) at the end
-  of each plan phase — silently, without pausing. It is the round's evidence that the objective was
-  reasoned, kept for later inspection; in automatic mode it is not a stop point.
 - On the first objective of a new product, establish state and run discovery first — including the
   **day-zero foundational dependencies** (SKILL step 1) — before choosing the objective.
 - Pause only at the **two legitimate human moments**: an *open product decision* you must not guess,
