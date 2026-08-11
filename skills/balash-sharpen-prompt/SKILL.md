@@ -1,5 +1,5 @@
 ---
-name: balash-sharpe-prompt
+name: balash-sharpen-prompt
 description: Sharpen a vague or open-ended task into a real brief BEFORE executing it. Use whenever handed a substantial task — "plan a pension", "review this", "find the bugs", "build X", "write the report" — whose framing decides whether the result actually helps: it surfaces the real outcome, the hard judgment the ask hides, what only the person can decide (ask, don't guess), what "done" checkably means, what to protect, and what evidence must back the claims. The general-purpose companion to balash-guide, which does this for software design.
 user-invocable: true
 ---
