@@ -56,9 +56,23 @@ product impact — the Worker just picks something reasonable).
 
 - [`skills/balash-guide/`](skills/balash-guide) — the method: `SKILL.md`, its references (objective
   selection, worker handoff, design principles, run modes, review panel), and the doc templates.
+- [`skills/balash-sharpen-prompt/`](skills/balash-sharpen-prompt) — the general-purpose companion:
+  framing any task before doing it (see below).
 - [`commands/`](commands) — the commands that engage the method.
 - [`experiments/`](experiments) — the evidence (see [Does it work?](#does-it-work) below and
   [`experiments/RESULTS.md`](experiments/RESULTS.md)).
+
+## A general companion — `balash-sharpen-prompt`
+
+Balash's core insight — *the goal, and how you phrase it, decide the result* — is not only about
+software. The plugin ships a second, general-purpose skill, **`balash-sharpen-prompt`**, that applies
+the same discipline to **any** task you hand a capable agent ("plan a pension", "find the bugs", "write
+the report"). Before executing, it sharpens the vague ask into a real brief: the true outcome (not a
+proxy), the hard judgment the ask hides, what only the person can decide (ask, don't guess), what
+"done" checkably means, what to protect, and what evidence must back the claims — written as a way of
+thinking, not a checklist to tick. Invoke it with `/balash-sharpen-prompt`, or let it engage when a
+substantial task's framing matters. Where `balash-guide` is Balash for software design,
+`balash-sharpen-prompt` is Balash for framing anything.
 
 ## The principles
 
