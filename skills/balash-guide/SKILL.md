@@ -341,6 +341,15 @@ let evaporate (where a rule should live now that it crosses a boundary; which in
 interaction threatens; who owns a transition reached from several paths). If the best the objective can
 say is "design it well", it is not yet an objective.
 
+For an explicit product-**lifecycle** rule — a required starting state, or a required choice before an
+action — a criterion that merely restates the rule is not enough, because a silent **default** can
+reinterpret it into vacuity (a preselected value *is* a choice; an auto-started state *is* started; a
+"new round / new game" that silently carries the previous choice *is* a choice). Phrase the criterion as
+the rule's **falsifier**: a start-state → action → visible-outcome that the tempting shortcut (a
+preselected default, an auto-start, a carried-over value) would **fail**, naming that shortcut. The
+refuting *test* for it is the Worker's to write at build time — put it in the handoff; do not inflate a
+design objective's deliverable into shipping code.
+
 Do not choose an objective merely because it is the next feature on a list.
 
 Do not create abstractions for speculative futures. Every architectural concern must be tied to a concrete product force, current pain, known change axis, invariant, or evidence from the repository.
