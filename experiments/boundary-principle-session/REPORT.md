@@ -61,6 +61,16 @@ consumer also depends on it" is a *consequence* of that commitment, not an assum
 consumer. Balanced against **primitive obsession (§4)**: the answer is your own domain type, not a
 retreat to bare primitives. (Source added: Evans, *Domain-Driven Design*.)
 
+**A later extension (§7/§11): the boundary's vocabulary includes its error types.** An implementation
+leaks through the *exception channel* exactly as through a parameter or return value — letting a
+`torch.cuda.OutOfMemoryError` or a vendor exception escape a public seam couples the consumer to the
+chosen implementation. So at a public seam, implementation exceptions are translated into the
+framework's own error types phrased in the consumer's concepts (§11), with one carve-out the user
+insisted on: failures there is **no utility in catching** — a process-fatal collapse no consumer could
+act on (a CUDA OOM that takes the process down anyway) — are left to fall; wrapping them is decorative
+machinery. The test is **actionability**. `numpy`/`cv2` were also marked in §7 as *illustrative, chosen
+per product* — never a canonical list a future agent should copy as a default.
+
 ### 3. Operating loop — **foundational dependencies are now a day-zero step-1 requirement**
 
 The §7 policy was promoted from a principle into the method, on a distinction the user drew sharply:
@@ -79,6 +89,29 @@ The §7 policy was promoted from a principle into the method, on a distinction t
 Touch points: `SKILL.md` step 1; `references/discovery.md` (new section + record-template line);
 `assets/state-template.md` (new `### Foundational dependencies (day-zero)` field);
 `design-principles.md` §7 cross-reference.
+
+### 4. The command surface — names that explain themselves (§11)
+
+Applying §11 to Balash's *own* public vocabulary. The `/balash-auto` command was renamed to
+**`/balash-plan-and-build`** because "auto" did not say what it does. A one-shot `/balash-plan-and-do`
+(briefly added, then removed) was recognized as the same concept as the loop — consolidated to one
+well-named command rather than two overlapping ones. The public command set is now `/balash-plan`,
+`/balash-build`, `/balash-plan-and-build` (the full autonomous plan→build→review loop, which repeats
+until the change is delivered), and `/balash-review`. The internal `Mode` value stays `auto` — the
+state/hook contract is unchanged — so only the public name moved: rename the surface, keep the
+internals, which is the same boundary discipline turned inward.
+
+### 5. Standalone review classifies its kind first (a required gate)
+
+A standalone `review <target>` (a diff / branch / PR with no `.balash/state.md`) has nothing telling it
+the review kind or the criteria to measure against — an in-loop review reads both from state. Applying
+the wrong lens, or measuring against invented criteria, makes the whole review measure the wrong thing.
+So "determine the kind + ground truth" was promoted from a soft inline instruction into an explicit
+**Step 0 gate**: before any reading, commit in writing to (1) the **kind** — handling a mixed-kind
+change by naming the dominant one and adding the other lens, and asking one concrete question when the
+kind is unclear *and* would change what is measured — and (2) the **ground truth**, asking rather than
+inventing criteria. Kept as an **inline gate, not a subagent** (the user's alternative): classification
+needs exactly the context the review needs, and standalone review already runs inline.
 
 ## The two design proofs (validation)
 
@@ -117,11 +150,17 @@ the end-to-end slice — rather than trusting the Worker's report.
 4. `design-principles (§2): unmeetable bounds resolve to two types, not a lossy compromise`
 5. `design-principles (§2): lead with the domain-free general rule`
 6. `balash: make foundational-dependencies a day-zero step-1 requirement`
-7. this report.
+7. `report: session summary` (this file; then updated)
+8. `design-principles (§7/§11): the boundary vocabulary includes its error types`
+9. `commands: add /balash-plan-and-do` — superseded by #10
+10. `commands: replace /balash-auto with self-explanatory /balash-plan-and-build`
+11. `review: make standalone review classify its kind as a required first gate`
 
 ## Throughline
 
-Every change traces to one idea, applied at three levels — the type at a boundary, the vocabulary a
-boundary may speak, and the dependencies a whole codebase stands on: **minimize the knowledge you
-force on the other side — no more than the concept requires, no less than it needs, and never your own
-implementation choice.**
+Every change traces to one idea, applied at four levels — the type at a boundary, the *errors* a
+boundary may raise, the vocabulary a boundary may speak, and the dependencies a whole codebase stands
+on: **minimize the knowledge you force on the other side — no more than the concept requires, no less
+than it needs, and never your own implementation choice.** The final touches turned the same lens on
+Balash itself: its command names must say what they do (§11) without leaking internal mode names, and
+its standalone review must first decide what it is even measuring.
