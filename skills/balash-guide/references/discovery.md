@@ -83,7 +83,7 @@ Do not bundle a questionnaire. Do not volunteer a catalog of hypothetical future
 
 ## Record only actionable forces
 
-Translate useful answers into concise state entries:
+Translate useful answers into concise entries in `.balash/knowledge.md`:
 
 ```text
 Core scenario: ...

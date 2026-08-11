@@ -7,9 +7,10 @@ mode). This is the end-to-end driver — **not** a single plan-then-build pass. 
 objective after another, until the current product change is delivered. (For a single supervised phase,
 use `/balash-plan`, `/balash-build`, or `/balash-review` instead.)
 
-- Set `Mode: auto` in `.balash/state.md` (create it from `assets/state-template.md` if absent), and
-  resume the loop from the current Loop cursor — a plan drafted in stepped mode is built and reviewed
-  the same way here; switching mode never discards the cursor.
+- Set `Mode: auto` in `.balash/state.md` (create it from `assets/state-template.md` if absent; create
+  `.balash/knowledge.md` from `assets/knowledge-template.md` if absent), and resume the loop from the
+  current Loop cursor — a plan drafted in stepped mode is built and reviewed the same way here;
+  switching mode never discards the cursor or the objective file it points at.
 - Drive the full operating loop yourself, **repeating** in the design → implement rhythm: choose one
   objective → delegate to a Worker subagent → measure the evidence yourself → choose the next objective
   → and so on. A returning Worker **auto-advances** the loop; you do not stop after one objective.

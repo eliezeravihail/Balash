@@ -12,14 +12,16 @@ measures behavior-preservation and whether the named smell went. If the declared
 deliverable disagree, that mismatch is the first reading. Two uses, decided by whether a target is given:
 
 **In-loop review (no target given).** Reload `.balash/state.md`; require the Loop cursor at
-`executed:awaiting-review`. Measure the Worker's evidence against the objective's **exit criteria**, and
-run the review panel scaled to the objective (probe reviewer first; add fidelity, subtractive, and an
-opposite-disposition second reviewer as the stakes warrant). Report reproduced readings, describe which
-exit criteria the readings show met/unmet, and what this implies for the next direction. Then record
-where the loop now is by updating the cursor (`ready-to-choose-next` when the objective is reached, or
-back toward `plan`/`build` when the readings say it isn't) — this records the loop's position, it does
-not accept or reject the Worker. Do not silently repair everything reported — the Guide/human decides
-what matters to the product now.
+`executed:awaiting-review`, and open the objective file its `Active objective` points at. Measure the
+Worker's evidence against the objective's **exit criteria**, and run the review panel scaled to the
+objective (probe reviewer first; add fidelity, subtractive, and an opposite-disposition second reviewer
+as the stakes warrant). Report reproduced readings, describe which exit criteria the readings show
+met/unmet, and what this implies for the next direction. Write the readings into that objective file's
+"## Review" section. Then record where the loop now is by updating `state.md`'s cursor
+(`ready-to-choose-next` when the objective is reached, or back toward `plan`/`build` when the readings
+say it isn't) and its `Last review` one-liner — this records the loop's position, it does not accept or
+reject the Worker. Do not silently repair everything reported — the Guide/human decides what matters to
+the product now.
 
 **Standalone review (a target is given in the arguments).** Review the target change without requiring
 a `.balash/state.md`. Here nothing has told you the kind or the criteria (an in-loop review reads them

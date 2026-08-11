@@ -107,7 +107,8 @@ confirmed. A reading that cannot be reproduced on demand is set aside, not acted
 
 `review <target>` where target is a diff, branch, path, or PR. Unlike an in-loop review, **nothing has
 told you what kind of review this is or what to measure against** — an in-loop review reads the Kind and
-exit criteria from `.balash/state.md`, but here there is no state. So the first move is not to review;
+exit criteria from the objective file `.balash/state.md`'s `Active objective` points at, but here there
+is no state. So the first move is not to review;
 it is to *classify*. Applying the wrong lens (or measuring against invented criteria) makes the whole
 review measure the wrong thing.
 

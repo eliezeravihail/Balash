@@ -6,14 +6,14 @@ Enter the `balash-guide` skill and run **only the BUILD phase** (operating-loop 
 `references/modes.md` (stepped mode) and `references/worker-handoff.md`.
 
 - Reload `.balash/state.md`. Require the Loop cursor at `planned:awaiting-build` (or a reopened
-  objective). If there is **no current objective**, stop and tell the user to run the plan command
-  first — do not invent an objective here.
+  objective). If there is **no Active objective**, stop and tell the user to run the plan command
+  first — do not invent an objective here. Open the objective file it points at.
 - Execute the drafted handoff **yourself, inline, in this session, on the currently selected model — do
   NOT spawn a subagent** (this is an explicit stepped-mode command; the user chose this model and is
   supervising the phase). Run it as a clearly separated phase that *conforms to* the objective and
   handoff produced by `plan` — do not re-open the design or expand scope beyond the handoff.
-- When the Worker returns, record the result and an evidence pointer in `state.md`; set the Loop cursor
-  to `executed:awaiting-review`.
+- When the Worker returns, record the result and an evidence pointer in the objective file's "## Result"
+  section; set `state.md`'s Loop cursor to `executed:awaiting-review`.
 - **Stop here. Do NOT evaluate, accept, or choose the next objective** — that is the review phase.
   Report what was built and where the evidence is, and tell the user to run the review command.
 

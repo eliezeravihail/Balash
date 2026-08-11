@@ -1,76 +1,32 @@
-# Balash Guide State
+# Balash Loop State
 
-This file stores durable engineering direction. Keep it short. Do not use it as a transcript or worker task log.
+This file is **loop-control only** — a handful of flags the Guide re-reads before acting and the
+injection hook re-reads every turn. It carries **no product knowledge and no objective content.**
 
-<!-- SCHEMA CONTRACT (this template owns it): the injection hook (hooks/inject-goal.py) reads the goal
-     by heading and marker. The load-bearing anchors are the headings `## Current objective` (with its
-     `**Objective:**` and `**Kind:**` markers), `## Mode`, and `## Loop cursor`, and those marker
-     formats. Renaming or reformatting them stops the goal from being injected. If you must change the
-     shape, change it here AND in the hook together — they are two sides of one contract. (The hook now
-     says so loudly if a filled state file lacks `## Current objective`, rather than failing silent.) -->
+- Durable product knowledge (purpose, scenarios, grounded facts, decisions, invariants, constraints,
+  Guide TODO) lives in `.balash/knowledge.md` — append-first, reviewable like a decision log.
+- Each objective (Kind, Exit criteria, the Worker handoff, its Result, its Review) lives in its own
+  file under `.balash/objectives/`, one file per objective, never overwritten by the next one.
 
-## Product purpose
+This file only says *which objective is active* and *where the loop is parked*. Keep it this small on
+purpose: it changes almost every turn and carries no history worth preserving, so it should not be the
+place design reasoning is written down or silently lost when the next objective replaces it.
 
-<!-- One or two sentences. -->
-
-## Core scenarios
-
-<!-- Only scenarios that materially shape engineering decisions. -->
-
-## Product knowledge
-
-### Grounded product facts
-
-<!-- Fact — source: request | repository | user answer. -->
-
-### Open product decisions
-
-<!-- Must be empty of material items before delegation. -->
-
-### Technical freedoms
-
-<!-- Choices the Worker may make without asking the user. -->
-
-## Product forces
-
-### Likely change axes
-
-<!-- Expected independent variation, with a reason/evidence. -->
-
-### Invariants
-
-<!-- Rules that must remain true across implementations. -->
-
-### Constraints
-
-<!-- Real constraints, not generic quality wishes. -->
-
-### Foundational dependencies (day-zero)
-
-<!-- The very-infrastructural substrate everything is built on (numpy, scipy, cv2 ...): replacing it
-     would rewrite everything. Decided up front (by the Guide unless it materially affects the product),
-     kept minimal, extended only rarely. These + the framework's own domain types are the ONLY things
-     allowed to cross a public seam (design-principles §7). Heavy but replaceable deps (model / data /
-     augmentation libraries) are NOT listed here — they are confined behind a boundary and chosen later. -->
-
-### Explicit non-goals
-
-<!-- Things we deliberately do not design for yet. -->
-
-## Durable decisions
-
-<!-- Decision — reason — evidence/trade-off. -->
-
-## Open Guide TODO
-
-- [ ]
+<!-- SCHEMA CONTRACT (this template owns it, together with assets/objective-template.md): the
+     injection hook (hooks/inject-goal.py) reads THIS file by heading/marker for `## Mode`,
+     `## Loop cursor`, and `## Active objective` (a path under .balash/objectives/, or empty), then
+     opens that path and reads ITS `**Kind:**` / `**Objective:**` markers the same way. Renaming or
+     reformatting either contract stops the goal from being injected. If you must change the shape,
+     change it here, in assets/objective-template.md, AND in the hook together — all three are one
+     contract. (The hook says so loudly if a filled state file lacks `## Loop cursor`, or an Active
+     objective path can't be resolved, rather than failing silent.) -->
 
 ## Mode
 
-<!-- auto | stepped. `auto` = the loop runs end to end, pausing only for open product decisions and the
-     next product change. `stepped` = stop at every phase boundary (plan / build / review) and advance
-     only on an explicit command; a returning Worker parks at executed:awaiting-review, it does NOT
-     auto-advance. See references/modes.md. Default when unset: auto. -->
+<!-- auto | stepped. `auto` = the loop runs end to end, pausing only for open product decisions and
+     the next product change. `stepped` = stop at every phase boundary (plan / build / review) and
+     advance only on an explicit command; a returning Worker parks at executed:awaiting-review, it
+     does NOT auto-advance. See references/modes.md. Default when unset: auto. -->
 
 auto
 
@@ -78,27 +34,20 @@ auto
 
 <!-- Where the loop is parked right now, so any turn (a returning Worker, or a "balash next" / phase
      command from the human) can resume from exactly here. One line, kept current:
-     needs-plan | planned:awaiting-build <objective> | awaiting-worker <objective> |
-     executed:awaiting-review <objective> | reviewed:awaiting-decision <objective> |
-     ready-to-choose-next | awaiting-human <named open decision> -->
+     needs-plan | planned:awaiting-build | awaiting-worker | executed:awaiting-review |
+     reviewed:awaiting-decision | ready-to-choose-next | awaiting-human <named open decision> -->
 
-## Current objective
+needs-plan
 
-**Kind:** <!-- design | implementation | refactoring — sets the review lens. -->
+## Active objective
 
-**Objective:**
+<!-- Path to the objective file the cursor above refers to, e.g. .balash/objectives/0001-slug.md.
+     Empty when the cursor is needs-plan / ready-to-choose-next / awaiting-human — those states have
+     no single objective file in flight. Never edit an objective file's Kind/Objective/Exit criteria
+     after Status leaves "planned" except through a fresh objective (a new file); this pointer is what
+     lets the loop resume at exactly the right record without state.md needing to hold its content. -->
 
-**Why now:**
+## Last review
 
-**Exit criteria:**
-- [ ]
-
-**Preserve:**
--
-
-**Do not optimize for:**
--
-
-## Last evaluated result
-
-<!-- met | partially_met | invalidated | blocked, with brief evidence. -->
+<!-- One line: met | partially_met | invalidated | blocked. This is a pointer, not the reasoning — the
+     reproduced readings live in the Active/most-recent objective file's "## Review" section. -->

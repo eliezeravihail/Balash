@@ -2,8 +2,9 @@
 
 Balash runs the **same** six-step operating loop either way. Modes change only *where the loop stops*
 and *what advances it* — not what the loop does. The `.balash/state.md` **Mode** field records which
-mode is active, and the **Loop cursor** records exactly where the loop is parked, so either an
-automatic wake (a returning Worker) or an explicit human command can resume from precisely there.
+mode is active, and the **Loop cursor** (with the **Active objective** pointer into
+`.balash/objectives/`) records exactly where the loop is parked, so either an automatic wake (a
+returning Worker) or an explicit human command can resume from precisely there.
 
 ## Automatic mode (default)
 
@@ -43,7 +44,7 @@ watching.
 
 | Command (names are configurable) | Runs loop steps | Produces | Then parks at |
 |---|---|---|---|
-| **plan** | 1–3: establish state, choose one objective, protect intent, draft the Worker handoff | the Current objective + a bounded handoff, written to `state.md` | `planned:awaiting-build` |
+| **plan** | 1–3: establish state, choose one objective, protect intent, draft the Worker handoff | the Current objective + a bounded handoff, written to a new `.balash/objectives/NNNN-<slug>.md`, pointed at by `state.md`'s `Active objective` | `planned:awaiting-build` |
 | **build** (execute) | 4: delegate to a Worker (or run the handoff as a separated phase) | the Worker's result + evidence pointer | `executed:awaiting-review` |
 | **review** | 5: measure evidence against exit criteria, run the review panel | reproduced readings + which criteria are met/unmet + implication for direction | `reviewed:awaiting-decision` |
 | **auto** | switches Mode to `auto` and runs to the next legitimate pause | — | wherever the loop next legitimately parks |

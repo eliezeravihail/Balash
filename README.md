@@ -80,13 +80,14 @@ any material change it re-checks for newly opened product decisions.
 
 Not mandatory phases — a control loop for deciding what to do next:
 
-1. **Establish state** — read `.balash/state.md` and just enough of the repo; classify the request's
-   implied choices into the three buckets above; resolve open product decisions with the user.
+1. **Establish state** — read `.balash/state.md` and `.balash/knowledge.md`, plus just enough of the
+   repo; classify the request's implied choices into the three buckets above; resolve open product
+   decisions with the user.
 2. **Choose one objective** — the single objective that most reduces an important uncertainty or
    structural risk *now*, framed around design quality, with: *Objective, Why now, Exit criteria,
-   Preserve, Do not optimize for.*
+   Preserve, Do not optimize for.* Written into its own file, `.balash/objectives/NNNN-<slug>.md`.
 3. **Protect intent** — make sure no open product decision is being silently assumed, and unrelated
-   concerns are parked explicitly rather than forgotten.
+   concerns are parked explicitly in `knowledge.md`'s Guide TODO rather than forgotten.
 4. **Delegate** — a bounded Worker handoff framed as a design outcome (never a feature ticket), giving
    the behavior as a constraint and the design principles as the target. A good handoff is one two strong
    engineers could satisfy with *genuinely different, equally good* designs — if it only permits the one
@@ -95,25 +96,37 @@ Not mandatory phases — a control loop for deciding what to do next:
    tests, read the code) instead of trusting the Worker's "done"; the reading feeds the next direction,
    it is not a gate. For high-stakes work, escalate to the **review panel** (§2.7). Reading: met /
    partially_met / invalidated / blocked.
-6. **Choose again** — from the updated state; re-evaluate from evidence, no fixed phase order.
+6. **Choose again** — from the updated knowledge; re-evaluate from evidence, no fixed phase order. A new
+   objective is a new file, never an edit to a closed one.
 
-### 2.5 The durable goal: state file + hook
+### 2.5 The durable goal: three files, one job each, plus a hook
 
 The loop runs inside an ordinary conversation, which drifts, gets interrupted, and is summarized. So
-**the goal does not live in the chat — it lives in `.balash/state.md`.** That file is the authority on
-what's being built. Two mechanisms keep it working:
+**the goal does not live in the chat — it lives on disk**, split by how often each part changes rather
+than dumped into one file (the same ownership discipline the method asks of the *product's* code,
+applied reflexively to its own record-keeping):
+
+- **`.balash/state.md`** — loop-control flags only (`Mode`, `Loop cursor`, `Active objective`). Changes
+  almost every turn, carries no history worth keeping.
+- **`.balash/knowledge.md`** — durable product knowledge and the decisions log. Append-first: a
+  superseded fact is annotated, not deleted.
+- **`.balash/objectives/NNNN-<slug>.md`** — one immutable-once-delegated record per objective (Kind,
+  Exit criteria, the handoff sent, the Result, the Review). A new objective is a new file.
+
+Two mechanisms keep this working:
 
 - **The `balash-guide` skill is model-invoked** — Claude enters it on its own whenever you build or
   materially evolve software (no slash command needed), the way a UI-design skill triggers on a UI
   request.
-- **A `UserPromptSubmit` hook** (`hooks/inject-goal.py`) fires every turn, reads `.balash/state.md`, and
-  re-injects the current objective (and, in stepped mode, the stop-policy) — so the goal survives
-  side-conversations and context compaction even on a turn where the skill body isn't loaded. On any
-  project without a `.balash/state.md`, the hook is silent.
+- **A `UserPromptSubmit` hook** (`hooks/inject-goal.py`) fires every turn, reads `.balash/state.md` and,
+  through its `Active objective` pointer, the current objective file, and re-injects the current
+  objective (and, in stepped mode, the stop-policy) — so the goal survives side-conversations and
+  context compaction even on a turn where the skill body isn't loaded. On any project without a
+  `.balash/state.md`, the hook is silent.
 
-The discipline that makes this work: **whenever about to act as the Guide, re-read `state.md` first**,
-and update it the moment the loop's position changes. Awareness of the goal isn't sustained in the
-model's head — it is *reloaded* from disk.
+The discipline that makes this work: **whenever about to act as the Guide, re-read `state.md` and the
+objective file it points at first**, and update the right file the moment the loop's position changes.
+Awareness of the goal isn't sustained in the model's head — it is *reloaded* from disk.
 
 ### 2.6 What "good" aims at — and the subtractive pass
 
@@ -155,7 +168,8 @@ and an **opposite-disposition second reviewer** for genuine taste calls. The rev
 
 ## 3. Running it: automatic, or phase by phase
 
-The same loop runs two ways, recorded in the `Mode` field of `.balash/state.md`
+The same loop runs two ways, recorded in the `Mode` field of `.balash/state.md`, whose `Loop cursor`
+and `Active objective` track exactly where it's parked
 ([`references/modes.md`](skills/balash-guide/references/modes.md)):
 
 - **Automatic** (default) — the Guide drives the whole loop end to end, pausing only at the two
@@ -191,7 +205,9 @@ hook and commands come with it).
 - [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json) — the plugin manifest.
 - [`skills/balash-guide/`](skills/balash-guide) — the method: `SKILL.md`, its `references/` (discovery,
   objective selection, worker handoff, reviewing evidence, design principles, **modes**, **review
-  panel**), and the `.balash/state.md` template it maintains per project.
+  panel**), and the `.balash/` templates it maintains per project: `assets/state-template.md` (loop
+  flags), `assets/knowledge-template.md` (durable product knowledge), `assets/objective-template.md`
+  (one per objective).
 - [`hooks/`](hooks) — `hooks.json` and the `UserPromptSubmit` script that re-injects the objective (and
   stepped-mode stop-policy) each turn.
 - [`commands/`](commands) — the stepped-mode phase commands: `/balash-plan`, `/balash-build`,

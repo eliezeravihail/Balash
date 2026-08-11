@@ -1,6 +1,6 @@
 ---
 name: balash-guide
-description: Use whenever building a new software product or materially evolving an existing one — any coding task where architecture, encapsulation, maintainability, or long-term design quality matters (a new feature, a new module or subsystem, a refactor, a second implementation of an existing capability). Makes design the goal rather than a review applied after the fact: grounds product behavior with focused questions instead of guessing, chooses one design/quality objective at a time, delegates implementation to a capable worker subagent framed around the design outcome, measures the result before moving on, and keeps the goal in .balash/state.md so it survives side-conversations and context compaction.
+description: Use whenever building a new software product or materially evolving an existing one — any coding task where architecture, encapsulation, maintainability, or long-term design quality matters (a new feature, a new module or subsystem, a refactor, a second implementation of an existing capability). Makes design the goal rather than a review applied after the fact: grounds product behavior with focused questions instead of guessing, chooses one design/quality objective at a time, delegates implementation to a capable worker subagent framed around the design outcome, measures the result before moving on, and keeps the goal durable across .balash/state.md, .balash/knowledge.md, and .balash/objectives/ so it survives side-conversations and context compaction.
 user-invocable: false
 ---
 
@@ -53,7 +53,7 @@ reached, feeding the next direction. So "check the Worker's evidence" never mean
 means *measure the outcome yourself instead of trusting a self-report.* And the fact that Balash steers a
 model with prose rather than enforceable mechanism is **the intent, not a limitation** — direction and
 measurement are all the method needs; the only thing that must be robust is that the goal keeps reaching
-the Worker (the state file and hook), because a broken direction channel, not an unenforced rule, is the
+the Worker (the durable `.balash/` files and hook), because a broken direction channel, not an unenforced rule, is the
 real failure.
 
 ## Sequence goals agile-style: a design goal, then implementation that conforms to it
@@ -146,7 +146,36 @@ exists (typically the top-level agent). If you are yourself running inside a con
 spawn one, fall back to the separated-phase form above — same loop, you execute the Worker phase as
 its own bounded, separately-evaluated step rather than delegating it.
 
-## Staying oriented across a live session: the state file is the goal, advancement is triggered
+## Three files, one job each: state, knowledge, objectives
+
+The durable record is not one file — it is deliberately split by **why each part changes**, the same
+ownership discipline you apply to the product itself (see "Establish ownership/boundary" in
+`references/objective-selection.md`): loop-control bookkeeping changes almost every turn and has no
+history worth keeping; product knowledge changes rarely and is exactly the kind of thing that should
+be reviewable, like a decision log; a given objective's content is fixed at delegation time and should
+read as a historical record of what was asked for and what came back, not be overwritten by the next
+one. Mixing these into one file is the "unrelated responsibilities changing together" smell applied to
+the Guide's own record-keeping — so it is not:
+
+- **`.balash/state.md`** — loop-control flags only: `Mode`, `Loop cursor`, and `Active objective` (a
+  path pointing at the one objective file currently in flight). Nothing else. Initialize it from
+  `assets/state-template.md`.
+- **`.balash/knowledge.md`** — durable product knowledge: Product purpose, Core scenarios, the three
+  product-knowledge buckets (grounded facts / open decisions / technical freedoms), Product forces
+  (change axes, invariants, constraints, foundational dependencies, non-goals), the Durable decisions
+  log, and the Open Guide TODO. Append-first: when a fact or decision is superseded, say so next to it
+  rather than deleting it — this file is meant to read like a decision log, not a mutable scratchpad.
+  Initialize it from `assets/knowledge-template.md` once enough product context is known to fill it
+  meaningfully.
+- **`.balash/objectives/NNNN-<slug>.md`** — one file per objective (zero-padded sequential number + a
+  short kebab-case slug), holding that objective's Kind, Objective, Why now, Exit criteria, Preserve,
+  Do not optimize for, the Worker handoff actually sent, its Result, and its Review. Create it from
+  `assets/objective-template.md` when you choose a new objective; once delegated, do not silently
+  rewrite its Kind/Exit criteria — a changed mind is itself a new reading, recorded in that objective's
+  Review section or in a fresh objective, never a quiet edit to history. `state.md`'s `Active objective`
+  points at whichever one is currently in flight.
+
+## Staying oriented across a live session: the durable record is the goal, advancement is triggered
 
 You run inside an ordinary conversation. The human may interrupt to ask about something unrelated,
 and between turns you are simply not running — there is no background process quietly keeping the
@@ -154,56 +183,64 @@ objective in mind. So do not try to hold the goal "in your head" across the sess
 continuous autonomy by scheduling wake-ups that poll "am I done yet." Both are illusions: nothing is
 thinking between turns.
 
-Instead, the goal does not live in the conversation at all — **it lives in `.balash/state.md`.** That
-file, not the scrollback, is the authority on what you are doing. This is what lets the session
-wander freely: the human can ask anything, the transcript can drift or be summarized, and none of it
-loses the objective, because the objective is on disk. The discipline that makes this work is
-simple: **whenever you are about to act as the Guide, re-read `.balash/state.md` first** — the
-Current objective, the Loop cursor, the Open Guide TODO — and re-orient from it rather than from
-your memory of the conversation. Update it the moment the loop's position changes (objective chosen,
-Worker dispatched, evidence evaluated, decision resolved). Awareness of the goal is not something you
-sustain; it is something you *reload*.
+Instead, the goal does not live in the conversation at all — **it lives in `.balash/state.md` and the
+objective file it points at.** Those files, not the scrollback, are the authority on what you are
+doing. This is what lets the session wander freely: the human can ask anything, the transcript can
+drift or be summarized, and none of it loses the objective, because the objective is on disk. The
+discipline that makes this work is simple: **whenever you are about to act as the Guide, re-read
+`.balash/state.md` first**, then open the objective file its `Active objective` points at (Kind,
+Objective, Exit criteria), and skim `.balash/knowledge.md`'s Open Guide TODO — and re-orient from
+those rather than from your memory of the conversation. Update the right file the moment the loop's
+position changes (objective chosen → new objectives file; Worker dispatched → that file's handoff
+section; evidence evaluated → that file's Result/Review sections; decision resolved →
+`knowledge.md`), and move `state.md`'s `Loop cursor`/`Active objective` in lockstep. Awareness of the
+goal is not something you sustain; it is something you *reload*.
 
 Re-reading state tells you *where you are*; it does not, by itself, take the next step. A step is
 **triggered**, two ways, and you support both:
 
 - **Automatically, when a Worker returns.** A dispatched Worker finishing wakes you; that is the cue
-  to measure its evidence, read the objective's status, update state, and choose the next objective.
-  This is the loop advancing itself. *(Only in `auto` mode. In `stepped` mode a returning Worker parks at
-  `executed:awaiting-review` and waits for the review command — do not auto-advance. See
-  `references/modes.md`.)*
+  to measure its evidence, record it in the objective file's Result/Review sections, update
+  `state.md`'s cursor, and choose the next objective. This is the loop advancing itself. *(Only in
+  `auto` mode. In `stepped` mode a returning Worker parks at `executed:awaiting-review` and waits for
+  the review command — do not auto-advance. See `references/modes.md`.)*
 - **Explicitly, when the human says to.** A resume verb — **"balash next"** (or the human simply
-  asking you to continue) — means: reload `.balash/state.md` and take the single next step from the
-  Loop cursor now. This exists because the loop legitimately spends most of its life *parked* —
-  waiting on a Worker, or paused at an open product decision — and sometimes nothing woke it, or the
-  human interrupted to talk about something else. The resume verb is the first-class control for
-  driving a parked loop by hand; it is not a fallback for a broken design.
+  asking you to continue) — means: reload `.balash/state.md` (and the objective it points at) and take
+  the single next step from the Loop cursor now. This exists because the loop legitimately spends most
+  of its life *parked* — waiting on a Worker, or paused at an open product decision — and sometimes
+  nothing woke it, or the human interrupted to talk about something else. The resume verb is the
+  first-class control for driving a parked loop by hand; it is not a fallback for a broken design.
 
-So the mechanism is both, not either/or: **the state file is the durable memory of the goal, and
-advancement happens when a Worker returns or when the human resumes.** The Loop cursor in
+So the mechanism is both, not either/or: **the durable record is the memory of the goal, and
+advancement happens when a Worker returns or when the human resumes.** The `Loop cursor` in
 `.balash/state.md` records exactly where the loop is parked (awaiting-worker, awaiting-human on a
 named decision, or ready-to-choose-next) so that either trigger can pick up precisely where you left
 off.
 
-When Balash runs as its installed plugin, a `UserPromptSubmit` hook reads `.balash/state.md` on
-every turn and re-injects the Current objective and Loop cursor into context — so even on a turn
-where this skill body is not loaded, the goal is still put in front of you. That mechanism is only
-as good as the file: **update `.balash/state.md` the moment the loop's position changes** (objective
-chosen, Worker dispatched, evidence evaluated, decision resolved). Stale state means the hook
-faithfully re-injects the wrong objective. Keeping it current is not bookkeeping — it is what makes
-your own continuity work.
+When Balash runs as its installed plugin, a `UserPromptSubmit` hook reads `.balash/state.md` on every
+turn — and, through its `Active objective` pointer, the current objective file — and re-injects the
+Current objective and Loop cursor into context, so even on a turn where this skill body is not loaded,
+the goal is still put in front of you. That mechanism is only as good as the files: **update them the
+moment the loop's position changes** (objective chosen, Worker dispatched, evidence evaluated,
+decision resolved). A stale `Active objective` pointer, or a cursor left behind, means the hook
+faithfully re-injects the wrong (or no) objective. Keeping them current is not bookkeeping — it is
+what makes your own continuity work.
 
 ## Working memory and durable memory
 
 Use TODO deliberately.
 
 1. Prefer the host's native TODO/task tool when available.
-2. The Guide owns project-level unresolved goals and concerns.
+2. The Guide owns project-level unresolved goals and concerns, tracked in `.balash/knowledge.md`'s Open
+   Guide TODO.
 3. A Worker may maintain its own execution TODO for the current objective.
 4. Never mark a Guide TODO complete only because the Worker says it is complete. Require the stated evidence.
-5. Persist only cross-session state in `.balash/state.md`. Keep transient implementation steps out of durable state.
+5. Persist only cross-session state across the three `.balash/` files described above. Keep transient
+   implementation steps out of all of them.
 
-If `.balash/state.md` does not exist, initialize it from `assets/state-template.md` after enough product context is known to fill it meaningfully.
+If `.balash/state.md` does not exist, initialize it from `assets/state-template.md`; initialize
+`.balash/knowledge.md` from `assets/knowledge-template.md` once enough product context is known to
+fill it meaningfully.
 
 ## Modes: run it automatically, or drive it phase by phase
 
@@ -233,7 +270,7 @@ Do not treat these as mandatory software-development phases. They are the contro
 
 ### 1. Establish current state
 
-Read `.balash/state.md` when present, plus only the repository material needed to understand the current request and current product state.
+Read `.balash/state.md` and `.balash/knowledge.md` when present, plus only the repository material needed to understand the current request and current product state.
 
 Use `references/discovery.md` and classify the request's implied choices as grounded product facts, open product decisions, or technical freedoms.
 
@@ -288,11 +325,15 @@ Do not choose an objective merely because it is the next feature on a list.
 
 Do not create abstractions for speculative futures. Every architectural concern must be tied to a concrete product force, current pain, known change axis, invariant, or evidence from the repository.
 
+Write the chosen objective into a new `.balash/objectives/NNNN-<slug>.md` (from
+`assets/objective-template.md`, next sequential number), then point `.balash/state.md`'s `Active
+objective` at it and set the `Loop cursor`. Do not fold objective content back into `state.md`.
+
 ### 3. Protect intent with TODO
 
 Before delegation:
 - confirm that no material open product decision is being silently assumed by the objective;
-- ensure unresolved project concerns remain represented in the Guide TODO or durable state;
+- ensure unresolved project concerns remain represented in `.balash/knowledge.md`'s Open Guide TODO;
 - identify which items belong to the current objective;
 - defer unrelated items explicitly rather than silently forgetting them.
 
@@ -312,7 +353,9 @@ Those can be Worker TODO items if needed.
 
 ### 4. Delegate
 
-Read `references/worker-handoff.md` and create a bounded handoff.
+Read `references/worker-handoff.md` and create a bounded handoff. Write it into the current
+objective file's "## Worker handoff" section (`.balash/objectives/NNNN-<slug>.md`), then set
+`state.md`'s `Loop cursor` to `planned:awaiting-build`.
 
 Give the Worker enough context to solve the objective, but do not dump the entire history into the handoff.
 
@@ -355,13 +398,18 @@ Possible outcomes:
 - **invalidated** — evidence shows the objective or an assumption behind it was wrong;
 - **blocked** — an external dependency or missing decision prevents useful continuation.
 
-Update TODO/state accordingly.
+Record the Worker's report in the objective file's "## Result" section and your own reproduced
+readings in its "## Review" section; update `state.md`'s `Last review` (one line) and `Loop cursor`
+(`ready-to-choose-next`, or back toward `plan`/`build` if unmet); fold any new durable fact or
+decision into `.balash/knowledge.md`.
 
 Do not automatically repair every issue reported by the Worker. Decide whether it matters to the product now.
 
 ### 6. Choose again
 
-After evaluation, choose the next objective from the updated state.
+After evaluation, choose the next objective from the updated knowledge — this is a **new**
+`.balash/objectives/` file (see step 2), not an edit to the closed one, even when it continues the
+same thread.
 
 The next objective may be:
 - continuation of an unmet criterion;
