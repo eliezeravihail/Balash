@@ -20,6 +20,14 @@ disposition (pro-simplicity/YAGNI) re-judges to test whether the verdict is an a
 | **#3** | Printable Sudoku generator (static web) | **Sonnet (Worker)** | Balash ~80% | Balash ~70% | **Balash** | all ✓ |
 | **#4** | RoomBook booking core, 4 evolving stages, **isolated operators** | strong (both) | **design → Balash** (2 opp. judges, "clear") | **product → Direct** (clear) | **split** | all ✓ (probed) |
 
+> **A fifth pilot is external and differently designed.** Run by **Codex** on an older Balash
+> (`8baab0b`), it uses three arms — Direct, Direct + full dossier, and Balash + the *same* dossier — and
+> holds product information constant between the two dossier arms. Balash produced the required "choose a
+> difficulty before each game" lifecycle in **2/3** runs versus **0/3** for the dossier-only arm,
+> independently reproducing the "explicit rule silently dropped unless it is a checkable exit criterion"
+> failure this method keeps surfacing. Summary, provenance, and soundness assessment:
+> [`pilot5-connect-four-codex/`](pilot5-connect-four-codex).
+
 In pilots #1–#3 both reviewers — with opposite dispositions — chose the Balash arm. Read that as **three
 experimental units, each with its verdict robustness-checked**, not as six independent wins: the two
 judges in a pilot read the *same* two codebases, so they test whether the verdict is a taste artifact
@@ -139,4 +147,6 @@ technique-based difficulty rater vs Balash's approximate given-count bands). And
 kind of ~5% conformance gap a weaker executor introduces. Bottom line: **good enough, with caveats.**
 
 Per-pilot detail: [`design-first-vs-direct/`](design-first-vs-direct) (#1),
-[`pilot2-bingo-web/`](pilot2-bingo-web) (#2), [`pilot3-sudoku-sonnet/`](pilot3-sudoku-sonnet) (#3).
+[`pilot2-bingo-web/`](pilot2-bingo-web) (#2), [`pilot3-sudoku-sonnet/`](pilot3-sudoku-sonnet) (#3),
+[`pilot4-roombook-evolving/`](pilot4-roombook-evolving) (#4),
+[`pilot5-connect-four-codex/`](pilot5-connect-four-codex) (#5 — external, Codex).
