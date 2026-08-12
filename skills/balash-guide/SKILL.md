@@ -437,6 +437,9 @@ The Worker must receive:
 - the design/quality objective (an outcome, the how left open);
 - the behavior it must satisfy, and why it matters now;
 - what "good" aims at: `references/design-principles.md` as the target, not a checklist;
+- the testing discipline: test-first, and coverage scoped to every non-trivial decision — including
+  paths that already look correct, since a test guards against a later regression, not only today's
+  behavior — never a coverage percentage (see `references/worker-handoff.md#testing-discipline`);
 - relevant product forces/decisions, constraints to preserve, explicit non-goals;
 - a request to return its design reasoning, so you can evaluate the design, not just whether it runs.
 
