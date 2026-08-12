@@ -212,6 +212,18 @@ that the design *forces* a caller to *know* one. So an error a caller can do not
 "leak" a generic type; and a distinct error type no caller distinguishes should not exist. Throw a custom
 error only against a declared catch that needs it — **one error type per handling response, no more.**
 
+A "handling response" includes a **boundary that serializes the error**: a web/API layer that must put a
+failure on the wire and maps `NotFound → 404`, `Duplicate → 409`, `PermissionDenied → 403` *is* catching
+those types to act on them differently, so there the distinct types are earned — the error genuinely has
+to cross the boundary as a meaningful, distinct response. That is the real test to run before either
+adding or cutting error types: does the transformation at the boundary need the distinction to produce
+the right message/status? The common half-built failure is the mirror image — defining the distinct
+subtypes and then catching them all through one base to render one uniform message (a single 400 with a
+string). There the types promised a distinction the boundary never cashed, so they are dead as surely as
+if nobody caught them. The resolution is a choice, not automatic deletion: either **collapse** them to the
+base, or **wire each to the distinct response** that justifies it — but do not leave the types defined and
+the distinction unused.
+
 ## 8. Single Responsibility, and the God Object smell
 
 **The question:** Can you state, in one sentence, the one reason this class/module would need to
