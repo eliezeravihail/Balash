@@ -62,9 +62,16 @@ Do **not** write any hook or background job to maintain the capsule. The discipl
 instruction; capsa's passivity keeps it coherent. The only active piece is the read-time staleness
 advisory ([`../../hooks/staleness-read.md`](../../hooks/staleness-read.md)), and it only reads.
 
-## 4. Reading knowledge
+## 4. Reading knowledge — the surfacing rule
 
-When you need context at a node, walk from that node to the root and read the **normative** records in
-force (decisions, requirements, the component records) plus any relevant insights — not the whole
-capsule. If the staleness hook flags a record, treat it as *possibly* out of date and re-verify
-against the current code before relying on it; a flag is not proof the record is wrong.
+Relevance is derived from placement, not judgment (`../../docs/format-profile.md` §3). At a node:
+
+1. Read **every normative record in force on the walk** to the root (decisions, requirements,
+   component records whose `status` still binds) — mandatory, never skipped.
+2. Read the **insights on that same walk** — placement filters them; there is no "read the whole
+   insights folder" step.
+3. Everything else on demand only.
+
+Surfacing runs the staleness check on what it loads, so a session opens knowing which in-scope
+records are *possibly* stale. A flag means re-verify against current code before relying on the
+record; it is never proof the record is wrong. This is the only active check — no scheduled scan.

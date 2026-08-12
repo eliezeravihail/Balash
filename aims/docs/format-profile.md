@@ -74,16 +74,49 @@ shape:
   (exactly the whole-directory hash this design rejected). A structural claim is threatened only by a
   structural change — a move, rename, or merge — and `children_hash` catches precisely that.
 
-### 2.3 What is *not* here — content invariants (tier 3)
+### 2.3 Content invariants are not a third mechanism — they are `anchors:` on the files that embody them
 
-A claim like "nothing under `core/` does I/O" is a checkable predicate over **contents**, and
-guarding it requires re-analyzing code. That is enforcement, not documentation, and it is kept out
-of the passive layer. If one specific invariant ever earns it, it becomes a separate **opt-in**
-fitness-function that emits findings in capsa's finding shape with an `X-` operator code (core
-§Checking), composing with the reference validator without polluting the format. aims does not build
-this; it only leaves the door capsa already defined.
+A record may state a **content invariant** — "nothing under `core/` does I/O". This needs no new
+mechanism. It is a record that **claims about file content**, so it takes a §2.1 `anchors:` list on
+the specific files that carry the rule (e.g. `core/cache.py`, `core/model.py`). When one of them
+changes, the read-time hook re-hashes it and advises *"this file changed since the record was
+written — re-verify"*; a reader opens the "core stays pure" rule and checks the change against it.
+Detection comes from the hash we already have.
 
-## 3. Writing and checking
+The one thing `anchors:` does **not** do is decide *automatically* whether the change actually broke
+the rule (still-pure vs. now-impure) — that verdict needs code re-analysis. Automatic **enforcement**
+is therefore the only optional extra: a separate **opt-in** fitness-function that scans the code and
+emits findings in capsa's shape with an `X-` operator code (core §Checking), composing with the
+reference validator without polluting the format. aims does not build it; the passive layer gives
+*detection*, and enforcement is a door left open, not a tier of its own.
+
+**One caveat, stated honestly.** If an invariant spans a *whole* subtree and you anchor it to every
+file, the record fires on every content change beneath it — which is the noisy whole-directory hash
+this design rejected (§2.2). So anchor a broad invariant to the few files that genuinely embody it,
+or accept it is detection-only, or wait until it earns the opt-in scanner. A narrow invariant (a
+handful of files) is served cleanly by `anchors:` as-is.
+
+## 3. What to read, and when — the surfacing rule
+
+Relevance is **derived from placement**, not chosen by judgment. When work begins at a node (a file
+or component in the product), the reader loads exactly:
+
+1. **Every normative record in force on the walk** from that node to the capsule root — the
+   `decisions/`, `requirements/`, and `component.md` records at each level whose `status` still binds
+   (capsa §2.7). This is not optional; skipping it is reading wrongly.
+2. **Insights on that same walk** — `insights/**` records placed at or above the node. Insights are
+   descriptive (they inform, they do not bind), so they are read for context, not obligation, but the
+   *walk* is still what selects them: an insight filed under `components/render/` surfaces for work in
+   `render`, and stays invisible elsewhere. Placement does the filtering; there is no "read the whole
+   insights folder" step, which is the bloat this design exists to avoid.
+3. Anything else — records under sibling subtrees, deeper detail — **on demand only**.
+
+**Surfacing runs the staleness check on what it loads.** Each record surfaced in steps 1–2 has its
+anchor recomputed (§4); the session opens with, e.g., *"2 of 7 in-scope records are possibly stale —
+re-verify before relying on them."* This is the same read-time check below, applied to the records
+already being loaded — no scheduler, no background scan, no new mechanism.
+
+## 4. Writing and checking
 
 - **Writing** is done by the method (see the skill), and the anchor is stamped by
   [`../tools/aims-anchor`](../tools/aims-anchor.md) at file time — never by hand, never by a hook.

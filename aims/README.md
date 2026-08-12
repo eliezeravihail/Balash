@@ -40,7 +40,12 @@ capsa-format knowledge layer.
 |---|---|---|
 | **file content** | `anchors:` — whole-file content hash per file | the file changed |
 | **arrangement / structure** | placement + `shape:` fingerprint (child-name set of the subtree) | the shape changed (moved / renamed / merged) |
-| **a content invariant** | — not a staleness concern; opt-in fitness-function | (separate; only if it earns it) |
+| **a content invariant** ("core stays pure") | just `anchors:` on the files that embody it — detection needs no new mechanism | a governed file changed → re-verify |
+
+A content invariant is not a third mechanism: it is `anchors:` on the files carrying the rule, so the
+existing hash flags "re-verify" when they change. Only *automatic* enforcement (a verdict without a
+human re-check) would need a code scanner, and that stays an opt-in fitness-function emitting capsa
+`X-` findings — never part of the passive layer.
 
 Because the hook re-reads the *actual* file or tree, it catches drift whether the change went through
 aims or was made by hand or another tool.

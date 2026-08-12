@@ -37,8 +37,11 @@ Registered as a read-time hook (e.g. a `PreToolUse`/`PostToolUse` hook on `Read`
 so write-time and read-time hashes are computed identically. Reference stub:
 [`staleness_read.py`](staleness_read.py).
 
-## Explicitly out of scope — tier 3
+## Content invariants — detected here, enforced elsewhere
 
-Content invariants ("nothing under `core/` does I/O") are **not** checked here. That needs code
-re-analysis = enforcement, kept out of the passive layer. It is an opt-in fitness-function emitting
-capsa `X-` findings — a separate tool, wired only if a specific invariant earns it.
+A content invariant ("nothing under `core/` does I/O") is a record that anchors (via `anchors:`) to
+the files carrying the rule, so this hook *does* flag it when one of those files changes — "re-verify
+against the rule". What this hook does **not** do is decide automatically whether the change actually
+broke the rule; that verdict needs code re-analysis and is an opt-in fitness-function emitting capsa
+`X-` findings — a separate tool, wired only if a specific invariant earns it. Detection is here;
+automatic enforcement is the door left open.

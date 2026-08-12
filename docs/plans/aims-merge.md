@@ -79,7 +79,7 @@ tiers, only the first two of which live in the passive layer:
 |---|---|---|---|
 | **file content** ("this function does X") | `anchors: [{path, hash}]` — whole-file content hash, a **list** (0..n) | the file changed | yes — the hook re-reads the actual file |
 | **arrangement / structure** ("we split core/ and api/") | **placement** (the node the record sits at) + a **shape fingerprint** (the set of child names under that node) | the shape changed (moved / renamed / merged) | yes — the hook re-reads the actual tree |
-| **a content invariant** ("nothing under core/ does I/O") | — (**not** a staleness concern) | the rule was broken while the shape stayed intact | only a real re-analysis can |
+| **a content invariant** ("nothing under core/ does I/O") | just `anchors:` on the files that embody the rule — no new mechanism | a governed file changed → re-verify against the rule | yes — the hook re-reads the actual file |
 
 **Tier 1 — file records.** Anchor to the specific files the record is about, one content hash each
 (whole-file: a stable address; line ranges drift and are rejected). The read-time hook recomputes each
@@ -93,12 +93,16 @@ false-positive storm (exactly the whole-directory hash the design rejected). A s
 threatened only by a structural change, and the shape fingerprint catches precisely that — including a
 manual reorg done outside the method.
 
-**Tier 3 — content invariants — out of the passive layer, opt-in.** "core stays pure" is a checkable
-predicate over contents; guarding it requires re-analyzing code = a linter / fitness-function. That is
-the enforcement machinery capsa (and this method) deliberately keep *out* of documentation. It is not
-built into the knowledge layer. If a specific invariant ever earns it, it graduates to a **separate,
-opt-in** check that emits findings in capsa's finding shape (`X-` operator codes) so it composes without
-polluting the format. You pay for exactly the one invariant you chose to enforce, never up front.
+**Content invariants are not a third mechanism.** "core stays pure" is a record that *claims about
+file content*, so it takes a Tier-1 `anchors:` list on the specific files that carry the rule. When
+one changes, the hook flags "re-verify", the reader opens the rule and checks the change against it —
+**detection reuses the hash we already have.** The only thing `anchors:` can't do is decide
+*automatically* whether the change actually broke the rule; that verdict needs code re-analysis, so
+automatic **enforcement** is the one optional extra — a separate, **opt-in** fitness-function emitting
+capsa `X-` findings, never built into the passive layer. One honest caveat: an invariant spanning a
+whole subtree, anchored to every file, regresses to the noisy whole-directory hash the design
+rejected — so anchor a broad invariant to the few files that embody it, or accept detection-only, or
+wait for the opt-in scanner.
 
 **The one active mechanism (read side).** A single hook, firing when the agent reads a record:
 recompute the anchor for that record's tier (content hash / shape fingerprint), compare to the stored
@@ -133,19 +137,18 @@ encapsulation, the subtractive pass, the review panel, and `references/design-pr
 changes is only *where the knowledge it produces lands* (a capsa tree) and *that it now persists across
 sessions and years*. Guide→Worker stays available but optional (cost lever only).
 
-## capsa adoption — the open choice
+## capsa adoption — settled: capsa lives in aims
 
 capsa is a format, and aims is a *consumer* of it (capsa explicitly permits a consumer to add
 mechanism on top — the read-time hook — and to enforce more via `X-` findings, without forking the
-format). One decision remains before build:
+format). **Decision: capsa is developed inside aims from here on** (`aims/vendor/capsa/`), and the
+original standalone repository is retired — there is no external upstream to sync from, so no
+"external dependency vs. vendored subset" tension and no migration path to maintain. Editing the
+grammar is done here, as a reviewed design act that bumps the version.
 
-- **(A) Depend on capsa** as an external format/spec (aims reads/writes a real `.capsa/` capsule), or
-- **(B) Vendor the grammar subset** aims needs (placement=scope, addresses, `anchored_to`, the record
-  types) into aims itself, treating capsa as the design reference rather than a runtime dependency.
-
-Recommendation: start with (B) — a minimal vendored grammar keeps aims self-contained and lets the
-record set track the method — and keep (A) open, since the format is deliberately tool-agnostic and a
-capsa capsule written by aims stays readable by anything.
+The one invariant that keeps this safe: **an aims capsule stays a conforming capsa capsule.** The
+`anchors:`/`shape:` fields remain ordinary unknown keys (which capsa preserves and ignores), so the
+format stays readable by any capsa tool and the grammar never has to learn aims' additions.
 
 Record-type mapping (initial): `decisions/` (ADRs), `requirements/`, `insights/` (dev · design).
 Anchors ride as an `anchors:` block (tier 1) and a `shape:` fingerprint (tier 2); provenance uses
@@ -159,8 +162,9 @@ own scope.
 2. The read-time hook demonstrably fires on (a) a file-content edit under a tier-1 record and (b) a
    manual directory reorg under a tier-2 record — including edits made *outside* the method — and stays
    silent on a content edit under a tier-2 record (no false-positive storm).
-3. Tier-3 stays absent from the passive layer; a sample opt-in fitness-function composes via `X-`
-   findings without touching the format.
+3. A content-invariant record anchored to its files is flagged by the same hook when one changes
+   (detection needs no new mechanism); automatic enforcement stays absent from the passive layer, and
+   a sample opt-in fitness-function composes via `X-` findings without touching the format.
 
 ## Prior evidence this rests on
 
