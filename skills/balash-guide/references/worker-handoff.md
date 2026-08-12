@@ -52,6 +52,13 @@ The standard is references/design-principles.md — the target the design should
 checklist. Where a principle doesn't apply at this scale, it's fine not to force it; be able to
 say why.
 
+TESTING
+Work test-first: write the failing test for a decision before the code that satisfies it. Cover
+every non-trivial decision, branch, and failure/retry/timeout path — including ones that already
+look correct, since a test's job is catching a later regression, not only proving today's
+behavior. Skip only what the language/type system already guarantees or pure wiring with no
+decision in it — do not write a tautological test to pad a coverage number.
+
 RELEVANT CONTEXT / PRESERVE / NON-GOALS
 - <facts and prior durable decisions needed; boundaries to protect; tempting adjacent work excluded>
 - The modules, classes, and interfaces are YOURS to choose. Design for what's here, not imagined futures.
@@ -92,3 +99,34 @@ Before returning, tell the Worker to run the **subtractive pass** on its own des
 present product force requires it — and remove the ones whose deletion would not damage the ownership
 of a current rule, invariant, or boundary. A design objective reliably over-produces machinery at the
 seams; catching it before the handoff comes back is cheaper than catching it in review.
+
+## Testing discipline
+
+Tests do two independent jobs, and both belong in the handoff because they pull toward different
+tests:
+
+- **Prove the assumption right now** — the decision this objective embodies actually holds for the
+  inputs, edge cases, and failure paths it claims to handle.
+- **Protect it from breaking later** — a test is a tripwire for a change made somewhere else in the
+  codebase next month, not a certificate for the code being written today. This is why "it obviously
+  works" is not a reason to skip a test: obviousness describes the present; the test exists for the
+  later change that silently breaks it, with nothing else positioned to notice. So coverage is not
+  bounded by what this objective newly touches — a path already believed correct still needs its own
+  test, precisely because nobody is currently watching it.
+
+Have the Worker work **test-first**: write the failing test that states a decision, watch it fail for
+the right reason, then write the minimum code that makes it pass, one decision at a time. Test-after
+tends to describe whatever the implementation happens to do, mirrored back at it; test-first forces
+the test to state the contract before there is an implementation to copy from. When the Worker is
+characterizing existing untested behavior rather than adding new behavior (a refactor), write the
+characterization test *before* touching the code, so the diff is provably behavior-preserving rather
+than trusted by inspection.
+
+**Scope, not volume.** Cover every non-trivial decision the code makes — every branch, computed
+condition, validation rule, classification, and failure/retry/timeout path. Skip only what the
+language or type system already guarantees (an assignment, a getter, a pure re-export, a call that
+only forwards its arguments) — a test that restates one of those proves nothing a compiler didn't
+already prove and exists only to inflate a number. That is the same metric-escape the project README
+warns against ("test-coverage percentages... shallow performance metrics"): the instruction to the
+Worker is *every decision has a test*, never *hit N% coverage* — a coverage number is a thing to
+notice afterward, not a target that was ever requested.
