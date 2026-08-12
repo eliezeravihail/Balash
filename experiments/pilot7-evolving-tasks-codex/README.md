@@ -8,12 +8,14 @@ authored (Hebrew). Following the `pilot5-connect-four-codex` convention, the **r
 are not committed** — the load-bearing evidence is summarized below with `file:line`, and was
 independently re-run before writing this note.
 
-**This is the second run of one experiment.** The *same* three-domain evolving-task design was also run
-by an Opus session with **blind judging completed** — recorded at
-[`../evolving-task-balash-vs-clean/`](../evolving-task-balash-vs-clean). That is the stronger record; this
-folder is the independent **Codex** reproduction (different executor, older snapshot, **no blind judging**)
-that reached the same three mechanisms. Read the two together: an independent replication of the *finding*,
-with the blind verdict living in the other folder.
+**A parallel, independent experiment — not a re-run of the same one.** The same three-domain
+evolving-task *design* was also run separately under a **different harness and a different model** (Claude
+/ Opus, both arms), with **blind judging completed** — recorded at
+[`../evolving-task-balash-vs-clean/`](../evolving-task-balash-vs-clean). This folder is the **Codex** run
+(older snapshot, **no blind judging**). Because the harness and model differ, the two are not a controlled
+replication and their per-arm results are not directly comparable head-to-head; what matters is that both,
+independently, surfaced the same three mechanisms — **convergent evidence across implementations**, with
+the blind verdict living in the other folder.
 
 ## What it tested
 

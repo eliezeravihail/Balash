@@ -46,8 +46,10 @@ change as confirmed only after it reproduces across at least two runs per arm.
 > one question and **stopped**, Direct built a POC on the unauthorized path). Code and behavior were
 > independently re-run and verified (`file:line` in the folder README); the **blind-judging step was not
 > performed**, so this is labeled an initial audit, not a blind experimental verdict. n=1 per product. It
-> is the **Codex reproduction** of the same design whose blind-judged Opus run is recorded at
-> [`evolving-task-balash-vs-clean/`](evolving-task-balash-vs-clean) — read the two together.
+> is a **parallel, independent run under a different harness and model** (Codex) of the same design whose
+> blind-judged Claude/Opus run is recorded at
+> [`evolving-task-balash-vs-clean/`](evolving-task-balash-vs-clean) — convergent evidence across
+> implementations, not a controlled replication; read the two together.
 > [`pilot7-evolving-tasks-codex/`](pilot7-evolving-tasks-codex).
 
 In pilots #1–#3 both reviewers — with opposite dispositions — chose the Balash arm. Read that as **three
