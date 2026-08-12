@@ -11,6 +11,14 @@ design like Martin/Fowler/Metz — not to hunt bugs. Then the judge is **scrutin
 every load-bearing claim is verified against the source, and a second reviewer with the **opposite**
 disposition (pro-simplicity/YAGNI) re-judges to test whether the verdict is an artifact of taste.
 
+**Two standing conventions (learned the hard way).** (1) **Pin the method commit.** Every run records the
+`balash-guide` commit hash it was executed under — the skill changes, so "which Balash" is part of the
+result (pilot #5 pinned `8baab0b`; pilot #6 and the feasibility-gate A/B pinned `11983a5`). (2) **A
+load-bearing wording change wants n ≥ 2 per arm.** The internal A/B checks that validate a *skill* change
+(e.g. [`feasibility-gate-ab/`](feasibility-gate-ab)) are single-run mechanism checks — the arms produce
+deterministic *choices*, not graded opinions — so one run is **directional, not robust**; treat a wording
+change as confirmed only after it reproduces across at least two runs per arm.
+
 ## Scoreboard
 
 | Pilot | Product (domain) | Executor model | Blind judge A (OO) | Blind judge B (simplicity) | Winner | Claims verified |

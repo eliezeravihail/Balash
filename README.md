@@ -100,8 +100,22 @@ Full method, scoreboard, and per-pilot findings: **[`experiments/RESULTS.md`](ex
 
 ## How to use it
 
-**Install** as a Claude Code plugin, then engage it **explicitly** through its commands — nothing runs
-in the background and nothing auto-activates on unrelated turns:
+**Install it as a Claude Code plugin.** From inside Claude Code:
+
+```
+/plugin marketplace add eliezeravihail/Balash
+/plugin install balash@balash
+```
+
+Or, without the marketplace step, point Claude Code at a local clone:
+
+```
+git clone https://github.com/eliezeravihail/Balash
+claude --plugin-dir ./Balash
+```
+
+Then engage it **explicitly** through its commands — nothing runs in the background and nothing
+auto-activates on unrelated turns:
 
 - `/balash-plan` — choose one design objective and draft the handoff to the Worker; **stops before any
   code is written** and presents a **plan report** — an executive summary of the round's dependencies,

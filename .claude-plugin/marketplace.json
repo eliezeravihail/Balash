@@ -1,0 +1,13 @@
+{
+  "name": "balash",
+  "owner": {
+    "name": "Balash"
+  },
+  "plugins": [
+    {
+      "name": "balash",
+      "source": "./",
+      "description": "Makes design the goal of coding-agent work: a Guide hands a capable Worker a design/quality objective (with the feature as a constraint), then measures the result. Commands: /balash-plan, /balash-build, /balash-review, /balash-plan-and-build."
+    }
+  ]
+}
