@@ -36,6 +36,18 @@ change as confirmed only after it reproduces across at least two runs per arm.
 > failure this method keeps surfacing. Summary, provenance, and soundness assessment:
 > [`pilot5-connect-four-codex/`](pilot5-connect-four-codex).
 
+> **A seventh pilot is external too — an initial audit, not a final result.** Also run by **Codex** on the
+> same older Balash (`8baab0b`), it is *three* separate evolving-product studies (inventory, image
+> annotation, and an Android `ntfy`↔WhatsApp gateway), each Balash vs Direct, one revealed stage at a
+> time. Three mechanisms recurred: a late change exposing a **durability boundary** (Balash added a
+> candidate→save→publish commit path), **persistence + ownership** (Balash kept work on disk and kept
+> export formats as separate projections; Direct's faster UI was in-memory only), and — the strongest —
+> a **false foundational premise** (automating a *regular* WhatsApp account is prohibited; Balash asked
+> one question and **stopped**, Direct built a POC on the unauthorized path). Code and behavior were
+> independently re-run and verified (`file:line` in the folder README); the **blind-judging step was not
+> performed**, so this is labeled an initial audit, not a blind experimental verdict. n=1 per product.
+> [`pilot7-evolving-tasks-codex/`](pilot7-evolving-tasks-codex).
+
 In pilots #1–#3 both reviewers — with opposite dispositions — chose the Balash arm. Read that as **three
 experimental units, each with its verdict robustness-checked**, not as six independent wins: the two
 judges in a pilot read the *same* two codebases, so they test whether the verdict is a taste artifact
@@ -186,4 +198,5 @@ Per-pilot detail: [`design-first-vs-direct/`](design-first-vs-direct) (#1),
 [`pilot2-bingo-web/`](pilot2-bingo-web) (#2), [`pilot3-sudoku-sonnet/`](pilot3-sudoku-sonnet) (#3),
 [`pilot4-roombook-evolving/`](pilot4-roombook-evolving) (#4),
 [`pilot5-connect-four-codex/`](pilot5-connect-four-codex) (#5 — external, Codex),
-[`pilot6-roombook-revalidation/`](pilot6-roombook-revalidation) (#6 — did the #4 fixes close the gap?).
+[`pilot6-roombook-revalidation/`](pilot6-roombook-revalidation) (#6 — did the #4 fixes close the gap?),
+[`pilot7-evolving-tasks-codex/`](pilot7-evolving-tasks-codex) (#7 — external, Codex; initial audit).
