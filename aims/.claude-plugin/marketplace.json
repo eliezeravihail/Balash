@@ -1,0 +1,13 @@
+{
+  "name": "aims",
+  "owner": {
+    "name": "aims"
+  },
+  "plugins": [
+    {
+      "name": "aims",
+      "source": "./",
+      "description": "Design method + durable capsa-format knowledge layer. Commands: /aims-plan, /aims-build, /aims-review."
+    }
+  ]
+}
