@@ -48,21 +48,11 @@ something the product needs today?" Prefer a little duplication to an abstractio
 (Metz). Apply it hardest to the *edges* — the domain core usually earns its types; the seams are
 where the unpaid machinery collects.
 
-**The counterweight — a force is not only a rule.** The pass has a failure mode of its own: it reads
-"present product force" as *only* rule/invariant/boundary ownership, and so it waves through the
-deletion of a **capability the concrete usage scenario implies a user needs** — because such a
-capability owns no invariant. But a needed affordance *is* a present force: if the product queues
-people, someone needs to *see* the queue; if it rejects a request, the caller needs to learn *why*; if
-it holds state a user acts on, the user needs to *read* that state. These read / inspect / feedback
-affordances enforce no rule, so the deletion question — phrased around invariants — quietly greenlights
-cutting them, and that is how an unbalanced subtractive pass removes something the product actually
-needs. So run the pass in **both** directions against the same yardstick, the usage scenario: delete
-machinery no force requires, **and** before deleting anything ask *what does the concrete scenario imply
-a user must be able to see or do here?* — a capability that answer names is kept for that reason, not
-for tidiness. Cutting dead machinery and cutting a scenario-needed affordance fail the *same* test; the
-test is the product scenario, never the invariant list alone. (This is the recurring miss: the same
-minimalist discipline that correctly deletes a dead guard will, unbalanced, delete "the user can see
-who is queued" — an omission with no failing test to catch it.)
+A capability the usage scenario requires a user to have — an affordance the product's stated
+requirements include — is not machinery this pass cuts: it has a present force (the requirement) and
+earns its place. This pass removes *unforced* machinery; making sure the needed affordances are stated
+requirements in the first place is discovery's job (see `references/discovery.md`, "Every action implies
+its complement"), not a judgment to reconstruct here from the built design.
 
 ## Mixed-tier execution: a strong review after a cheap implementation
 

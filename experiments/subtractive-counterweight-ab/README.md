@@ -1,5 +1,15 @@
 # A/B — the subtractive-pass **counterweight** (fixes pilot #6's recurring A2 miss)
 
+> **⚠️ SUPERSEDED — the counterweight was removed from the skill.** It validated for *read* affordances
+> (below) but [**failed for mutation affordances**](mutation-affordance-limit) (cancel, remove), because
+> inferring a needed mutation at review time is indistinguishable from the speculation the subtractive
+> pass exists to reject. More fundamentally it was the **wrong layer**: patching a missing requirement
+> *after* the design is built instead of making it an explicit requirement *before*. The fix moved
+> upstream to discovery — [`../discovery-completeness-ab`](../discovery-completeness-ab), the "every
+> action implies its complement" rule — which handles reads *and* mutations by **asking**, not guessing.
+> This directory is kept as the record of that path: what the counterweight got right, where it broke,
+> and why the fix belongs in discovery.
+
 **What prompted it.** Across pilots #4 and #6 the method reliably closed product *bugs* but repeatedly
 **cut a real affordance** — "a user cannot see who is queued" (`waitlistFor`). A wrong output has a
 failing test to catch it; a missing affordance has none, so the **subtractive pass** — which deletes

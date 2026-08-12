@@ -18,10 +18,16 @@ complete — all objectives resolved; no objective in flight.
   Guide→Worker delegation and an uncontaminated Guide. Result: **3 of 4 pre-registered criteria closed**
   (A1 cross-room promotion, A3 negative stride, D one conflict owner); **A2 waitlist-read affordance
   recurs.** Surfaced the next gap (below).
-- **A2 gap — subtractive pass cuts a needed affordance.** DONE → added the **counterweight** ("a force
-  is not only a rule") to `references/review.md` (+ worker-handoff, review-panel). A/B-validated
-  (`experiments/subtractive-counterweight-ab`): with the need unstated, OLD cuts the affordance 2/2, NEW
-  keeps it 2/2, both still cut genuine ceremony; control (need stated) NULL.
+- **A2 gap — a needed affordance goes missing.** DONE → **root fix in discovery**, not a review patch.
+  First tried a subtractive-pass **counterweight** (`experiments/subtractive-counterweight-ab`); it
+  validated for *read* affordances but **failed for mutations** (cancel/remove) — inferring a needed
+  mutation at review is indistinguishable from the speculation the pass rejects. So the counterweight was
+  **removed** and the fix moved upstream: the "**every action implies its complement**" rule in
+  `references/discovery.md` — surface the inverse action and the sight of the state as explicit
+  requirements, by **asking**. A/B-validated (`experiments/discovery-completeness-ab`): discovery
+  surfaces the complements (reads *and* mutations) as grounding questions; the rule makes it reliable
+  (2/2 vs OLD's occasional miss). Lesson (the user's): prevent the omission upstream, don't reconstruct
+  it downstream.
 - **0003 — small fixes.** DONE → installable plugin (`.claude-plugin/marketplace.json`) + README install
   steps (EN+HE); feasibility-gate A/B recorded (`experiments/feasibility-gate-ab`); two experiment
   conventions added to RESULTS.md (pin the method hash per run; n≥2 per arm for a load-bearing wording

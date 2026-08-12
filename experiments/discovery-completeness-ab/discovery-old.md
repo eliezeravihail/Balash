@@ -36,24 +36,6 @@ After receiving the scenario, check only the dimensions the request actually tou
 
 An unanswered item is not automatically a blocker. It is a blocker only when different answers would materially change current product behavior, persistent representation, an invariant, or the current objective.
 
-### Every action implies its complement — surface it, don't leave it to be guessed
-
-A usage scenario, as a user first states it, runs in the **forward direction only** — "add an item,"
-"join the waitlist," "book a slot" — and silently omits the complements a real user of that scenario
-needs: the **inverse action**, and the **sight of the state the user was just placed in**. Adding
-implies removing; creating implies editing and deleting; joining a queue implies leaving it *and* seeing
-your place in it; booking implies cancelling *and* seeing what you booked. For the scenario as described
-these are not features to invent or niceties to defer — they are **requirements**, and a design that
-omits one ships a product that traps its user: a cart you cannot take an item out of, a waitlist you can
-neither see nor leave.
-
-So for each action the product introduces, and each state it puts a user into, **ask** whether its
-complement is in scope — the ordinary grounding question, answered by the user, not assumed by you. A
-confirmed complement becomes a stated requirement the design must build; a confirmed exclusion becomes a
-recorded non-goal. What you may not do is let it stay **unstated** — because unstated is the forward-only
-scenario's default, and unstated is exactly what a design silently drops. Surfacing the complement here,
-as a requirement, is the fix; do not rely on catching its absence later when reviewing the built design.
-
 ## Product-assumption test
 
 Before treating an unspecified choice as an assumption, ask:
