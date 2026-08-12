@@ -88,7 +88,11 @@ constrains them. Choreographing the design defeats the purpose; the Worker's des
 exactly what the quality goal is meant to elicit.
 
 Before returning, tell the Worker to run the **subtractive pass** on its own design (see
-`references/review.md`): for every type, guard, wrapper, or abstraction it introduced, ask what
-present product force requires it — and remove the ones whose deletion would not damage the ownership
-of a current rule, invariant, or boundary. A design objective reliably over-produces machinery at the
-seams; catching it before the handoff comes back is cheaper than catching it in review.
+`references/review.md`, including its **counterweight**): for every type, guard, wrapper, or abstraction
+it introduced, ask what present product force requires it — and remove the ones whose deletion would not
+damage the ownership of a current rule, invariant, or boundary. A design objective reliably
+over-produces machinery at the seams; catching it before the handoff comes back is cheaper than catching
+it in review. But the pass runs *both* ways: a **capability the usage scenario implies a user needs** —
+a read/inspect/feedback affordance (seeing the queue it was put in, learning why a request was rejected)
+— is itself a present force even though it owns no invariant, and must **not** be cut for tidiness. The
+same discipline that deletes a dead guard will, unbalanced, delete a needed affordance nothing tests.

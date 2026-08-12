@@ -88,9 +88,11 @@ Roles, in value order:
 2. **Fidelity reviewer.** Design claims and comments vs the code: a decision claimed but not wired up, an
    abstraction that exists but is dead with its rule inlined elsewhere, a comment that overstates. (Same
    pass as the mixed-tier policy in `review.md`.)
-3. **Subtractive reviewer.** The subtractive pass from `review.md`: for every type/guard/wrapper, name
-   the present force that requires it; note the ones whose removal wouldn't damage a current
-   rule/invariant/boundary.
+3. **Subtractive reviewer.** The subtractive pass from `review.md`, run **both ways** (incl. its
+   counterweight): for every type/guard/wrapper, name the present force that requires it and note the
+   ones whose removal wouldn't damage a current rule/invariant/boundary — **and** flag any
+   scenario-needed affordance (a read/inspect/feedback capability the usage scenario implies) that was
+   cut or never built, since that omission is a present force with no failing test to catch it.
 4. **Opposite-disposition second reviewer.** *Only* for genuine judgment/taste calls. A reviewer with the
    opposite bias (minimalist vs rigor) re-measures the call, to test that a reading is not a taste
    artifact. If both dispositions land the same way, the reading is robust; if they split, report the
