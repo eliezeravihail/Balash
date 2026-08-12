@@ -202,6 +202,16 @@ handle. The test is **actionability**: if a reasonable consumer could respond in
 (retry, alternate path, report and continue), translate; if nothing can be done and the process is
 lost regardless, let it fall.
 
+**The number of error *types* is set by the number of distinct *handlings*, not by tidiness.** Introduce
+your own exception subtype only where some caller catches *that* type specifically to act on it
+differently from the rest. Five sibling subtypes that every caller only ever catches through their shared
+base (`except BaseError`) are five dead classes: the base already carries the message, and the subtypes
+are unpaid machinery the subtractive pass (`review.md`) should cut. The information-hiding rule underneath
+this is precise — the sin was never that a caller *can see* a concrete error or implementation, it is
+that the design *forces* a caller to *know* one. So an error a caller can do nothing about may freely
+"leak" a generic type; and a distinct error type no caller distinguishes should not exist. Throw a custom
+error only against a declared catch that needs it — **one error type per handling response, no more.**
+
 ## 8. Single Responsibility, and the God Object smell
 
 **The question:** Can you state, in one sentence, the one reason this class/module would need to
