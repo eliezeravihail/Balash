@@ -120,6 +120,15 @@ Notes per domain:
   was used to re-judge domain A and to judge B and C. It is a candidate to fold into `review.md`; it is
   not yet a skill change.
 
+## An independent second run (Codex)
+
+The same experiment design was run separately by **Codex** on an older Balash snapshot (`8baab0b`), Balash
+vs a "Direct" arm, across the same three domains. It reached the **same three mechanisms** (a late change
+exposing a durability boundary in A, persistence + ownership in B, and the WhatsApp-feasibility stop in C)
+— but its judging was **not blind** and it is labeled an *initial audit*, not a final verdict. It is a
+useful non-blind reproduction, not a replacement for the blind run recorded here. See
+[`../pilot7-evolving-tasks-codex/`](../pilot7-evolving-tasks-codex).
+
 ## Reproducing
 
 The hidden staged specs and the strict oracle policy are in [`hidden-specs/`](hidden-specs). The built
