@@ -40,10 +40,20 @@ specifically on the **inference** step, the one that failed in the pilots.
 
 ## Honest limit
 
-The affordance in the brief is deliberately clear-cut (a queue people wait in). The counterweight asks a
-judgment question ("what does the scenario imply?"), and a borderline affordance could still be argued
-either way — this closes the blatant miss, not every possible one. n = 2 per arm; directional-plus, not
-a large sample.
+The affordance in this first brief is deliberately clear-cut (a queue people wait in). The counterweight
+asks a judgment question ("what does the scenario imply?"), and a borderline affordance could still be
+argued either way — this closes the blatant miss, not every possible one. n = 2 per arm; directional-plus,
+not a large sample.
+
+**Corroborated on two further domains** ([`corroboration/`](corroboration)): inventory-reservation and
+support-tickets, same blind protocol, need unstated. Headline — across all three domains NEW keeps the
+affordance **6/6** and never over-keeps (it still cuts the ceremony and the speculative element every
+time); OLD cuts it where the affordance is easy to miss (waitlist, reservation-expiry) and keeps it only
+where it is salient enough to read as a "boundary" already (tickets — a NULL). The counterweight's value
+is **variance removal**: it makes a needed affordance *reliably* survive instead of depending on whether
+the reviewer happens to rationalize a boundary. Remaining limit: all three are read/inspect affordances
+(the class the counterweight names), so this generalizes across domains, not across every kind of
+affordance.
 
 ## Files
 - [`subtractive-old.md`](subtractive-old.md) / [`subtractive-new.md`](subtractive-new.md) — the two method-text variants (the `review.md` subtractive-pass section).
