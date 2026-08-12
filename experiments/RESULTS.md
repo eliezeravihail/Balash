@@ -126,10 +126,38 @@ surfaces the judgment the feature framing lets evaporate.
 Pilot #4 ran the "isolated operators + evolving product + separate verdicts + edge-audit" study the
 earlier results called for. What it surfaced sets the next questions: (1) restore the **Guide→Worker
 delegation** inside the Balash arm (it was collapsed to one agent in #4) and re-check whether the product
-bugs persist when a Worker executes a Guide's explicit exit criteria; (2) **genuinely independent
-operators** (not one orchestrator authoring both prompts); (3) confirm the **subtractive-pass reversal**
-of edge-over-engineering on more than one pilot; (4) the standing **cost** comparison —
-`strong-direct` vs `strong-Guide + cheap-Worker + strong review`.
+bugs persist when a Worker executes a Guide's explicit exit criteria — **done in pilot #6, below**;
+(2) **genuinely independent operators** (not one orchestrator authoring both prompts); (3) confirm the
+**subtractive-pass reversal** of edge-over-engineering on more than one pilot; (4) the standing **cost**
+comparison — `strong-direct` vs `strong-Guide + cheap-Worker + strong review`.
+
+## Pilot #6 — re-validating pilot #4's product gap (the fixes worked for bugs, not for the omission)
+
+Pilot #4's finding — design won, product lost (two bugs + a cut affordance) — drove three skill changes:
+**restored Guide→Worker delegation**, **adversarial / lifecycle-falsifier exit criteria**, and a **probe
+reviewer**. Whether those closed the gap was an *unverified claim*. Pilot #6 re-ran pilot #4's exact
+staged RoomBook under the current skill (`11983a5`) with a real **Guide agent that never saw #4's
+findings**, **fresh Workers** per stage, verbatim ferrying, and a spec-only oracle — four criteria
+**pre-registered** against #4's documented defects and measured by **deterministic probes**:
+
+| A1 cross-room promotion | A3 negative stride | D one conflict owner | A2 waitlist read |
+|---|---|---|---|
+| ✅ **closed** | ✅ **closed** | ✅ **preserved** | ❌ **recurs** |
+
+**3 of 4 closed.** The two product *bugs* are fixed and traceable to the changes — A3 because the Guide's
+adversarial criteria **name the negative/zero edge by default** (it produced the `everyMinutes < 1`
+criterion cold, never having seen #4); A1 because restored delegation + the probe reviewer + an
+"offer-to-the-authority" promotion design make a stranded cross-room entry a first-class falsifier rather
+than an emergent gap. The design win survived evolution *with* the Guide/Worker separation #4 lacked.
+
+**The negative result is the point: A2 recurs.** The subtractive pass still deletes a genuine affordance
+("a user cannot see the queue") because no *present* force names it. The method now reliably closes
+product **bugs** (a wrong output has a falsifier) but not product **omissions** (a missing affordance has
+none). This points to the next skill gap — **a product-completeness counterweight to the subtractive
+pass**. Limits: n = 1; a container restart forced a **mixed-model** run (stages 1–3 + the stage-4
+plan/design on `claude-fable-5`, the decisive captures; stage-4 review/impl on `claude-opus-4-8`); one
+orchestrator (verbatim, but knowing #4's findings — the Guide did not). Detail:
+[`pilot6-roombook-revalidation/`](pilot6-roombook-revalidation).
 
 ## Pilot #3 — a weaker executor (Sonnet) still clears the bar
 
@@ -149,4 +177,5 @@ kind of ~5% conformance gap a weaker executor introduces. Bottom line: **good en
 Per-pilot detail: [`design-first-vs-direct/`](design-first-vs-direct) (#1),
 [`pilot2-bingo-web/`](pilot2-bingo-web) (#2), [`pilot3-sudoku-sonnet/`](pilot3-sudoku-sonnet) (#3),
 [`pilot4-roombook-evolving/`](pilot4-roombook-evolving) (#4),
-[`pilot5-connect-four-codex/`](pilot5-connect-four-codex) (#5 — external, Codex).
+[`pilot5-connect-four-codex/`](pilot5-connect-four-codex) (#5 — external, Codex),
+[`pilot6-roombook-revalidation/`](pilot6-roombook-revalidation) (#6 — did the #4 fixes close the gap?).
