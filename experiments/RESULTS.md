@@ -19,6 +19,11 @@ load-bearing wording change wants n ≥ 2 per arm.** The internal A/B checks tha
 deterministic *choices*, not graded opinions — so one run is **directional, not robust**; treat a wording
 change as confirmed only after it reproduces across at least two runs per arm.
 
+**Running another one.** The full step-by-step protocol for adding a pilot in this style — product/axis
+choice, the frozen package, the two arms, the strict passive oracle, controlled variables, blind judging
+and how to scrutinize the judge, and the fixed interpretation rules — is in
+[`HOW-TO-RUN-A-PILOT.md`](HOW-TO-RUN-A-PILOT.md).
+
 ## Scoreboard
 
 | Pilot | Product (domain) | Executor model | Blind judge A (OO) | Blind judge B (simplicity) | Winner | Claims verified |
