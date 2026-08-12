@@ -20,6 +20,9 @@ Examples:
 
 - "Added interface" is not evidence that the intended change or responsibility is localized.
 - "Tests pass" is useful but does not prove a boundary unless the tests exercise that boundary.
+- "Tests pass" also does not show the suite protects against regression — check that non-trivial
+  decisions the diff touches are covered even where they already looked correct, not only the new
+  edge cases, and that no test merely restates an assignment, a getter, or a language guarantee.
 - "No cycle detected" does not prove responsibilities are coherent.
 - A small duplication can be acceptable evidence of deliberate independence rather than a defect.
 
