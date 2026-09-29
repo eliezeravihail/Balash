@@ -1,0 +1,12 @@
+pipeline: groceries_balances
+description: Current balance of every grocery tab ("יתרה").
+trigger: text_command
+
+steps:
+  - id: text
+    block: balances_text
+    tolerance: 0.5
+
+  - id: send
+    block: notify
+    input: text

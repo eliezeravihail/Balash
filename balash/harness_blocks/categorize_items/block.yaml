@@ -1,0 +1,11 @@
+name: categorize_items
+version: 1
+purpose: >
+  Assign each product description from a receipt to exactly one category from a
+  fixed household-shopping list. Called only for descriptions never seen before;
+  every answer is stored and reused, so the same product always gets the same category.
+model: default
+effort: low
+max_tokens: 8000
+prompt: prompt.md
+schema: schema.json

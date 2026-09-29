@@ -1,0 +1,46 @@
+pipeline: groceries_ingest
+description: >
+  A shopping document arrives (receipt, grocery tab slip, payment receipt or
+  account statement). Store it, read it, save the records, categorize new
+  products, check the grocery tab, and tell the sender what was read.
+trigger: incoming_document
+
+steps:
+  - id: raw
+    block: raw_store                  # software: store the file once
+
+  - id: receipt
+    block: receipt_to_records         # harness: document -> structured records
+    input: raw
+
+  - id: ledger
+    block: purchase_ledger            # software: save, resolve store, skip duplicates
+    input: receipt
+
+  - id: categories
+    block: categorize_items           # harness: only products never seen before
+    input: ledger
+
+  - id: tab
+    block: tab_continuity             # software: consecutive slips must agree
+    input: ledger
+    tolerance: 0.5
+
+  - id: statement
+    block: statement_reconcile        # software: every statement charge needs a slip
+    input: ledger
+    date_window_days: 1
+    amount_tolerance: 0.5
+
+  - id: ack
+    block: receipt_ack                # software: what was read
+    input: [raw, ledger]
+
+  - id: alerts
+    block: finding_messages           # software: alerts, most severe first
+    input: [tab, statement]
+    min_severity: low
+
+  - id: send
+    block: notify
+    input: [ack, alerts]

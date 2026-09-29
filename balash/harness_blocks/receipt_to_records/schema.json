@@ -1,0 +1,81 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "doc_type", "store", "receipt_number", "date", "time", "currency", "lines",
+    "discount_total", "total", "payment_method", "tab", "statement_lines",
+    "uncertain_fields", "notes"
+  ],
+  "properties": {
+    "doc_type": {"type": "string", "enum": ["purchase", "payment", "account_statement", "other", "unreadable"]},
+    "store": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "branch", "kind", "business_id"],
+      "properties": {
+        "name": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+        "branch": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+        "kind": {"type": "string", "enum": ["supermarket", "grocery", "pharmacy", "other", "unknown"]},
+        "business_id": {"anyOf": [{"type": "string"}, {"type": "null"}]}
+      }
+    },
+    "receipt_number": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+    "date": {"anyOf": [{"type": "string", "format": "date"}, {"type": "null"}]},
+    "time": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+    "currency": {"type": "string"},
+    "lines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["description", "barcode", "quantity", "unit", "unit_price", "line_total", "source_text"],
+        "properties": {
+          "description": {"type": "string"},
+          "barcode": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+          "quantity": {"anyOf": [{"type": "number"}, {"type": "null"}]},
+          "unit": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+          "unit_price": {"anyOf": [{"type": "number"}, {"type": "null"}]},
+          "line_total": {"anyOf": [{"type": "number"}, {"type": "null"}]},
+          "source_text": {"type": "string"}
+        }
+      }
+    },
+    "discount_total": {"anyOf": [{"type": "number"}, {"type": "null"}]},
+    "total": {"anyOf": [{"type": "number"}, {"type": "null"}]},
+    "payment_method": {"type": "string", "enum": ["cash", "card", "tab", "mixed", "other", "unknown"]},
+    "tab": {
+      "anyOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["customer_ref", "previous_balance", "charged", "paid", "new_balance"],
+          "properties": {
+            "customer_ref": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+            "previous_balance": {"anyOf": [{"type": "number"}, {"type": "null"}]},
+            "charged": {"anyOf": [{"type": "number"}, {"type": "null"}]},
+            "paid": {"anyOf": [{"type": "number"}, {"type": "null"}]},
+            "new_balance": {"anyOf": [{"type": "number"}, {"type": "null"}]}
+          }
+        }
+      ]
+    },
+    "statement_lines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["date", "description", "amount", "reference", "source_text"],
+        "properties": {
+          "date": {"anyOf": [{"type": "string", "format": "date"}, {"type": "null"}]},
+          "description": {"type": "string"},
+          "amount": {"anyOf": [{"type": "number"}, {"type": "null"}]},
+          "reference": {"anyOf": [{"type": "string"}, {"type": "null"}]},
+          "source_text": {"type": "string"}
+        }
+      }
+    },
+    "uncertain_fields": {"type": "array", "items": {"type": "string"}},
+    "notes": {"anyOf": [{"type": "string"}, {"type": "null"}]}
+  }
+}
