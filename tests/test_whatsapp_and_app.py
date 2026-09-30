@@ -150,3 +150,13 @@ def test_no_owners_means_nobody(h):
     body = json.dumps(payload(text_msg("m9", "יתרה"))).encode()
     client.post("/webhook", content=body, headers={"x-hub-signature-256": sign("topsecret", body)})
     assert fake.sent == []
+
+
+def test_image_from_unknown_number_is_not_downloaded_or_answered(h):
+    fake = FakeWhatsApp()
+    client = _app(h, fake)
+    body = json.dumps(payload(image_msg("m10", "med9", sender="972599999999"))).encode()
+    res = client.post("/webhook", content=body, headers={"x-hub-signature-256": sign("topsecret", body)})
+    assert res.status_code == 200
+    assert fake.sent == []
+    assert h.llm.calls == []

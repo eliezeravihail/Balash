@@ -108,7 +108,9 @@ class HarnessBlock(Block):
     # ---- runtime ---------------------------------------------------------
 
     def model_for(self, ctx: Context) -> str:
-        return ctx.config.default_model if self.spec.model == "default" else self.spec.model
+        """The ``model`` block parameter wins; then block.yaml; "default" means the instance default."""
+        model = self.params.get("model") or self.spec.model
+        return ctx.config.default_model if model == "default" else model
 
     def run(self, inputs: list[Record], ctx: Context) -> list[Record]:
         out: list[Record] = []

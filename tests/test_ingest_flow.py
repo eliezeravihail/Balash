@@ -143,7 +143,7 @@ def test_run_log_records_every_step(h):
 
     run = h.service.store.one("SELECT * FROM runs WHERE pipeline = 'groceries_ingest' ORDER BY started_at DESC")
     steps = [s["step"] for s in json.loads(run["log"])]
-    assert steps == ["raw", "receipt", "ledger", "categories", "tab", "statement", "ack", "alerts", "send"]
+    assert steps == ["inbox", "ledger", "categories", "tab", "statement", "ack", "alerts", "send"]
     assert run["status"] == "ok"
 
 

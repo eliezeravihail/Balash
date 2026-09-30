@@ -5,8 +5,6 @@ from conftest import image_bytes, line, receipt
 
 
 def _item(h, seed=1, caption="c1"):
-    out = h.service.run("groceries_ingest", [], h.out, "x")  # creates the tables; empty trigger is a no-op
-    assert out["raw"] == []
     rec = Record("incoming", {"bytes": image_bytes(seed), "media_type": "image/jpeg", "source": "t", "caption": caption})
     from balash.blocks.intake import RawStore
 

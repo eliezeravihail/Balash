@@ -18,6 +18,10 @@ if TYPE_CHECKING:
 log = logging.getLogger("balash")
 
 
+class MediaSource(Protocol):
+    def download_media(self, media_id: str) -> tuple[bytes, str]: ...
+
+
 class MessageSender(Protocol):
     def send_text(self, to: str, body: str) -> None: ...
 
@@ -36,6 +40,7 @@ class Context:
     run_id: str = ""
     log: list[dict[str, Any]] = field(default_factory=list)
     now_override: datetime | None = None
+    media: MediaSource | None = None
 
     def now(self) -> datetime:
         if self.now_override is not None:

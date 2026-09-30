@@ -30,6 +30,7 @@ class Service:
         self.config = config
         self.store = store or Store(config.db_path)
         self.llm = llm
+        self.media = None  # set by a channel that can download attachments (WhatsApp)
         self._pipelines: dict[str, Pipeline] = {}
         # One run at a time: runs read and then write the same ledger.
         self._run_lock = threading.Lock()
@@ -41,7 +42,8 @@ class Service:
 
     def context(self, sender: MessageSender, recipient: str | None, now: datetime | None = None) -> Context:
         return Context(
-            config=self.config, store=self.store, llm=self.llm, sender=sender, recipient=recipient, now_override=now
+            config=self.config, store=self.store, llm=self.llm, sender=sender, recipient=recipient,
+            now_override=now, media=self.media,
         )
 
     def run(self, name: str, records: list[Record], sender: MessageSender, recipient: str | None,
@@ -59,6 +61,11 @@ class Service:
              "caption": caption, "filename": filename},
         )
         return self.run(INGEST, [incoming], sender, recipient, label=source)
+
+    def ingest_whatsapp(self, message: dict, sender: MessageSender) -> dict[str, list[Record]]:
+        """Hand a WhatsApp message to the ingest pipeline exactly as it arrived.
+        The receipt_inbox block decides whether the sender is allowed."""
+        return self.run(INGEST, [Record("whatsapp_message", message)], sender, message.get("sender"), label="whatsapp")
 
     def handle_text(self, text: str, sender: MessageSender, recipient: str | None,
                     now: datetime | None = None) -> dict[str, list[Record]] | None:

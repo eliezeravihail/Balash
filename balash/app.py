@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import threading
 from contextlib import asynccontextmanager
+from dataclasses import asdict
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -23,6 +24,7 @@ def create_app(service: Service, client: WhatsAppClient | None = None, scheduler
     config = service.config
     client = client or WhatsAppClient(config.whatsapp)
     sender = WhatsAppSender(client, service.store)
+    service.media = client
     stop = threading.Event()
 
     def scheduler_loop() -> None:
@@ -66,8 +68,10 @@ def create_app(service: Service, client: WhatsAppClient | None = None, scheduler
         except ValueError:
             raise HTTPException(status_code=400, detail="bad json")
         for msg in parse_webhook(payload):
-            if msg.sender not in config.owners:
-                # no owners configured means nobody is allowed, never everybody
+            # Documents go to the pipeline, where receipt_inbox checks the sender
+            # before downloading anything. Everything else needs an owner here.
+            # No owners configured means nobody is allowed, never everybody.
+            if msg.type not in ("image", "document") and msg.sender not in config.owners:
                 log.warning("ignoring message from %s: not in owners", msg.sender)
                 continue
             seen_key = f"wa_msg:{msg.message_id}"
@@ -82,19 +86,20 @@ def create_app(service: Service, client: WhatsAppClient | None = None, scheduler
 
 def process_message(service: Service, client: WhatsAppClient, sender: WhatsAppSender, msg: InboundMessage) -> None:
     try:
-        sender.flush(msg.sender)  # the window is open again: deliver anything that waited
         if msg.type in ("image", "document"):
-            data, mime = client.download_media(msg.media_id)
-            service.ingest(
-                data, msg.mime_type or mime, sender, msg.sender, source="whatsapp",
-                caption=msg.caption, filename=msg.filename,
-            )
-        elif msg.type == "text":
+            if msg.sender in service.config.owners:
+                sender.flush(msg.sender)  # the window is open again: deliver anything that waited
+            service.ingest_whatsapp(asdict(msg), sender)
+            return
+        sender.flush(msg.sender)
+        if msg.type == "text":
             service.handle_text(msg.text, sender, msg.sender)
         else:
             sender.send_text(msg.sender, HELP)
     except Exception:
         log.exception("processing message %s failed", msg.message_id)
+        if msg.sender not in service.config.owners:
+            return
         try:
             sender.send_text(msg.sender, ERROR_TEXT)
         except Exception:

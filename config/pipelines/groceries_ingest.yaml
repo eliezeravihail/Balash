@@ -1,21 +1,21 @@
 pipeline: groceries_ingest
 description: >
-  A shopping document arrives (receipt, grocery tab slip, payment receipt or
-  account statement). Store it, read it, save the records, categorize new
-  products, check the grocery tab, and tell the sender what was read.
+  A shopping document arrives over WhatsApp or from a local file (receipt,
+  grocery tab slip, payment receipt or account statement). Read it into
+  records, save them, categorize new products, check the grocery tab, and
+  tell the sender what was read.
 trigger: incoming_document
 
 steps:
-  - id: raw
-    block: raw_store                  # software: store the file once
-
-  - id: receipt
-    block: receipt_to_records         # harness: document -> structured records
-    input: raw
+  - id: inbox
+    block: receipt_inbox              # WhatsApp message -> receipt records:
+                                      # allowed senders only, download, store once, model reads it
+    # allowed_senders: ["9725XXXXXXXX"]   # default: owners in instance.yaml
+    # model: claude-opus-5-5              # default: the instance default model
 
   - id: ledger
     block: purchase_ledger            # software: save, resolve store, skip duplicates
-    input: receipt
+    input: inbox
 
   - id: categories
     block: categorize_items           # harness: only products never seen before
@@ -34,7 +34,7 @@ steps:
 
   - id: ack
     block: receipt_ack                # software: what was read
-    input: [raw, ledger]
+    input: [inbox, ledger]
 
   - id: alerts
     block: finding_messages           # software: alerts, most severe first
