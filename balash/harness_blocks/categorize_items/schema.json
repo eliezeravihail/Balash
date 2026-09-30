@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["items"],
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["index", "description", "category"],
+        "properties": {
+          "index": {"type": "integer"},
+          "description": {"type": "string"},
+          "category": {
+            "type": "string",
+            "enum": [
+              "ירקות ופירות", "חלב וביצים", "בשר ועוף", "דגים", "לחם ומאפים",
+              "יבשים ושימורים", "ממתקים וחטיפים", "משקאות", "קפואים", "ניקיון",
+              "היגיינה וטיפוח", "תינוקות", "בית ומטבח", "פיקדון והנחות", "אחר"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

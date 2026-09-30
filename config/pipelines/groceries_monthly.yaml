@@ -1,0 +1,20 @@
+pipeline: groceries_monthly
+description: Monthly statistics with charts, sent at the start of the next month or on request ("דוח").
+trigger: month
+
+steps:
+  - id: stats
+    block: monthly_stats
+    min_price_change: 0.03
+
+  - id: charts
+    block: stats_charts
+    input: stats
+
+  - id: text
+    block: monthly_report_text
+    input: stats
+
+  - id: send
+    block: notify
+    input: [text, charts]

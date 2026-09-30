@@ -1,0 +1,24 @@
+pipeline: groceries_payment
+description: The person reports a payment on a grocery tab ("שילמתי 250 מכולת יוסי").
+trigger: text_command
+
+steps:
+  - id: payment
+    block: payment_from_text
+
+  - id: tab
+    block: tab_continuity
+    input: payment
+    tolerance: 0.5
+
+  - id: ack
+    block: payment_ack
+    input: payment
+
+  - id: alerts
+    block: finding_messages
+    input: tab
+
+  - id: send
+    block: notify
+    input: [ack, alerts]

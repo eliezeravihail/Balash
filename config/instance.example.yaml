@@ -1,0 +1,38 @@
+# Balash instance configuration. Copy to config/instance.yaml (balash init does it).
+# ${NAME} is replaced by the environment variable NAME, so secrets stay out of this file.
+
+instance: personal
+timezone: Asia/Jerusalem
+data_dir: ./data              # database, received files, report charts
+
+# Only these numbers may use the bot (international format, digits only).
+owners:
+  - "${BALASH_OWNER_NUMBER}"
+
+llm:
+  default_model: claude-opus-5-5   # the API key is read from ANTHROPIC_API_KEY
+
+stores:
+  # Printed store names vary between slips. Map every variant to one name.
+  aliases:
+    "מכולת יוסי":
+      - "יוסי מרקט"
+      - "מינימרקט יוסי"
+    "שופרסל":
+      - "שופרסל דיל"
+      - "שופרסל שלי"
+  # Stores where you buy on a running account (tab). A handwritten slip with
+  # no store name is assigned here when there is exactly one.
+  tab_accounts:
+    - "מכולת יוסי"
+
+report:
+  day_of_month: 1     # the monthly summary for the previous month is sent on this day
+  hour: 9
+
+whatsapp:
+  phone_number_id: "${WHATSAPP_PHONE_NUMBER_ID}"
+  access_token: "${WHATSAPP_ACCESS_TOKEN}"
+  app_secret: "${WHATSAPP_APP_SECRET}"
+  verify_token: "${WHATSAPP_VERIFY_TOKEN}"
+  graph_version: v23.0   # set to the current Graph API version in your Meta app
