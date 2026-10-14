@@ -1,8 +1,0 @@
-{
-  "name": "balash",
-  "description": "Makes design the goal of coding-agent work: a Guide hands a capable Worker a design/quality objective (with the feature as a constraint), then measures the result. Engaged explicitly through its commands — /balash-plan, /balash-build, /balash-review, /balash-plan-and-build.",
-  "version": "1.0.0",
-  "author": {
-    "name": "Balash"
-  }
-}
