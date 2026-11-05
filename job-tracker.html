@@ -1,0 +1,279 @@
+<title>מעקב משרות</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@700;900&family=Heebo:wght@400;500;700&display=swap">
+<style>
+/* Layout: summary strip of status filters on top, one scrollable table below, add/edit panel slides in above the table. RTL. */
+:root{
+  --bg:#f6f5f2; --surface:#ffffff; --fg:#1d2327; --muted:#6a7378; --line:#e1ded7;
+  --accent:#1f5f5b; --accent-fg:#ffffff;
+  --s-want:#7a5c99; --s-prep:#8a6d1f; --s-sent:#1f5f5b; --s-talk:#2c5fa3; --s-offer:#2b7a3d; --s-no:#a24a3b; --s-closed:#6a7378;
+  --danger:#b3392b; --warn-bg:#fbeacb; --warn-fg:#6b4a00;
+  --font-body:"Heebo",system-ui,sans-serif; --font-display:"Frank Ruhl Libre",Georgia,serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#14191a; --surface:#1c2324; --fg:#e8ecec; --muted:#98a3a5; --line:#2e3739;
+  --accent:#58b3ac; --accent-fg:#0d1515;
+  --s-want:#b79ad6; --s-prep:#d8b45a; --s-sent:#58b3ac; --s-talk:#7fadea; --s-offer:#6fcc85; --s-no:#e08a7b; --s-closed:#98a3a5;
+  --danger:#ee8577; --warn-bg:#4a3a12; --warn-fg:#f3d58a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14191a; --surface:#1c2324; --fg:#e8ecec; --muted:#98a3a5; --line:#2e3739;
+  --accent:#58b3ac; --accent-fg:#0d1515;
+  --s-want:#b79ad6; --s-prep:#d8b45a; --s-sent:#58b3ac; --s-talk:#7fadea; --s-offer:#6fcc85; --s-no:#e08a7b; --s-closed:#98a3a5;
+  --danger:#ee8577; --warn-bg:#4a3a12; --warn-fg:#f3d58a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5;direction:rtl;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--font-display);font-weight:900;font-size:clamp(28px,5vw,38px);margin:0;line-height:1.1}
+.sub{color:var(--muted);margin:4px 0 0}
+button,input,select,textarea{font:inherit;color:inherit}
+.btn{background:var(--accent);color:var(--accent-fg);border:0;border-radius:6px;padding:9px 16px;font-weight:700;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,.chip:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.strip{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:7px 12px;cursor:pointer;display:flex;gap:8px;align-items:baseline}
+.chip b{font-variant-numeric:tabular-nums;font-size:18px}
+.chip[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 -3px 0 var(--accent)}
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.tools input[type=search]{flex:1;min-width:180px}
+input,select,textarea{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%}
+.alert{background:var(--warn-bg);color:var(--warn-fg);border-radius:6px;padding:8px 12px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px}
+.panel h2{margin:0 0 12px;font-size:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.grid label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);min-width:0}
+.grid .wide{grid-column:1/-1}
+.actions{display:flex;gap:8px;margin-top:14px}
+.tablebox{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:900px}
+th{text-align:right;font-size:12px;letter-spacing:.04em;color:var(--muted);font-weight:500;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.co{font-weight:700}.role{color:var(--muted);font-size:13px}
+td a{color:var(--accent)}
+.st{border:0;border-radius:6px;font-weight:700;padding:5px 8px;width:auto;background:transparent;border:1px solid currentColor}
+.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.late{color:var(--danger);font-weight:700}
+.pri{font-size:12px;color:var(--muted)}.pri.hi{color:var(--danger);font-weight:700}
+.notes{max-width:260px;white-space:pre-wrap;color:var(--muted);font-size:13px}
+.rowbtn{background:none;border:0;color:var(--muted);cursor:pointer;padding:4px 6px;border-radius:4px}
+.rowbtn:hover{color:var(--fg)}.rowbtn.del.sure{color:var(--danger);font-weight:700}
+.empty{padding:36px 20px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--fg);font-size:17px;margin-bottom:6px}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>מעקב משרות</h1>
+      <p class="sub" id="sub">טוען…</p>
+    </div>
+    <button class="btn" id="addBtn" type="button">+ משרה חדשה</button>
+  </header>
+
+  <div class="strip" id="strip" role="group" aria-label="סינון לפי סטטוס"></div>
+  <div class="alert" id="alert" hidden></div>
+
+  <form class="panel" id="form" hidden>
+    <h2 id="formTitle">משרה חדשה</h2>
+    <div class="grid">
+      <label>חברה<input id="f-company" required></label>
+      <label>תפקיד<input id="f-role" required></label>
+      <label>סטטוס<select id="f-status"></select></label>
+      <label>עדיפות<select id="f-priority"><option>רגילה</option><option>גבוהה</option><option>נמוכה</option></select></label>
+      <label>קישור למשרה<input id="f-link" type="url" dir="ltr" placeholder="https://"></label>
+      <label>מקום / היקף<input id="f-location" placeholder="תל אביב, היברידי, משרה מלאה"></label>
+      <label>מקור<input id="f-source" placeholder="לינקדאין, חבר, אתר החברה"></label>
+      <label>איש קשר<input id="f-contact" placeholder="שם, תפקיד"></label>
+      <label>שכר / טווח<input id="f-salary"></label>
+      <label>תאריך שמצאתי<input id="f-found" type="date"></label>
+      <label>תאריך שליחה<input id="f-sent" type="date"></label>
+      <label>מעקב הבא<input id="f-follow" type="date"></label>
+      <label class="wide">הערות<textarea id="f-notes" rows="3"></textarea></label>
+    </div>
+    <div class="actions">
+      <button class="btn" type="submit">שמור</button>
+      <button class="btn ghost" type="button" id="cancelBtn">ביטול</button>
+    </div>
+  </form>
+
+  <div class="tools">
+    <input type="search" id="q" placeholder="חיפוש חברה, תפקיד או הערה" aria-label="חיפוש">
+    <select id="sort" aria-label="מיון" style="width:auto">
+      <option value="follow">מיון: מעקב הבא</option>
+      <option value="updated">מיון: עודכן לאחרונה</option>
+      <option value="sent">מיון: תאריך שליחה</option>
+      <option value="company">מיון: חברה</option>
+    </select>
+  </div>
+
+  <div class="tablebox"><table>
+    <thead><tr><th>חברה ותפקיד</th><th>סטטוס</th><th>עדיפות</th><th>נשלח</th><th>מעקב הבא</th><th>איש קשר</th><th>הערות</th><th></th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <div class="empty" id="empty" hidden></div></div>
+</div>
+
+<script>
+(function(){
+  var STATUSES=[
+    {k:"want",l:"רוצה לשלוח",c:"--s-want"},
+    {k:"prep",l:"בהכנה",c:"--s-prep"},
+    {k:"sent",l:"נשלח",c:"--s-sent"},
+    {k:"talk",l:"בתהליך",c:"--s-talk"},
+    {k:"offer",l:"הצעה",c:"--s-offer"},
+    {k:"no",l:"נדחיתי",c:"--s-no"},
+    {k:"closed",l:"נסגרה / לא רלוונטי",c:"--s-closed"}
+  ];
+  var ACTIVE={sent:1,talk:1};
+  var $=function(id){return document.getElementById(id)};
+  var db=null,jobs=[],filter="all",editId=null,canWrite=true,loaded=false,sureId=null;
+
+  function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+  function today(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+  function fmt(d){if(!d)return "";var p=d.split("-");return p[2]+"."+p[1]+"."+p[0].slice(2)}
+  function st(k){return STATUSES.find(function(s){return s.k===k})||STATUSES[0]}
+  function safeUrl(u){return /^https?:\/\//i.test(u||"")?u:""}
+
+  $("f-status").innerHTML=STATUSES.map(function(s){return '<option value="'+s.k+'">'+s.l+'</option>'}).join("");
+
+  function visible(){
+    var q=$("q").value.trim().toLowerCase();
+    var list=jobs.filter(function(j){
+      if(filter!=="all"&&j.status!==filter)return false;
+      if(!q)return true;
+      return [j.company,j.role,j.notes,j.contact,j.location].join(" ").toLowerCase().indexOf(q)>-1;
+    });
+    var s=$("sort").value;
+    list.sort(function(a,b){
+      if(s==="company")return (a.company||"").localeCompare(b.company||"","he");
+      if(s==="updated")return (b.updatedAt||"").localeCompare(a.updatedAt||"");
+      if(s==="sent")return (b.sentAt||"").localeCompare(a.sentAt||"");
+      var x=a.followUp||"9999",y=b.followUp||"9999";
+      return x===y?(b.updatedAt||"").localeCompare(a.updatedAt||""):x.localeCompare(y);
+    });
+    return list;
+  }
+
+  function render(){
+    var t=today();
+    var counts={};jobs.forEach(function(j){counts[j.status]=(counts[j.status]||0)+1});
+    var chips=[{k:"all",l:"הכול",n:jobs.length,c:"--fg"}].concat(STATUSES.map(function(s){return {k:s.k,l:s.l,n:counts[s.k]||0,c:s.c}}));
+    $("strip").innerHTML=chips.map(function(c){
+      return '<button type="button" class="chip" data-k="'+c.k+'" aria-pressed="'+(filter===c.k)+'"><b style="color:var(--'+c.c.replace("--","")+')">'+c.n+'</b><span>'+c.l+'</span></button>';
+    }).join("");
+
+    var sent=jobs.filter(function(j){return j.sentAt}).length;
+    $("sub").textContent=loaded?(jobs.length+" משרות במעקב · "+sent+" נשלחו"):"טוען…";
+
+    var due=jobs.filter(function(j){return ACTIVE[j.status]&&j.followUp&&j.followUp<=t});
+    $("alert").hidden=!due.length;
+    if(due.length)$("alert").textContent="למעקב עכשיו: "+due.map(function(j){return j.company}).join(", ");
+
+    var list=visible();
+    $("rows").innerHTML=list.map(function(j){
+      var late=ACTIVE[j.status]&&j.followUp&&j.followUp<t;
+      var link=safeUrl(j.link);
+      var meta=[j.location,j.salary,j.source].filter(Boolean).join(" · ");
+      return '<tr data-id="'+esc(j.id)+'">'+
+        '<td><div class="co">'+(link?'<a href="'+esc(link)+'" target="_blank" rel="noopener">'+esc(j.company)+'</a>':esc(j.company))+'</div>'+
+          '<div class="role">'+esc(j.role)+'</div>'+(meta?'<div class="role">'+esc(meta)+'</div>':'')+'</td>'+
+        '<td><select class="st" data-act="status" style="color:var('+st(j.status).c+')" '+(canWrite?'':'disabled')+'>'+
+          STATUSES.map(function(s){return '<option value="'+s.k+'"'+(s.k===j.status?' selected':'')+'>'+s.l+'</option>'}).join("")+'</select></td>'+
+        '<td><span class="pri'+(j.priority==="גבוהה"?' hi':'')+'">'+esc(j.priority||"")+'</span></td>'+
+        '<td class="num">'+fmt(j.sentAt)+'</td>'+
+        '<td class="num'+(late?' late':'')+'">'+fmt(j.followUp)+(late?' · באיחור':'')+'</td>'+
+        '<td>'+esc(j.contact)+'</td>'+
+        '<td class="notes">'+esc(j.notes)+'</td>'+
+        '<td class="num">'+(canWrite?'<button class="rowbtn" data-act="edit" type="button">עריכה</button><button class="rowbtn del'+(sureId===j.id?' sure':'')+'" data-act="del" type="button">'+(sureId===j.id?'בטוח? מחק':'מחיקה')+'</button>':'')+'</td>'+
+      '</tr>';
+    }).join("");
+
+    var e=$("empty");
+    if(!list.length){
+      e.hidden=false;
+      e.innerHTML=!loaded?'טוען…':jobs.length?'<b>אין משרות שמתאימות לסינון</b>נקה את החיפוש או בחר סטטוס אחר.':
+        '<b>עדיין אין משרות</b>לחץ על "משרה חדשה", או שלח לי קישור או תיאור של משרה ואוסיף אותה לכאן.';
+    }else e.hidden=true;
+  }
+
+  function openForm(j){
+    editId=j?j.id:null;
+    $("formTitle").textContent=j?"עריכת משרה":"משרה חדשה";
+    var m={company:"company",role:"role",status:"status",priority:"priority",link:"link",location:"location",source:"source",contact:"contact",salary:"salary",found:"foundAt",sent:"sentAt",follow:"followUp",notes:"notes"};
+    Object.keys(m).forEach(function(k){
+      var v=j?j[m[k]]:"";
+      if(!j&&k==="status")v="want";
+      if(!j&&k==="priority")v="רגילה";
+      if(!j&&k==="found")v=today();
+      $("f-"+k).value=v||"";
+    });
+    $("form").hidden=false;$("f-company").focus();
+    $("form").scrollIntoView({block:"nearest"});
+  }
+  function closeForm(){$("form").hidden=true;editId=null}
+
+  function save(id,data){
+    if(!db)return Promise.resolve();
+    data.updatedAt=new Date().toISOString();
+    var ref=db.collection("jobs").doc(id);
+    return ref.set(data).catch(function(e){$("alert").hidden=false;$("alert").textContent="השמירה נכשלה ("+(e&&e.code||"שגיאה")+")"});
+  }
+
+  $("form").addEventListener("submit",function(ev){
+    ev.preventDefault();
+    var old=editId?jobs.find(function(j){return j.id===editId}):null;
+    var d={
+      company:$("f-company").value.trim(),role:$("f-role").value.trim(),status:$("f-status").value,priority:$("f-priority").value,
+      link:$("f-link").value.trim(),location:$("f-location").value.trim(),source:$("f-source").value.trim(),contact:$("f-contact").value.trim(),
+      salary:$("f-salary").value.trim(),foundAt:$("f-found").value,sentAt:$("f-sent").value,followUp:$("f-follow").value,notes:$("f-notes").value.trim()
+    };
+    if(d.status==="sent"&&!d.sentAt)d.sentAt=today();
+    var id=editId||("j"+Date.now().toString(36));
+    d.createdAt=old&&old.createdAt||new Date().toISOString();
+    closeForm();
+    save(id,d);
+  });
+  $("cancelBtn").addEventListener("click",closeForm);
+  $("addBtn").addEventListener("click",function(){openForm(null)});
+  $("q").addEventListener("input",render);
+  $("sort").addEventListener("change",render);
+  $("strip").addEventListener("click",function(e){var b=e.target.closest(".chip");if(!b)return;filter=b.dataset.k;render()});
+
+  $("rows").addEventListener("click",function(e){
+    var b=e.target.closest("button");if(!b)return;
+    var id=b.closest("tr").dataset.id,j=jobs.find(function(x){return x.id===id});if(!j)return;
+    if(b.dataset.act==="edit"){openForm(j)}
+    else if(b.dataset.act==="del"){
+      if(sureId===id){sureId=null;db&&db.collection("jobs").doc(id).delete()}
+      else{sureId=id;render();setTimeout(function(){if(sureId===id){sureId=null;render()}},4000)}
+    }
+  });
+  $("rows").addEventListener("change",function(e){
+    if(e.target.dataset.act!=="status")return;
+    var id=e.target.closest("tr").dataset.id,j=jobs.find(function(x){return x.id===id});if(!j)return;
+    var d=Object.assign({},j);delete d.id;d.status=e.target.value;
+    if(d.status==="sent"&&!d.sentAt)d.sentAt=today();
+    save(id,d);
+  });
+
+  render();
+
+  (async function(){
+    var timer=setTimeout(function(){if(!loaded){$("sub").textContent="לא ניתן להגיע לנתונים כרגע"}},10000);
+    try{
+      var u=await claude.use("user");
+      if(u&&u.can){var w=u.can("data.write");if(w===false)canWrite=false}
+      if(!canWrite)$("addBtn").hidden=true;
+      db=await claude.use("db");
+    }catch(e){db=null}
+    if(!db){clearTimeout(timer);loaded=true;$("sub").textContent="הנתונים זמינים רק כשנכנסים לחשבון";render();return}
+    db.collection("jobs").onSnapshot(function(snap){
+      clearTimeout(timer);loaded=true;
+      jobs=snap.docs.map(function(d){var x=Object.assign({},d.data());x.id=d.id;return x});
+      render();
+    },function(){clearTimeout(timer);loaded=true;$("sub").textContent="אין גישה לנתונים";render()});
+  })();
+})();
+</script>
