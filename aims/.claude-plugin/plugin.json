@@ -1,0 +1,8 @@
+{
+  "name": "aims",
+  "description": "Makes design the goal of coding-agent work, and makes the design knowledge durable. A design method (discovery, feasibility gate, ownership/encapsulation, a subtractive pass, a review panel) writes ADRs, requirements, and insights into a capsa-format knowledge tree that survives across sessions and years. One advisory read-time hook flags documentation that has drifted from the code it describes; nothing runs in the background. Engaged through its commands — /aims-plan, /aims-build, /aims-review.",
+  "version": "0.1.0",
+  "author": {
+    "name": "aims"
+  }
+}
